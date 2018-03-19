@@ -1,0 +1,5 @@
+<!--sudoku.wxml-->
+<view class="container log-list">
+  <text>123</text>
+</view>
+
