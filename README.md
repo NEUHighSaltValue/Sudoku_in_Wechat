@@ -4,5 +4,5 @@
 * [李天志](https://github.com/tianzhipengfei)
 * [李书缘](https://github.com/G1NTOKI0522)
 * [郭雨桐](https://github.com/SaltedFishTung)
-* [曲悦]()
+* [曲悦](https://github.com/13234038172)
 * [王子萱](https://github.com/Hanahaaa)
