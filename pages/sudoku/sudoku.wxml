@@ -1,10 +1,11 @@
-<!--index.wxml-->
+<!--pages/sudoku.wxml-->
+
+
 <view class='loading' wx:if="{{!generateOk}}">
   <import src="/pages/templates/loading/loading" />
   <template is="loading" />
 </view>
  
-
  
 <view>
   <View class="chessboard">

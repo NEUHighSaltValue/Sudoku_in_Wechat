@@ -99,3 +99,38 @@
     transform: scale3D(0, 0, 1);
   }
 }
+
+/* board */
+
+.chessboard
+{
+	background-color: #bbada0;
+	margin: 50rpx;
+	height: 650rpx;
+	width: 650rpx;
+	border-radius: 15rpx;
+	display: flex;
+	flex-direction: column;
+	padding: 6rpx;
+}
+
+.chessboard .row
+{
+	display: flex;
+	flex: 1;
+}
+
+.chessboard .row .column
+{
+	font-size: 20px;
+	color: #776e65;
+	flex: 1;
+	margin: 1rpx;
+	background-color: #cdc1b4;
+	border-radius: 1rpx;
+
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	justify-content: center;
+}
