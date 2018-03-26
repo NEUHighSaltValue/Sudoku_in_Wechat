@@ -1,15 +1,11 @@
 <!--index.wxml-->
-<view class="container">
-  <view class="userinfo">
-    <button wx:if="{{!hasUserInfo && canIUse}}" open-type="getUserInfo" bindgetuserinfo="getUserInfo"> 获取头像昵称 </button>
-    <block wx:else>
-      <image bindtap="bindViewTap" class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
-      <text class="userinfo-nickname">{{userInfo.nickName}}</text>
-    </block>
-  </view>
-  <view class="usermotto">
-    <text class="user-motto">{{motto}}</text>
-  </view>
-  <view> <text> {{msg}} </text> </view> 
-<button bindtap="bindViewTap">点击我</button>
+<view class='loading' wx:if="{{!generateOk}}">
+  <import src="/pages/templates/loading/loading" />
+  <template is="loading" />
 </view>
+<!-- 
+<view class='board'>
+  <import src="/pages/templates/board/board" />
+  <template is="board" />
+</view> 
+-->

@@ -2,7 +2,8 @@
   "pages":[
     "pages/index/index",
     "pages/logs/logs",
-    "pages/sudoku/sudoku"
+    "pages/templates/loading/loading",
+    "pages/templates/board/board"
   ],
   "window":{
     "backgroundTextStyle":"light",
