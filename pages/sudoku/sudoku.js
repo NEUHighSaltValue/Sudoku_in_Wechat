@@ -16,21 +16,39 @@ let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5
 var selectX = -1
 var selectY = -1
 var selectNum = -1
+var chessBoardData = 
+[[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 1, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+[0, 0, 0, 0, 0, 0, 0, 0, 0],
+]
+
+
+function freshUI() {
+  let board = wx.createCanvasContext('boardData')
+  board.setStrokeStyle("#000000")
+  board.setFontSize(cellWidth / 2 / ratio)
+  var i, j, axis, baseLine
+  for (i = 0; i < 9; i++) {
+    axis = (i + 0.45) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + (i - parseInt(i / 3)) * lineWidth2
+    for (j = 0; j < 9; j++) {
+      if(chessBoardData[i][j] != 0){
+      baseLine = (j + 0.75) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2
+      board.fillText(chessBoardData[i][j].toString(), axis / ratio, baseLine / ratio)
+      }
+    }
+  }
+  board.draw()
+}
 
 Page({
   data: {
-    generateOk: true,
-    chessboardDatas: [
-      [11, 12, 13, 14, 15, 16, 17, 18, 19],
-      [21, 22, 23, 24, 25, 26, 27, 28, 29],
-      [31, 32, 33, 34, 35, 36, 37, 38, 39],
-      [41, 42, 43, 44, 45, 46, 47, 48, 49],
-      [51, 52, 53, 54, 55, 56, 57, 58, 59],
-      [61, 62, 63, 64, 65, 66, 67, 68, 69],
-      [71, 72, 73, 74, 75, 76, 77, 78, 79],
-      [81, 82, 83, 84, 85, 86, 87, 88, 89],
-      [91, 92, 93, 94, 95, 96, 97, 98, 99],
-    ]
+    generateOk: true
   },
 
   //事件处理函数
@@ -48,6 +66,8 @@ Page({
 
   onReady: function (e) {
     //Board
+
+    freshUI()
 
     //For UI designer, you can change line color here!
     let board = wx.createCanvasContext('board')
@@ -152,25 +172,35 @@ Page({
     console.log("X part: " + selectX)
     console.log("Y part: " + selectY)
     if (selectNum != -1) {
-      let board = wx.createCanvasContext('boardData')
+      chessBoardData[selectX][selectY] = selectNum
       console.log(selectX.toString() + " " + selectY.toString() + " " + selectNum.toString())
-
-      board.setStrokeStyle("#000000")
-      board.setFontSize(cellWidth / 2 / ratio)
-      let axis = (selectX + 0.45) * cellWidth + (1 + parseInt(selectX / 3)) * lineWidth1 + (selectX - parseInt(selectX / 3)) * lineWidth2
-      let baseLine = (selectY + 0.75) * cellWidth + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY -  parseInt(selectY / 3)) * lineWidth2
-      board.fillText(selectNum.toString(), axis / ratio, baseLine / ratio)
-      board.draw()
-      console.log(cellWidth)
-      console.log(axis + " " + baseLine)
+      freshUI()
     }
   },
-
-
 
   tableSelect: function (event) {
     selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5))
     console.log("num: " + selectNum)
   },
 
+
 })
+
+class Sudoku{
+  constructor(){
+    var chessBoadData = 
+    [ [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+    ]
+  }
+  getData(){
+
+  }
+}
