@@ -9,6 +9,7 @@ let tableWidthInPx = tableWidthInPrx * phoneWidth / 750
 let tableHeighInPx = tableHeighInPrx * phoneWidth / 750
 var selectX = -1
 var selectY = -1
+var selectNum = -1
 
 Page({
   data: {
@@ -105,11 +106,27 @@ Page({
     table.rect(startPointX, startPointY, tempWidth, tempHeight)
     console.log(startPointX)
     table.stroke()
+    table.setFontSize(cellWidth / 2 /ratio)
+    table.font = 'Courier'
+    console.log(table.font)
+    table.setTextAlign = 'center'
+    // for(var num=1; num<5; num++){
+    //   table.fillText(num.toString(), (cellWidth * (0.5 + num) + lineWidth1 * (1+num)) / ratio, cellWidth * 3 / 4 / ratio)
+    // }
+    table.fillText('1', cellWidth / ratio * 1.45 + lineWidth1 / ratio, cellWidth * 3 / 4 / ratio)
+    table.fillText('2', cellWidth / ratio * 2.4 + lineWidth1 * 2 / ratio, cellWidth * 3 / 4 / ratio)
+    table.fillText('3', cellWidth / ratio * 3.45 + lineWidth1 * 3 / ratio, cellWidth * 3 / 4 / ratio)
+    table.fillText('4', cellWidth / ratio * 4.44 + lineWidth1 * 4 / ratio, cellWidth * 3 / 4 / ratio)
+    table.fillText('5', cellWidth / ratio * 0.4 + lineWidth1 / ratio, cellWidth * 7 / 4 / ratio)
+    table.fillText('6', cellWidth / ratio * 1.4 + lineWidth1 / ratio, cellWidth * 7 / 4 / ratio)
+    table.fillText('7', cellWidth / ratio * 2.4 + lineWidth1 * 2 / ratio, cellWidth * 7 / 4 / ratio)
+    table.fillText('8', cellWidth / ratio * 3.45 + lineWidth1 * 3 / ratio, cellWidth * 7 / 4 / ratio)
+    table.fillText('9', cellWidth / ratio * 4.44 + lineWidth1 * 4 / ratio, cellWidth * 7 / 4 / ratio)  
     table.draw()
     //!Table
   },
 
-  cellSelect: function (event) {
+  cellSelect: function (event){
     selectX = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9))
     selectY = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9))
     var xpart = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9))
@@ -117,7 +134,15 @@ Page({
     // console.log("X: " + event.changedTouches[0].x)
     // console.log("Y: " + event.changedTouches[0].y) 
     console.log("X part: " + xpart)
-    console.log("Y part: " + ypart) 
+    console.log("Y part: " + ypart)
+  },
+
+
+  tableSelect: function (event) {
+    selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5))
+    // console.log("X: " + event.changedTouches[0].x)
+    // console.log("Y: " + event.changedTouches[0].y) 
+    console.log("num: " + selectNum)
   },
 
 })
