@@ -1,1 +1,59 @@
 /**index.wxss**/
+page{
+  background-color: #f9fae8
+}
+
+
+/* board */
+
+.chessboard
+{
+	background-color: #cba135;
+	margin: 50rpx;
+	height: 650rpx;
+	width: 650rpx;
+	border-radius: 15rpx;
+	display: flex;
+	flex-direction: column;
+	padding: 6rpx;
+}
+
+.chessboard .row
+{
+	display: flex;
+	flex: 1;
+}
+
+.chessboard .row .column
+{
+	font-size: 20px;
+	color: #fff;
+	flex: 1;
+	margin: 1rpx;
+	background-color: #776e65;
+	border-radius: 1rpx;
+	display: flex;
+	flex-direction: column;
+	text-align: center;
+	justify-content: center;
+}
+
+.function_button{
+  text-align: center;
+  border-top: 4rpx;
+  margin: 48rpx;
+}
+
+.function_button .new{
+  float: left;
+  background-color: #fff
+}
+
+.function_button .time{
+  display: inline
+}
+
+.function_button .redo{
+  float: right;
+  background-color: #fff
+}

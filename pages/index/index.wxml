@@ -5,14 +5,19 @@
 </view>
  
 
- 
+  
+<view class="function_button">
+  <button class ="new" type="default" size="mini"> new </button>
+  <view class="time"> 00:00 </view> 
+  <button class="redo" size="mini"> redo </button>
+</view>
 <view>
-  <View class="chessboard">
-	<View class="row" wx:for="{{chessboardDatas}}" wx:key="chessboardDatas" wx:for-index="idx" wx:for-item="chessboardColumn">
+  <!-- <view> class="chessboard">
+	  <View class="row" wx:for="{{chessboardDatas}}" wx:key="chessboardDatas" wx:for-index="idx"wx:for-item="chessboardColumn">
 		 <View class="column" wx:for="{{chessboardColumn}}" wx:key="chessboardColumn" wx:for-item="chessboardRow"> 
      {{chessboardRow>0?chessboardRow:''}} 
      </View> 
-	</View>
-</View>
-</view>
-
+	</View>  
+</view> -->
+<canvas style="width: 300px; height: 200px;" canvas-id="firstCanvas"></canvas>
+</view> 

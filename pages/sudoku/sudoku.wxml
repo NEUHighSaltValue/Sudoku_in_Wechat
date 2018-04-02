@@ -5,8 +5,8 @@
   <import src="/pages/templates/loading/loading" />
   <template is="loading" />
 </view>
- 
- 
+
+
 <view>
   <View class="chessboard">
 	<View class="row" wx:for="{{chessboardDatas}}" wx:key="chessboardDatas" wx:for-index="idx" wx:for-item="chessboardColumn">
