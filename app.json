@@ -1,9 +1,9 @@
 {
   "pages": [
+    "pages/sudoku/sudoku",
     "pages/index/index",
     "pages/logs/logs",
-    "pages/templates/loading/loading",
-    "pages/sudoku/sudoku"
+    "pages/templates/loading/loading"
   ],
   "window": {
     "backgroundTextStyle": "light",

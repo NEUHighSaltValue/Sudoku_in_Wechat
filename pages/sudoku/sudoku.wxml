@@ -1,19 +1,17 @@
 <!--pages/sudoku.wxml-->
-
-
 <view class='loading' wx:if="{{!generateOk}}">
   <import src="/pages/templates/loading/loading" />
   <template is="loading" />
 </view>
-
-
-<view>
-  <View class="chessboard">
-	<View class="row" wx:for="{{chessboardDatas}}" wx:key="chessboardDatas" wx:for-index="idx" wx:for-item="chessboardColumn">
-		 <View class="column" wx:for="{{chessboardColumn}}" wx:key="chessboardColumn" wx:for-item="chessboardRow"> 
-     {{chessboardRow>0?chessboardRow:''}} 
-     </View> 
-	</View>
-</View>
+  
+<view class="function_button">
+  <button class ="new" type="default" size="mini"> new </button>
+  <view class="time"> 00:00 </view> 
+  <button class="redo" size="mini"> redo </button>
 </view>
 
+
+<view class="boardContainer">
+  <canvas canvas-id='board' id='board' class='canvasBoard' bindtouchstart="cellSelect"></canvas>
+  <canvas canvas-id='table' id='table' class='canvasTable' bindtouchstart="tableSelect" ></canvas>
+</view> 

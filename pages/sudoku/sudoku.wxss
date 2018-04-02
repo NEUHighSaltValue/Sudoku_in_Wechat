@@ -1,1 +1,41 @@
 /* pages/sudoku.wxss */
+page{
+  background-color: #f9fae8
+}
+
+.function_button{
+  text-align: center;
+  border-top: 4rpx;
+  margin: 48rpx;
+}
+
+.function_button .new{
+  float: left;
+  background-color: #fff
+}
+
+.function_button .time{
+  display: inline
+}
+
+.function_button .redo{
+  float: right;
+  background-color: #fff
+}
+
+ .canvasBoard{ 
+  /* For UI designer, you can change board color here! */
+  background-color: white;
+  margin-left: 37.5rpx;
+  width: 675rpx;
+  height: 675rpx;
+}
+
+.canvasTable{
+  /* For UI designer, you can change board color here! */
+  background-color: white;
+  margin-left: 111.5rpx;
+  margin-top: 108rpx;
+  width: 527rpx;
+  height: 213.5rpx;
+}
