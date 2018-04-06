@@ -5,14 +5,14 @@
 </view>
   
 <view class="function_button">
-  <button class ="new" type="default" size="mini" bindtap='f1'> new </button>
-  <view class="time"> 00:00 </view> 
-  <button class="redo" size="mini" bindtap='f2'> redo </button>
+  <button class ="new" type="default" size="mini" bindtap='newGame'> new </button>
+  <view class="time"> {{timeText}} </view> 
+  <button class="redo" size="mini" bindtap='timeStop'> redo </button>
 </view>
 
 
 <view class="boardContainer">
-  <canvas canvas-id='board' id='board' class='canvasBoard' ></canvas>
-  <canvas canvas-id='boardData' id='boardData' class='boardData' bindtouchstart="cellSelect"></canvas>
-  <canvas canvas-id='table' id='table' class='canvasTable' bindtouchstart="tableSelect" ></canvas>
+  <canvas canvas-id='board' id='board' class='canvasBoard' disable-scroll="true"></canvas>
+  <canvas canvas-id='boardData' id='boardData' class='boardData' bindtouchstart="cellSelect" disable-scroll="true"></canvas>
+  <canvas canvas-id='table' id='table' class='canvasTable' bindtouchstart="tableSelect" disable-scroll="true"></canvas>
 </view> 
