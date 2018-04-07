@@ -18,7 +18,7 @@ page{
   display: inline
 }
 
-.function_button .redo{
+.function_button .note{
   float: right;
   background-color: #fff
 }

@@ -13,6 +13,16 @@ const formatNumber = n => {
   n = n.toString()
   return n[1] ? n : '0' + n
 }
+var sudokuData = sudokuData() 
+
+function sudokuData(){
+    var arr = { 
+        list: [
+            
+        ]
+    };
+    return arr;
+}
 
 module.exports = {
   formatTime: formatTime

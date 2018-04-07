@@ -1,6 +1,6 @@
 // pages/sudoku.js
 
-//清明节任务： 1.timing and pausing  2.standard data format and data inputing  3.the function of note  4.
+//清明节任务： -1.timing and pausing  2.standard data format and data inputing  3.the function of note  4.
 
 // importScripts('../../sudokuModel.js');
 import sudokuFile from '../../sudokuModel'
@@ -29,7 +29,7 @@ function cellModel() {
 
 class Sudoku {
     constructor() {
-        this.chessBoardData =
+        this.boardData =
             [
                 [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
                 [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
@@ -80,20 +80,20 @@ class Sudoku {
     }
 
     getData(x, y) {
-        return this.chessBoardData[x][y];
+        return this.boardData[x][y];
     }
 
     setData(x, y, num, note) {
         //Judge can fill the cell or not
-        if (this.chessBoardData[x][y].cat == false) {
+        if (this.boardData[x][y].cat == false) {
             return;
         } else {
             //update record table
-            if (this.chessBoardData[x][y].note == false && this.chessBoardData[x][y] != "0") {
-                if (this.chessBoardData[x][y].content != "0") {
-                    this.row[x][parseInt(this.chessBoardData[x][y].content) - 1].delete(x * 10 + y);
-                    this.col[y][parseInt(this.chessBoardData[x][y].content) - 1].delete(x * 10 + y);
-                    this.zone[parseInt(parseInt(x / 3) * 3 + parseInt(y / 3))][parseInt(this.chessBoardData[x][y].content) - 1].delete(x * 10 + y);
+            if (this.boardData[x][y].note == false && this.boardData[x][y] != "0") {
+                if (this.boardData[x][y].content != "0") {
+                    this.row[x][parseInt(this.boardData[x][y].content) - 1].delete(x * 10 + y);
+                    this.col[y][parseInt(this.boardData[x][y].content) - 1].delete(x * 10 + y);
+                    this.zone[parseInt(parseInt(x / 3) * 3 + parseInt(y / 3))][parseInt(this.boardData[x][y].content) - 1].delete(x * 10 + y);
                 }
             }
             if (note == false && num != 0) {
@@ -102,13 +102,13 @@ class Sudoku {
                 this.zone[parseInt(parseInt(x / 3) * 3 + parseInt(y / 3))][num - 1].add(x * 10 + y);
             }
             //change data in cell
-            this.chessBoardData[x][y].note = note;
-            if (this.chessBoardData[x][y].content == "0") {
-                this.chessBoardData[x][y].content = num.toString();
+            this.boardData[x][y].note = note;
+            if (this.boardData[x][y].content == "0") {
+                this.boardData[x][y].content = num.toString();
             } else if (note == true) {
-                this.chessBoardData[x][y].content += num.toString();
+                this.boardData[x][y].content += num.toString();
             } else {
-                this.chessBoardData[x][y].content = num.toString();
+                this.boardData[x][y].content = num.toString();
             }
             this.freshProperty()
         }
@@ -118,7 +118,7 @@ class Sudoku {
 
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
-                this.chessBoardData[i][j].color=0;
+                this.boardData[i][j].color=0;
             }
         }
         for (var i = 0; i < 9; i++) {
@@ -129,21 +129,21 @@ class Sudoku {
                         let tempRow = parseInt(num / 10);
                         let tempCol = num % 10;
                         console.log(tempRow + " " + tempCol);
-                        this.chessBoardData[tempRow][tempCol].color = 2;
+                        this.boardData[tempRow][tempCol].color = 2;
                     }
                 }
                 if (this.col[i][j].size > 1) {
                     for (var num of this.col[i][j]) {
                         let tempRow = parseInt(num / 10);
                         let tempCol = num % 10;
-                        this.chessBoardData[tempRow][tempCol].color = 2;
+                        this.boardData[tempRow][tempCol].color = 2;
                     }
                 }
                 if (this.zone[i][j].size > 1) {
                     for (var num of this.zone[i][j]) {
                         let tempRow = parseInt(num / 10);
                         let tempCol = num % 10;
-                        this.chessBoardData[tempRow][tempCol].color = 2;
+                        this.boardData[tempRow][tempCol].color = 2;
                     }
                 }
             }
@@ -151,16 +151,16 @@ class Sudoku {
     }
 
     setGame(x, y, num) {
-        this.chessBoardData[x][y].content = num.toString();
-        this.chessBoardData[x][y].cat = false;
-        this.chessBoardData[x][y].color = 1;
+        this.boardData[x][y].content = num.toString();
+        this.boardData[x][y].cat = false;
+        this.boardData[x][y].color = 1;
     }
 
     show() {
         for (var i = 0; i < 9; i++) {
             var temp = ""
             for (var j = 0; j < 9; j++) {
-                temp = temp + this.chessBoardData[i][j].content + " ";
+                temp = temp + this.boardData[i][j].content + " ";
             }
             console.log(temp);
         }
@@ -169,10 +169,10 @@ class Sudoku {
     reset() {
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
-                this.chessBoardData[i][j].cat = true;
-                this.chessBoardData[i][j].note = false;
-                this.chessBoardData[i][j].content = "0";
-                this.chessBoardData[i][j].color = 0;
+                this.boardData[i][j].cat = true;
+                this.boardData[i][j].note = false;
+                this.boardData[i][j].content = "0";
+                this.boardData[i][j].color = 0;
                 this.row[i][j].clear();
                 this.col[i][j].clear();
                 this.zone[i][j].clear();
