@@ -29,6 +29,7 @@ function cellModel() {
 
 class Sudoku {
     constructor() {
+        this.ans = "";
         this.boardData =
             [
                 [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
@@ -151,7 +152,7 @@ class Sudoku {
         }
     }
 
-    setGame(gameData) {
+    setGame(gameData,gameAns) {
         var position = 0;
         for(var i=0;i<9;i++){
             for(var j=0;j<9;j++){
@@ -167,6 +168,7 @@ class Sudoku {
                 }
             }
         }
+        this.ans = gameAns;
     }
 
     show() {
@@ -194,17 +196,13 @@ class Sudoku {
     }
 
     judgeCorrect() {
+        var userAns=""
         for(var i=0; i<9; i++){
             for(var j=0; j<9; j++){
-                if(this.boardData[i][j].cat == false){
-                    continue;
-                }
-                if(this.boardData[i][j].color == 2){
-                    return false;
-                }
+                userAns+=this.boardData[i][j];
             }
         }
-        return true;
+        return userAns == this.ans;
     }
 
     freeze(){
@@ -240,13 +238,12 @@ var selectX = -1;
 var selectY = -1;
 var selectNum = -1;
 var sudoku = new Sudoku();
-var timeFlag=false;
 var num = 0;
 var strH = '';
 var strM = '';
 var strS = '';
 var timer = ''; 
-var level = 1;
+var level = 0;
 var remainNum = 81;
 
 Page({
@@ -268,15 +265,27 @@ Page({
 
     newGame: function () {
         sudoku.reset();
-        var gameID = 0;
+        this.timeStop();
+        timer = '0';
+        strH = '0';
+        strM = '0';
+        strS = '0';
+        num = 0;
+        this.setData({
+            timeText : '00:00'
+        })
+        this.timeStart();
+        var gameID = Math.floor(Math.random() * 1000) + level * 1000;
         var newGameData = sData[gameID].data;
+        var newGameAns =  sData[gameID].ans;
         while (!newGameData){
             gameID = 0;
             newGameData = sData[gameID].data;
+            newGameAns = sData[gameId].ans;
         }
         this.generatOk = true;
         console.log(this.generatOk)
-        sudoku.setGame(newGameData);
+        sudoku.setGame(newGameData,newGameAns);
         this.freshUI();
     },
 
@@ -286,7 +295,6 @@ Page({
 
     onReady: function (e) {
         //Board
-        timeFlag = false;
         // this.freshUI()
         //For UI designer, you can change line color here!
         let board = wx.createCanvasContext('board');
@@ -345,7 +353,6 @@ Page({
         table.rect(startPointX, startPointY, tempWidth, tempHeight);
         table.stroke();
         table.setFontSize(tableWidth / 2 / ratio);
-        table.font = 'Courier';
         table.setTextAlign = 'center';
         // for(var num=1; num<5; num++){
         //   table.fillText(num.toString(), (tableWidth * (0.5 + num) + lineWidth1 * (1+num)) / ratio, tableWidth * 3 / 4 / ratio)
@@ -365,10 +372,6 @@ Page({
     },
 
     cellSelect: function (event){
-        if(!timeFlag){
-            timeFlag = true;
-            this.timeStart();
-        }
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
         console.log(selectX + " " + selectY);
@@ -376,13 +379,10 @@ Page({
             sudoku.setData(selectX,selectY,selectNum,currentNote);
             this.freshUI();
         }
+        selectNum = -1;
     },
 
     tableSelect: function (event) {
-      if (!timeFlag) {
-          timeFlag = true;
-          this.timeStart();
-      }
       selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
     },
 
@@ -441,6 +441,7 @@ Page({
             if (sudoku.judgeCorrect()) {
                 this.timeStop();
                 sudoku.freeze();
+                //Shuyuan
                 this.timeText += "success"
             }
         }
