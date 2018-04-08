@@ -1,6 +1,6 @@
 // pages/sudoku.js
 
-//清明节任务： -1.timing and pausing  2.standard data format and data inputing  3.the function of note  4.
+//清明节任务： -1.timing and pausing  -2.standard data format and data inputing  3.the function of note  4.
 
 // importScripts('../../sudokuModel.js');
 import sudokuFile from '../../sudokuModel'
@@ -22,7 +22,7 @@ function cellModel() {
     if (arguments[0]) {
         this.content = arguments[0];
     } else {
-        this.content = "0";
+        this.content = '0';
     }
     this.color = 0;
 }
@@ -115,20 +115,21 @@ class Sudoku {
     }
 
     freshProperty() {
-
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
-                this.boardData[i][j].color=0;
+                if (this.boardData[i][j].cat == false){
+                    this.boardData[i][j].color = 1;
+                } else {
+                    this.boardData[i][j].color = 0;
+                }
             }
         }
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
-
                 if (this.row[i][j].size > 1) {
                     for (var num of this.row[i][j]) {
                         let tempRow = parseInt(num / 10);
                         let tempCol = num % 10;
-                        console.log(tempRow + " " + tempCol);
                         this.boardData[tempRow][tempCol].color = 2;
                     }
                 }
@@ -150,10 +151,22 @@ class Sudoku {
         }
     }
 
-    setGame(x, y, num) {
-        this.boardData[x][y].content = num.toString();
-        this.boardData[x][y].cat = false;
-        this.boardData[x][y].color = 1;
+    setGame(gameData) {
+        var position = 0;
+        for(var i=0;i<9;i++){
+            for(var j=0;j<9;j++){
+                position = i*9+j;
+                if(gameData[position] != '0'){
+                    this.boardData[i][j].cat = false;
+                    this.boardData[i][j].note = false;
+                    this.boardData[i][j].content = gameData[position];
+                    this.boardData[i][j].color = 1;
+                    this.row[i][parseInt(gameData[position]) - 1].add(i * 10 + j);
+                    this.col[j][parseInt(gameData[position]) - 1].add(i * 10 + j); 
+                    this.zone[parseInt(parseInt(i / 3) * 3 + parseInt(j / 3))][parseInt(gameData[position]) - 1].add(i * 10 + j);
+                }
+            }
+        }
     }
 
     show() {
@@ -179,6 +192,20 @@ class Sudoku {
             }
         }
     }
+
+    judgeCorrect() {
+        for(var i=0; i<9; i++){
+            for(var j=0; j<9; j++){
+                if(this.boardData[i][j].cat == false){
+                    continue;
+                }
+                if(this.boardData[i][j].color == 2){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
 }
 
 
@@ -198,29 +225,34 @@ let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
 let currentNote = false;
 let colorTable = ["black","grey","red","yellow"]
+let fileData = require('../../utils/util.js') 
+let sData = fileData.sudokuData().list
 
 var selectX = -1;
 var selectY = -1;
 var selectNum = -1;
 var sudoku = new Sudoku();
 var timeFlag=false;
-var num = 0  
-var strH = ''
-var strM = ''
-var strS = ''
-var timer = '' 
-
+var num = 0;
+var strH = '';
+var strM = '';
+var strS = '';
+var timer = ''; 
+var level = 1;
+var remainNum = 81;
 
 Page({
     data: {
         generateOk: true,
-        timeText: '00:00'
+        timeText: '00:00',
     },
 
     //事件处理函数
     bindViewTap: function () {},
 
-    onLoad: function () {},
+    onLoad: function () {
+        this.newGame();
+    },
 
     getUserInfo: function (e) {},
 
@@ -228,7 +260,16 @@ Page({
 
     newGame: function () {
         sudoku.reset();
-        freshUI();
+        var gameID = 0;
+        var newGameData = sData[gameID].data;
+        while (!newGameData){
+            gameID = 0;
+            newGameData = sData[gameID].data;
+        }
+        this.generatOk = true;
+        console.log(this.generatOk)
+        sudoku.setGame(newGameData);
+        this.freshUI();
     },
 
     canvasIdErrorCallback: function (e) {
@@ -238,7 +279,7 @@ Page({
     onReady: function (e) {
         //Board
         timeFlag = false;
-        // freshUI()
+        // this.freshUI()
         //For UI designer, you can change line color here!
         let board = wx.createCanvasContext('board');
         board.setStrokeStyle("#000000");
@@ -320,11 +361,12 @@ Page({
             timeFlag = true;
             this.timeStart();
         }
-        selectX = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
-        selectY = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
+        selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
+        selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
+        console.log(selectX + " " + selectY);
         if (selectNum != -1) {
             sudoku.setData(selectX,selectY,selectNum,currentNote);
-        freshUI();
+            this.freshUI();
         }
     },
 
@@ -350,7 +392,6 @@ Page({
                 timeText : strH + ':' + strM + ':' + strS
             })
         } else {
-            console.log(strM + ":" + strS);
             this.setData({
                 timeText : strM + ':' + strS
             })
@@ -360,6 +401,40 @@ Page({
 
     timeStop: function(){
         clearInterval(timer)
+    },
+
+    changeNote: function(){
+        currentNote = !currentNote;
+    },
+
+    freshUI: function() {
+        let board = wx.createCanvasContext('boardData');
+        board.setFontSize(cellWidth / 2 / ratio);
+        var i, j, axis, baseLine;
+        remainNum = 81;
+        for(j = 0; j < 9; j++) {
+            axis = (j + 0.45) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
+            for (i = 0; i < 9; i++) {
+                if (parseInt(sudoku.getData(i, j).content) != 0) {
+                    if (sudoku.getData(i, j).note==false){
+                        remainNum--;
+                        baseLine = (i + 0.75) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + (i - parseInt(i / 3)) * lineWidth2;
+                        board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
+                        board.fillText(String(sudoku.getData(i, j).content), axis / ratio, baseLine / ratio);
+                    } else{
+                        //Yutong
+                    }
+                    
+                }
+            }
+        }
+        board.draw();
+        if (remainNum == 0) {
+            if (sudoku.judgeCorrect()) {
+                this.timeStop();
+                sudoku.freeze();
+            }
+        }
     }
 })
 
@@ -371,22 +446,6 @@ function zeroFill (str, n) {
     return str
 }  
 
-function freshUI(){
-    let board = wx.createCanvasContext('boardData');
-    board.setFontSize(cellWidth / 2 / ratio);
-    var i, j, axis, baseLine;
-    for (i = 0; i < 9; i++) {
-        axis = (i + 0.45) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + (i - parseInt(i / 3)) * lineWidth2;
-        for (j = 0; j < 9; j++) {
-            if (parseInt(sudoku.getData(i, j).content) != 0) {
-                baseLine = (j + 0.75) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
-                board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
-                console.log(i + " " + j + " " + colorTable[sudoku.getData(i, j).color]);
-                board.fillText(sudoku.getData(i, j).content, axis / ratio, baseLine / ratio);
-            }
-        }
-    }
-    board.draw();
-}
+
 
 

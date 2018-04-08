@@ -7,7 +7,7 @@
 <view class="function_button">
   <button class ="new" type="default" size="mini" bindtap='newGame'> new </button>
   <view class="time"> {{timeText}} </view> 
-  <button class="note" size="mini" bindtap='timeStop'> note </button>
+  <button class="note" size="mini" bindtap='changeNote'> note </button>
 </view>
 
 
