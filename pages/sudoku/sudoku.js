@@ -206,6 +206,14 @@ class Sudoku {
         }
         return true;
     }
+
+    freeze(){
+        for(var i=0;i<9;i++){
+            for(var j=0;j<9;j++){
+                this.boardData[i][j].car=false;
+            }
+        }
+    }
 }
 
 
@@ -433,6 +441,7 @@ Page({
             if (sudoku.judgeCorrect()) {
                 this.timeStop();
                 sudoku.freeze();
+                this.timeText += "success"
             }
         }
     }
