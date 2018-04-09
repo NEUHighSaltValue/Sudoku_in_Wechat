@@ -199,9 +199,11 @@ class Sudoku {
         var userAns=""
         for(var i=0; i<9; i++){
             for(var j=0; j<9; j++){
-                userAns+=this.boardData[i][j];
+                userAns+=this.boardData[i][j].content;
             }
         }
+        console.log(userAns);
+        console.log(this.ans);
         return userAns == this.ans;
     }
 
@@ -248,7 +250,7 @@ var remainNum = 81;
 
 Page({
     data: {
-        generateOk: true,
+        generateOk: false,
         timeText: '00:00',
     },
 
@@ -264,6 +266,9 @@ Page({
     clickMe: function () {},
 
     newGame: function () {
+        this.setData({
+            generateOk: false
+        })
         sudoku.reset();
         this.timeStop();
         timer = '0';
@@ -283,8 +288,9 @@ Page({
             newGameData = sData[gameID].data;
             newGameAns = sData[gameId].ans;
         }
-        this.generatOk = true;
-        console.log(this.generatOk)
+        this.setData({
+            generateOk: true
+        })
         sudoku.setGame(newGameData,newGameAns);
         this.freshUI();
     },
