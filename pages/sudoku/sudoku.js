@@ -1,6 +1,6 @@
 // pages/sudoku.js
 
-//清明节任务： -1.timing and pausing  -2.standard data format and data inputing  3.the function of note  4.
+//1.题目的红色和用户的红色要分别   2.note重复消去数字  3.不应该把所有数据都获得  4.点击cat为true的时候把num去除了 5.选择数字时特殊处理selected，然后selectnum不回复-1
 
 // importScripts('../../sudokuModel.js');
 import sudokuFile from '../../sudokuModel'
@@ -11,7 +11,7 @@ import sudokuFile from '../../sudokuModel'
 
 /*
 For each cell
-cat true means can fill the call, false not
+cat true means can fill the cell, false not
 note true means this cell is in note mode
 content contains the number filled
 color means the number's color: 0 means normal, 1 means ubchangable number, 2 means error, 3 means highlight in same number as user choose
@@ -210,7 +210,7 @@ class Sudoku {
     freeze(){
         for(var i=0;i<9;i++){
             for(var j=0;j<9;j++){
-                this.boardData[i][j].car=false;
+                this.boardData[i][j].cat=false;
             }
         }
     }
@@ -240,12 +240,12 @@ var selectX = -1;
 var selectY = -1;
 var selectNum = -1;
 var sudoku = new Sudoku();
-var num = 0;
+var num = 0;    //num for timer
 var strH = '';
 var strM = '';
 var strS = '';
 var timer = ''; 
-var level = 0;
+var level = 3;
 var remainNum = 81;
 
 Page({
@@ -279,7 +279,6 @@ Page({
         this.setData({
             timeText : '00:00'
         })
-        this.timeStart();
         var gameID = Math.floor(Math.random() * 1000) + level * 1000;
         var newGameData = sData[gameID].data;
         var newGameAns =  sData[gameID].ans;
@@ -288,11 +287,12 @@ Page({
             newGameData = sData[gameID].data;
             newGameAns = sData[gameId].ans;
         }
+        sudoku.setGame(newGameData, newGameAns);
         this.setData({
             generateOk: true
         })
-        sudoku.setGame(newGameData,newGameAns);
         this.freshUI();
+        this.timeStart();
     },
 
     canvasIdErrorCallback: function (e) {
@@ -301,7 +301,6 @@ Page({
 
     onReady: function (e) {
         //Board
-        // this.freshUI()
         //For UI designer, you can change line color here!
         let board = wx.createCanvasContext('board');
         board.setStrokeStyle("#000000");
