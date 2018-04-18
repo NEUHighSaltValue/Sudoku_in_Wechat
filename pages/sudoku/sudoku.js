@@ -32,6 +32,7 @@ function cellModel(content) {
   this.color = 0;
 }
 class Sudoku {
+<<<<<<< HEAD
   constructor() {
     this.chessBoardData =
       [
@@ -99,6 +100,184 @@ class Sudoku {
     return this.chessBoardData[x][y]
   }
 }
+=======
+    constructor() {
+        this.ans = "";
+        this.boardData =
+            [
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+                [new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(), new cellModel(),],
+            ];
+        this.row =
+            [
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+            ];
+        this.col =
+            [
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+            ];
+        this.zone =
+            [
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+                [new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(), new Set(),],
+            ];
+    }
+
+    getData(x, y) {
+        return this.boardData[x][y];
+    }
+
+    setData(x, y, num, note) {
+        //Judge can fill the cell or not
+        if (this.boardData[x][y].cat == false) {
+            return;
+        } else {
+            //update record table
+            if (this.boardData[x][y].note == false && this.boardData[x][y] != "0") {
+                if (this.boardData[x][y].content != "0") {
+                    this.row[x][parseInt(this.boardData[x][y].content) - 1].delete(x * 10 + y);
+                    this.col[y][parseInt(this.boardData[x][y].content) - 1].delete(x * 10 + y);
+                    this.zone[parseInt(parseInt(x / 3) * 3 + parseInt(y / 3))][parseInt(this.boardData[x][y].content) - 1].delete(x * 10 + y);
+                }
+            }
+            if (note == false && num != 0) {
+                this.row[x][num - 1].add(x * 10 + y);
+                this.col[y][num - 1].add(x * 10 + y);
+                this.zone[parseInt(parseInt(x / 3) * 3 + parseInt(y / 3))][num - 1].add(x * 10 + y);
+            }
+            //change data in cell
+            this.boardData[x][y].note = note;
+            if (this.boardData[x][y].content == "0") {
+                this.boardData[x][y].content = num.toString();
+            } else if (note == true) {
+                this.boardData[x][y].content += num.toString();
+            } else {
+                this.boardData[x][y].content = num.toString();
+            }
+            this.freshProperty()
+        }
+    }
+
+    freshProperty() {
+        for (var i = 0; i < 9; i++) {
+            for (var j = 0; j < 9; j++) {
+                if (this.boardData[i][j].cat == false){
+                    this.boardData[i][j].color = 1;
+                } else {
+                    this.boardData[i][j].color = 0;
+                }
+            }
+        }
+        for (var i = 0; i < 9; i++) {
+            for (var j = 0; j < 9; j++) {
+                if (this.row[i][j].size > 1) {
+                    for (var num of this.row[i][j]) {
+                        let tempRow = parseInt(num / 10);
+                        let tempCol = num % 10;
+                        this.boardData[tempRow][tempCol].color = 2;
+                    }
+                }
+                if (this.col[i][j].size > 1) {
+                    for (var num of this.col[i][j]) {
+                        let tempRow = parseInt(num / 10);
+                        let tempCol = num % 10;
+                        this.boardData[tempRow][tempCol].color = 2;
+                    }
+                }
+                if (this.zone[i][j].size > 1) {
+                    for (var num of this.zone[i][j]) {
+                        let tempRow = parseInt(num / 10);
+                        let tempCol = num % 10;
+                        this.boardData[tempRow][tempCol].color = 2;
+                    }
+                }
+            }
+        }
+    }
+
+    setGame(gameData,gameAns) {
+        var position = 0;
+        for(var i=0;i<9;i++){
+            for(var j=0;j<9;j++){
+                position = i*9+j;
+                if(gameData[position] != '0'){
+                    this.boardData[i][j].cat = false;
+                    this.boardData[i][j].note = false;
+                    this.boardData[i][j].content = gameData[position];
+                    this.boardData[i][j].color = 1;
+                    this.row[i][parseInt(gameData[position]) - 1].add(i * 10 + j);
+                    this.col[j][parseInt(gameData[position]) - 1].add(i * 10 + j); 
+                    this.zone[parseInt(parseInt(i / 3) * 3 + parseInt(j / 3))][parseInt(gameData[position]) - 1].add(i * 10 + j);
+                }
+            }
+        }
+        this.ans = gameAns;
+    }
+
+    show() {
+        for (var i = 0; i < 9; i++) {
+            var temp = ""
+            for (var j = 0; j < 9; j++) {
+                temp = temp + this.boardData[i][j].content + " ";
+            }
+            console.log(temp);
+        }
+    }
+
+    reset() {
+        for (var i = 0; i < 9; i++) {
+            for (var j = 0; j < 9; j++) {
+                this.boardData[i][j].cat = true;
+                this.boardData[i][j].note = false;
+                this.boardData[i][j].content = "0";
+                this.boardData[i][j].color = 0;
+                this.row[i][j].clear();
+                this.col[i][j].clear();
+                this.zone[i][j].clear();
+            }
+        }
+    }
+
+    judgeCorrect() {
+        var userAns=""
+        for(var i=0; i<9; i++){
+            for(var j=0; j<9; j++){
+                userAns+=this.boardData[i][j];
+            }
+        }
+        return userAns == this.ans;
+    }
+>>>>>>> parent of a3e6891... fix generate problem
 
 <<<<<<< HEAD
     freeze(){
@@ -202,7 +381,7 @@ var remainNum = 81;
 
 Page({
     data: {
-        generateOk: false,
+        generateOk: true,
         timeText: '00:00',
     },
 
@@ -218,9 +397,6 @@ Page({
     clickMe: function () {},
 
     newGame: function () {
-        this.setData({
-            generateOk: false
-        })
         sudoku.reset();
         this.timeStop();
         timer = '0';
@@ -239,10 +415,16 @@ Page({
             newGameData = sData[gameID].data;
             newGameAns = sData[gameId].ans;
         }
+<<<<<<< HEAD
         sudoku.setGame(newGameData, newGameAns);
         this.setData({
             generateOk: true
         })
+=======
+        this.generatOk = true;
+        console.log(this.generatOk)
+        sudoku.setGame(newGameData,newGameAns);
+>>>>>>> parent of a3e6891... fix generate problem
         this.freshUI();
         this.timeStart();
     },
