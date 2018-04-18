@@ -1,6 +1,6 @@
 // pages/sudoku.js
 
-//清明节任务： -1.timing and pausing  -2.standard data format and data inputing  3.the function of note  4.
+//-1.题目的红色和用户的红色要分别   -2.note重复消去数字  3.不应该把所有数据都获得  4.点击cat为true的时候把num去除了 5.选择数字时特殊处理selected，然后selectnum不回复-1
 
 // importScripts('../../sudokuModel.js');
 import sudokuFile from '../../sudokuModel'
@@ -14,7 +14,7 @@ For each cell
 cat true means can fill the call, false not
 note true means this cell is in note mode
 content contains the number filled
-color means the number's color: 0 means normal, 1 means ubchangable number, 2 means error, 3 means highlight in same number as user choose
+color means the number's color: 0 means normal, 1 means ubchangable number, 2 means error, 3 means highlight in same number as user choose， 4 means unchangeable number error
 */
 function cellModel() {
     this.cat = true;
@@ -89,6 +89,9 @@ class Sudoku {
         if (this.boardData[x][y].cat == false) {
             return;
         } else {
+            if (this.boardData[x][y].content != "0" && this.boardData[x][y].content == num.toString()){
+                num = 0;
+            }
             //update record table
             if (this.boardData[x][y].note == false && this.boardData[x][y] != "0") {
                 if (this.boardData[x][y].content != "0") {
@@ -107,9 +110,17 @@ class Sudoku {
             if (this.boardData[x][y].content == "0") {
                 this.boardData[x][y].content = num.toString();
             } else if (note == true) {
-                this.boardData[x][y].content += num.toString();
+                if (this.boardData[x][y].content.indexOf(num.toString()) == -1) {
+                    this.boardData[x][y].content += num.toString();
+                } else{
+                    this.boardData[x][y].content = this.boardData[x][y].content.split(num.toString()).join("");
+                }
             } else {
-                this.boardData[x][y].content = num.toString();
+                if(this.boardData[x][y].content == num.toString()){
+                    this.boardData[x][y].content = "0";
+                } else{
+                    this.boardData[x][y].content = num.toString();
+                }
             }
             this.freshProperty()
         }
@@ -131,21 +142,33 @@ class Sudoku {
                     for (var num of this.row[i][j]) {
                         let tempRow = parseInt(num / 10);
                         let tempCol = num % 10;
-                        this.boardData[tempRow][tempCol].color = 2;
+                        if (this.boardData[tempRow][tempCol].cat == true) {
+                            this.boardData[tempRow][tempCol].color = 2;
+                        } else{
+                            this.boardData[tempRow][tempCol].color = 4;
+                        }
                     }
                 }
                 if (this.col[i][j].size > 1) {
                     for (var num of this.col[i][j]) {
                         let tempRow = parseInt(num / 10);
                         let tempCol = num % 10;
-                        this.boardData[tempRow][tempCol].color = 2;
+                        if (this.boardData[tempRow][tempCol].cat == true) {
+                            this.boardData[tempRow][tempCol].color = 2;
+                        } else {
+                            this.boardData[tempRow][tempCol].color = 4;
+                        }
                     }
                 }
                 if (this.zone[i][j].size > 1) {
                     for (var num of this.zone[i][j]) {
                         let tempRow = parseInt(num / 10);
                         let tempCol = num % 10;
-                        this.boardData[tempRow][tempCol].color = 2;
+                        if (this.boardData[tempRow][tempCol].cat == true) {
+                            this.boardData[tempRow][tempCol].color = 2;
+                        } else {
+                            this.boardData[tempRow][tempCol].color = 4;
+                        }
                     }
                 }
             }
@@ -233,10 +256,9 @@ let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
 let currentNote = false;
-let colorTable = ["black", "grey", "red", "yellow"]
+let colorTable = ["grey", "black", "red", "yellow", "#ed2e0a"]
 let fileData = require('../../utils/util.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
-let sData = fileData.sudokuData().list
 
 var selectX = -1;
 var selectY = -1;
@@ -283,12 +305,14 @@ Page({
         })
         this.timeStart();
         var gameID = Math.floor(Math.random() * 1000) + level * 1000;
-        var newGameData = sData[gameID].data;
-        var newGameAns = sData[gameID].ans;
-        while (!newGameData) {
-            gameID = 0;
-            newGameData = sData[gameID].data;
-            newGameAns = sData[gameId].ans;
+        let newGameObject = fileData.searchSData(gameID);
+        var newGameData = newGameObject.data;
+        var newGameAns = newGameObject.ans;
+        while (!newGameObject) {
+            gameID = Math.floor(Math.random() * 1000) + level * 1000;
+            newGameObject = fileData.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
         }
         this.setData({
             generateOk: true
@@ -299,6 +323,40 @@ Page({
 
     canvasIdErrorCallback: function (e) {
         console.error(e.detail.errMsg);
+    },
+
+    drawTable: function(num){
+        //Table
+        var startPointX = lineWidth1 / 2 / ratio;
+        var startPointY = lineWidth1 / 2 / ratio;
+        var tempWidth = (tableWidthInPrx - lineWidth1 * 1.5) / ratio;
+        var tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio;
+        let table = wx.createCanvasContext('table');
+
+        table.setStrokeStyle("#000000");
+        table.setLineWidth(lineWidth1 / ratio);
+        table.rect(startPointX, startPointY, tempWidth, tempHeight);
+        table.rect(startPointX, startPointY, tempWidth, tempHeight / 2);
+        startPointX = (tableWidth + lineWidth1 * 1.5) / ratio;
+        tempWidth = (tableWidth + lineWidth1) / ratio;
+        tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio;
+        table.rect(startPointX, startPointY, tempWidth, tempHeight);
+        startPointX = (tableWidth * 3 + lineWidth1 * 3.5) / ratio;
+        table.rect(startPointX, startPointY, tempWidth, tempHeight);
+        table.stroke();
+        table.setFontSize(tableWidth / ratio);
+        table.setTextAlign = 'center';
+        let adjustmentForTable = [1.35, 2.24, 3.37, 4.38, 0.25, 1.25, 2.38, 3.37, 4.44]
+        for (var i = 1; i < 10; i++){
+            if(i == num){
+                table.setFillStyle("#2F4F4F");
+            }
+            table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.5 + parseInt(i / 5) * 4.3) / 4 / ratio);
+            table.setFillStyle("#000000");
+        }
+        table.draw();
+
+        //!Table
     },
 
     onReady: function (e) {
@@ -341,42 +399,7 @@ Page({
 
         //!Board
 
-        //Table
-
-        let table = wx.createCanvasContext('table');
-        startPointX = lineWidth1 / 2 / ratio;
-        startPointY = lineWidth1 / 2 / ratio;
-        tempWidth = (tableWidthInPrx - lineWidth1 * 1.5) / ratio;
-        tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio;
-
-        table.setStrokeStyle("#000000");
-        table.setLineWidth(lineWidth1 / ratio);
-        table.rect(startPointX, startPointY, tempWidth, tempHeight);
-        table.rect(startPointX, startPointY, tempWidth, tempHeight / 2);
-        startPointX = (tableWidth + lineWidth1 * 1.5) / ratio;
-        tempWidth = (tableWidth + lineWidth1) / ratio;
-        tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio;
-        table.rect(startPointX, startPointY, tempWidth, tempHeight);
-        startPointX = (tableWidth * 3 + lineWidth1 * 3.5) / ratio;
-        table.rect(startPointX, startPointY, tempWidth, tempHeight);
-        table.stroke();
-        table.setFontSize(tableWidth / 2 / ratio);
-        table.setTextAlign = 'center';
-        // for(var num=1; num<5; num++){
-        //   table.fillText(num.toString(), (tableWidth * (0.5 + num) + lineWidth1 * (1+num)) / ratio, tableWidth * 3 / 4 / ratio)
-        // }
-        table.fillText('1', tableWidth / ratio * 1.45 + lineWidth1 / ratio, tableWidth * 3 / 4 / ratio);
-        table.fillText('2', tableWidth / ratio * 2.4 + lineWidth1 * 2 / ratio, tableWidth * 3 / 4 / ratio);
-        table.fillText('3', tableWidth / ratio * 3.45 + lineWidth1 * 3 / ratio, tableWidth * 3 / 4 / ratio);
-        table.fillText('4', tableWidth / ratio * 4.44 + lineWidth1 * 4 / ratio, tableWidth * 3 / 4 / ratio);
-        table.fillText('5', tableWidth / ratio * 0.4 + lineWidth1 / ratio, tableWidth * 7 / 4 / ratio);
-        table.fillText('6', tableWidth / ratio * 1.4 + lineWidth1 / ratio, tableWidth * 7 / 4 / ratio);
-        table.fillText('7', tableWidth / ratio * 2.4 + lineWidth1 * 2 / ratio, tableWidth * 7 / 4 / ratio);
-        table.fillText('8', tableWidth / ratio * 3.45 + lineWidth1 * 3 / ratio, tableWidth * 7 / 4 / ratio);
-        table.fillText('9', tableWidth / ratio * 4.44 + lineWidth1 * 4 / ratio, tableWidth * 7 / 4 / ratio);
-        table.draw();
-
-        //!Table
+        this.drawTable();
     },
 
     cellSelect: function (event) {
@@ -387,11 +410,11 @@ Page({
             sudoku.setData(selectX, selectY, selectNum, currentNote);
             this.freshUI();
         }
-        selectNum = -1;
     },
 
     tableSelect: function (event) {
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
+        this.drawTable(selectNum);
     },
 
 
@@ -444,7 +467,6 @@ Page({
                         mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
                         board.setFontSize(cellWidth / ratio)
                     }
-
                 }
             }
         }
