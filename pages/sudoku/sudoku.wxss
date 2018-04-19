@@ -23,7 +23,7 @@ page{
   background-color: #fff
 }
 
- .canvasBoard{ 
+.canvasBoard{ 
   /* For UI designer, you can change board color here! */
   background-color: white;
   margin-left: 37.5rpx;
@@ -45,4 +45,10 @@ page{
   margin-top: 108rpx;
   width: 527rpx;
   height: 213.5rpx;
+}
+
+.canvasDiagonal{ 
+  margin-left: 37.5rpx;
+  width: 675rpx;
+  height: 675rpx;
 }
