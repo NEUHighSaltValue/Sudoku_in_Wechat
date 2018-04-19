@@ -1,5 +1,5 @@
 <!--pages/sudoku.wxml-->
-<view class='loading' wx:if="{{!generateOk}}">
+<view class='loading' hidden="{{generateOk}}">
   <import src="/pages/templates/loading/loading" />
   <template is="loading" />
 </view>

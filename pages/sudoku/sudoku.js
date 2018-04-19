@@ -1,20 +1,5 @@
-//HPY: -1.note模式下出现双击填0的情况   2.selectNum颜色不明显
-//LJL: 1. sameNumHighlight(need to talk more)
-
-// importScripts('../../sudokuModel.js');
 import sudokuFile from '../../sudokuModel'
 
-
-//
-
-
-/*
-For each cell
-cat true means can fill the call, false not
-note true means this cell is in note mode
-content contains the number filled
-color means the number's color: 0 means normal, 1 means ubchangable number, 2 means error, 3 means highlight in same number as user choose， 4 means unchangeable number error
-*/
 function cellModel() {
   this.cat = true;
   this.note = false;
@@ -26,6 +11,12 @@ function cellModel() {
   this.color = 0;
 }
 
+function cellModel(content) {
+  this.cat = true;
+  this.note = false;
+  this.content = content;
+  this.color = 0;
+}
 class Sudoku {
   constructor() {
     this.ans = "";
@@ -84,14 +75,10 @@ class Sudoku {
   }
 
   setData(x, y, num, note) {
-    let tempNum = num
     //Judge can fill the cell or not
     if (this.boardData[x][y].cat == false) {
       return;
     } else {
-      if (this.boardData[x][y].content != "0" && this.boardData[x][y].content == num.toString()) {
-        num = 0;
-      }
       //update record table
       if (this.boardData[x][y].note == false && this.boardData[x][y] != "0") {
         if (this.boardData[x][y].content != "0") {
@@ -110,37 +97,11 @@ class Sudoku {
       if (this.boardData[x][y].content == "0") {
         this.boardData[x][y].content = num.toString();
       } else if (note == true) {
-        if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1) {
-          this.boardData[x][y].content += tempNum.toString();
-        } else {
-          this.boardData[x][y].content = this.boardData[x][y].content.split(tempNum.toString()).join("");
-        }
+        this.boardData[x][y].content += num.toString();
       } else {
-        if (this.boardData[x][y].content == num.toString()) {
-          this.boardData[x][y].content = "0";
-        } else {
-          this.boardData[x][y].content = num.toString();
-        }
+        this.boardData[x][y].content = num.toString();
       }
       this.freshProperty()
-    }
-  }
-
-  highlightNum(num) {
-    if (num == 0) {
-      return
-    }
-    this.freshProperty();
-    for (var i = 0; i < 9; i++) {
-      if (this.row[i][num - 1].size > 0) {
-        for (var tempNum of this.row[i][num - 1]) {
-          let tempRow = parseInt(tempNum / 10);
-          let tempCol = tempNum % 10;
-          if (this.boardData[tempRow][tempCol].color != 2 && this.boardData[tempRow][tempCol].color != 4) {
-            this.boardData[tempRow][tempCol].color = 3;
-          }
-        }
-      }
     }
   }
 
@@ -160,39 +121,26 @@ class Sudoku {
           for (var num of this.row[i][j]) {
             let tempRow = parseInt(num / 10);
             let tempCol = num % 10;
-            if (this.boardData[tempRow][tempCol].cat == true) {
-              this.boardData[tempRow][tempCol].color = 2;
-            } else {
-              this.boardData[tempRow][tempCol].color = 4;
-            }
+            this.boardData[tempRow][tempCol].color = 2;
           }
         }
         if (this.col[i][j].size > 1) {
           for (var num of this.col[i][j]) {
             let tempRow = parseInt(num / 10);
             let tempCol = num % 10;
-            if (this.boardData[tempRow][tempCol].cat == true) {
-              this.boardData[tempRow][tempCol].color = 2;
-            } else {
-              this.boardData[tempRow][tempCol].color = 4;
-            }
+            this.boardData[tempRow][tempCol].color = 2;
           }
         }
         if (this.zone[i][j].size > 1) {
           for (var num of this.zone[i][j]) {
             let tempRow = parseInt(num / 10);
             let tempCol = num % 10;
-            if (this.boardData[tempRow][tempCol].cat == true) {
-              this.boardData[tempRow][tempCol].color = 2;
-            } else {
-              this.boardData[tempRow][tempCol].color = 4;
-            }
+            this.boardData[tempRow][tempCol].color = 2;
           }
         }
       }
     }
   }
-
 
   setGame(gameData, gameAns) {
     var position = 0;
@@ -258,11 +206,6 @@ class Sudoku {
   }
 }
 
-//全局设置变量
-let currentNote = false;
-let sameNumHighlight = false;
-
-
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
 let ratio = 750 / phoneWidth;
 let boardWidthInPrx = 675;
@@ -275,9 +218,10 @@ let lineWidth1 = 4.5;
 let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
-let colorTable = ["grey", "black", "red", "yellow", "#ed2e0a"]
+let currentNote = false;
+let colorTable = ["black", "grey", "red", "yellow"]
 let fileData = require('../../utils/util.js')
-let mutiDraw = require('../../pages/sudoku/draw.js')
+let sData = fileData.sudokuData().list
 
 var selectX = -1;
 var selectY = -1;
@@ -293,20 +237,19 @@ var remainNum = 81;
 
 Page({
   data: {
-    generateOk: false,
-    timeText: '00:00',
+    generateOk: true
   },
 
   //事件处理函数
-  bindViewTap: function () { },
+  bindViewTap: function () {},
 
   onLoad: function () {
-    this.newGame();
+    this.newGame()
   },
 
-  getUserInfo: function (e) { },
+  getUserInfo: function (e) {},
 
-  clickMe: function () { },
+  clickMe: function () {},
 
   newGame: function () {
     this.setData({
@@ -324,14 +267,12 @@ Page({
     })
     this.timeStart();
     var gameID = Math.floor(Math.random() * 1000) + level * 1000;
-    let newGameObject = fileData.searchSData(gameID);
-    var newGameData = newGameObject.data;
-    var newGameAns = newGameObject.ans;
-    while (!newGameObject) {
-      gameID = Math.floor(Math.random() * 1000) + level * 1000;
-      newGameObject = fileData.searchSData(gameID);
-      newGameData = newGameObject.data;
-      newGameAns = newGameObject.ans;
+    var newGameData = sData[gameID].data;
+    var newGameAns = sData[gameID].ans;
+    while (!newGameData) {
+      gameID = 0;
+      newGameData = sData[gameID].data;
+      newGameAns = sData[gameId].ans;
     }
     this.setData({
       generateOk: true
@@ -344,113 +285,94 @@ Page({
     console.error(e.detail.errMsg);
   },
 
-  drawTable: function (num) {
-    //Table
-    var startPointX = lineWidth1 / 2 / ratio;
-    var startPointY = lineWidth1 / 2 / ratio;
-    var tempWidth = (tableWidthInPrx - lineWidth1 * 1.5) / ratio;
-    var tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio;
-    let table = wx.createCanvasContext('table');
-
-    table.setStrokeStyle("#000000");
-    table.setLineWidth(lineWidth1 / ratio);
-    table.rect(startPointX, startPointY, tempWidth, tempHeight);
-    table.rect(startPointX, startPointY, tempWidth, tempHeight / 2);
-    startPointX = (tableWidth + lineWidth1 * 1.5) / ratio;
-    tempWidth = (tableWidth + lineWidth1) / ratio;
-    tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio;
-    table.rect(startPointX, startPointY, tempWidth, tempHeight);
-    startPointX = (tableWidth * 3 + lineWidth1 * 3.5) / ratio;
-    table.rect(startPointX, startPointY, tempWidth, tempHeight);
-    table.stroke();
-    table.setFontSize(tableWidth / ratio);
-    table.setTextAlign = 'center';
-    let adjustmentForTable = [1.35, 2.24, 3.37, 4.38, 0.25, 1.25, 2.38, 3.37, 4.44]
-    for (var i = 1; i < 10; i++) {
-      if (i == num) {
-        table.setFillStyle("#2F4F4F");
-      }
-      table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.5 + parseInt(i / 5) * 4.3) / 4 / ratio);
-      table.setFillStyle("#000000");
-    }
-    table.draw();
-
-    //!Table
-  },
-
   onReady: function (e) {
     //Board
-    // this.freshUI()
+    //freshUI()
     //For UI designer, you can change line color here!
-    let board = wx.createCanvasContext('board');
-    board.setStrokeStyle("#000000");
-    board.setLineWidth(lineWidth1 / ratio);
-    var startPointX = lineWidth1 / 2 / ratio;
-    var startPointY = lineWidth1 / 2 / ratio;
-    var tempWidth = (boardWidthInPrx - lineWidth1 * 1.5) / ratio;
-    var tempHeight = (boardWidthInPrx - lineWidth1 * 1.5) / ratio;
-    board.rect(startPointX, startPointY, tempWidth, tempHeight);
+    let board = wx.createCanvasContext('board')
+    board.setStrokeStyle("#000000")
+    board.setLineWidth(lineWidth1 / ratio)
+    var startPointX = lineWidth1 / 2 / ratio
+    var startPointY = lineWidth1 / 2 / ratio
+    var tempWidth = (boardWidthInPrx - lineWidth1 * 1.5) / ratio
+    var tempHeight = (boardWidthInPrx - lineWidth1 * 1.5) / ratio
+    board.rect(startPointX, startPointY, tempWidth, tempHeight)
     //border
 
-    startPointX = (cellWidth * 3 + lineWidth1 * 1.5 + lineWidth2 * 2) / ratio;
-    tempWidth = (cellWidth * 3 + lineWidth2 * 2 + lineWidth1) / ratio;
-    board.rect(startPointX, startPointY, tempWidth, tempHeight);
-    board.rect(startPointY, startPointX, tempHeight, tempWidth);
-    board.stroke();
+    startPointX = (cellWidth * 3 + lineWidth1 * 1.5 + lineWidth2 * 2) / ratio
+    tempWidth = (cellWidth * 3 + lineWidth2 * 2 + lineWidth1) / ratio
+    board.rect(startPointX, startPointY, tempWidth, tempHeight)
+    board.rect(startPointY, startPointX, tempHeight, tempWidth)
+    board.stroke()
     //devide board into 9 parts
 
-    // a variable that controls the diagonal
-    var diag = true
-    board.setLineWidth(lineWidth2 / ratio);
-    startPointX = (cellWidth + lineWidth1 + lineWidth2 / 2) / ratio;
-    startPointY = lineWidth2 / 2;
-    tempWidth = (cellWidth + lineWidth2) / ratio;
-    tempHeight = (boardWidthInPrx - lineWidth2 * 3.5) / ratio;
-    // draw the diagonal
-    if(diag)
-      mutiDraw.drawDiagonal(board, startPointX, startPointY, tempWidth, lineWidth2 / ratio / 2);
-    board.rect(startPointX, startPointY, tempWidth, tempHeight);
-    board.rect(startPointY, startPointX, tempHeight, tempWidth);
-    startPointX = (cellWidth * 4 + lineWidth1 * 2 + lineWidth2 * 2.5) / ratio;
-    board.rect(startPointX, startPointY, tempWidth, tempHeight);
-    board.rect(startPointY, startPointX, tempHeight, tempWidth);
-    startPointX = (cellWidth * 7 + lineWidth1 * 3 + lineWidth2 * 4.5) / ratio;
-    board.rect(startPointX, startPointY, tempWidth, tempHeight);
-    board.rect(startPointY, startPointX, tempHeight, tempWidth);
+    board.setLineWidth(lineWidth2 / ratio)
+    startPointX = (cellWidth + lineWidth1 + lineWidth2 / 2) / ratio
+    startPointY = lineWidth2 / 2
+    tempWidth = (cellWidth + lineWidth2) / ratio
+    tempHeight = (boardWidthInPrx - lineWidth2 * 3.5) / ratio
+    board.rect(startPointX, startPointY, tempWidth, tempHeight)
+    board.rect(startPointY, startPointX, tempHeight, tempWidth)
+    startPointX = (cellWidth * 4 + lineWidth1 * 2 + lineWidth2 * 2.5) / ratio
+    board.rect(startPointX, startPointY, tempWidth, tempHeight)
+    board.rect(startPointY, startPointX, tempHeight, tempWidth)
+    startPointX = (cellWidth * 7 + lineWidth1 * 3 + lineWidth2 * 4.5) / ratio
+    board.rect(startPointX, startPointY, tempWidth, tempHeight)
+    board.rect(startPointY, startPointX, tempHeight, tempWidth)
     //devide part into 9 cells
-    
-    board.stroke();
-    board.draw();
+    board.stroke()
+    board.draw()
 
     //!Board
 
-    this.drawTable();
-  },
+    //Table
 
+    let table = wx.createCanvasContext('table')
+    startPointX = lineWidth1 / 2 / ratio
+    startPointY = lineWidth1 / 2 / ratio
+    tempWidth = (tableWidthInPrx - lineWidth1 * 1.5) / ratio
+    tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio
+
+    table.setStrokeStyle("#000000")
+    table.setLineWidth(lineWidth1 / ratio)
+    table.rect(startPointX, startPointY, tempWidth, tempHeight)
+    table.rect(startPointX, startPointY, tempWidth, tempHeight / 2)
+    startPointX = (tableWidth + lineWidth1 * 1.5) / ratio
+    tempWidth = (tableWidth + lineWidth1) / ratio
+    tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio
+    table.rect(startPointX, startPointY, tempWidth, tempHeight)
+    startPointX = (tableWidth * 3 + lineWidth1 * 3.5) / ratio
+    table.rect(startPointX, startPointY, tempWidth, tempHeight)
+    table.stroke()
+    table.setFontSize(tableWidth / 2 / ratio)
+    table.font = 'Courier'
+    table.setTextAlign = 'center'
+    table.fillText('1', tableWidth / ratio * 1.45 + lineWidth1 / ratio, tableWidth * 3 / 4 / ratio)
+    table.fillText('2', tableWidth / ratio * 2.4 + lineWidth1 * 2 / ratio, tableWidth * 3 / 4 / ratio)
+    table.fillText('3', tableWidth / ratio * 3.45 + lineWidth1 * 3 / ratio, tableWidth * 3 / 4 / ratio)
+    table.fillText('4', tableWidth / ratio * 4.44 + lineWidth1 * 4 / ratio, tableWidth * 3 / 4 / ratio)
+    table.fillText('5', tableWidth / ratio * 0.4 + lineWidth1 / ratio, tableWidth * 7 / 4 / ratio)
+    table.fillText('6', tableWidth / ratio * 1.4 + lineWidth1 / ratio, tableWidth * 7 / 4 / ratio)
+    table.fillText('7', tableWidth / ratio * 2.4 + lineWidth1 * 2 / ratio, tableWidth * 7 / 4 / ratio)
+    table.fillText('8', tableWidth / ratio * 3.45 + lineWidth1 * 3 / ratio, tableWidth * 7 / 4 / ratio)
+    table.fillText('9', tableWidth / ratio * 4.44 + lineWidth1 * 4 / ratio, tableWidth * 7 / 4 / ratio)
+    table.draw()
+    
+    //!Table
+  },
   cellSelect: function (event) {
     selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
     selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-    console.log(selectX + " " + selectY);
+    //console.log(selectX + " " + selectY);
     if (selectNum != -1) {
       sudoku.setData(selectX, selectY, selectNum, currentNote);
       this.freshUI();
     }
-    this.drawTable();
+    selectNum = -1;
   },
 
   tableSelect: function (event) {
     selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
-    this.drawTable(selectNum);
-    if (selectNum == 0) {
-      sameNumHighlight = !sameNumHighlight;
-      console.log("fresh")
-      sudoku.freshProperty();
-      this.freshUI();
-    }
-    if (sameNumHighlight) {
-      sudoku.highlightNum(selectNum);
-      this.freshUI();
-    }
   },
 
 
@@ -484,25 +406,25 @@ Page({
 
   freshUI: function () {
     let board = wx.createCanvasContext('boardData');
-    board.setFontSize(cellWidth / ratio);
+    board.setFontSize(cellWidth / 2 / ratio);
     var i, j, axis, baseLine;
     remainNum = 81;
     for (j = 0; j < 9; j++) {
-      axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
+      axis = (i + 0.2) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2
       for (i = 0; i < 9; i++) {
+        baseLine = (j + 0.85) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + j * lineWidth2
         if (parseInt(sudoku.getData(i, j).content) != 0) {
           if (sudoku.getData(i, j).note == false) {
             remainNum--;
-            baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2;
             board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
             board.fillText(String(sudoku.getData(i, j).content), axis / ratio, baseLine / ratio);
           } else {
-            baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2
-            board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
-            board.setFontSize(cellWidth / Math.sqrt(sudoku.getData(i, j).content.length) / ratio)
-            mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
+            sudoku.addData(i, j, chessBoardData[i][j].toString())
+            board.setFontSize(cellWidth / Math.sqrt(sudoku.chessBoardData[i][j].content.length) / ratio)
+            draw.drawMultipleNumbers(board, sudoku.chessBoardData[i][j].content, axis / ratio, baseLine / ratio)
             board.setFontSize(cellWidth / ratio)
           }
+
         }
       }
     }
@@ -517,11 +439,11 @@ Page({
     }
   }
 })
-
-
 function zeroFill(str, n) {
   if (str.length < n) {
     str = '0' + str
   }
   return str
-}
+}  
+
+
