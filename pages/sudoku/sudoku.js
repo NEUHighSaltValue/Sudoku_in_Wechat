@@ -127,7 +127,10 @@ class Sudoku {
         }
     }
 
-    highlghtNum(num){
+    highlightNum(num){
+        if(num == 0){
+            return
+        }
         this.freshProperty();
         for(var i=0; i<9; i++){
             if (this.row[i][num-1].size > 0) {
@@ -427,6 +430,7 @@ Page({
             sudoku.setData(selectX, selectY, selectNum, currentNote);
             this.freshUI();
         }
+        this.drawTable();
     },
 
     tableSelect: function (event) {
@@ -434,9 +438,12 @@ Page({
         this.drawTable(selectNum);
         if(selectNum == 0){
             sameNumHighlight = !sameNumHighlight;
+            console.log("fresh")
+            sudoku.freshProperty();
+            this.freshUI();
         }
         if(sameNumHighlight){
-            sudoku.highlghtNum(selectNum);
+            sudoku.highlightNum(selectNum);
             this.freshUI();
         }
     },
