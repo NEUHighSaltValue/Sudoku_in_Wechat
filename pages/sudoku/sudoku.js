@@ -1,6 +1,6 @@
 // pages/sudoku.js
-
-//会有note模式下重复时加0的情况
+//HPY: -1.note模式下出现双击填0的情况   2.selectNum颜色不明显
+//LJL: 1. sameNumHighlight(need to talk more)
 
 // importScripts('../../sudokuModel.js');
 import sudokuFile from '../../sudokuModel'
@@ -127,6 +127,21 @@ class Sudoku {
         }
     }
 
+    highlghtNum(num){
+        this.freshProperty();
+        for(var i=0; i<9; i++){
+            if (this.row[i][num-1].size > 0) {
+                for (var tempNum of this.row[i][num-1]) {
+                    let tempRow = parseInt(tempNum / 10);
+                    let tempCol = tempNum % 10;
+                    if (this.boardData[tempRow][tempCol].color != 2 && this.boardData[tempRow][tempCol].color != 4) {
+                        this.boardData[tempRow][tempCol].color = 3;
+                    }
+                }
+            }
+        }
+    }
+
     freshProperty() {
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
@@ -241,8 +256,10 @@ class Sudoku {
     }
 }
 
+//全局设置变量
+let currentNote = false;
+let sameNumHighlight = true;
 
-//
 
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
 let ratio = 750 / phoneWidth;
@@ -256,12 +273,11 @@ let lineWidth1 = 4.5;
 let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
-let currentNote = false;
 let colorTable = ["grey", "black", "red", "yellow", "#ed2e0a"]
 let fileData = require('../../utils/util.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
 
-var selectX = -1;
+var selectX = -1;  
 var selectY = -1;
 var selectNum = -1;
 var sudoku = new Sudoku();
@@ -416,6 +432,13 @@ Page({
     tableSelect: function (event) {
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
         this.drawTable(selectNum);
+        if(selectNum == 0){
+            sameNumHighlight = !sameNumHighlight;
+        }
+        if(sameNumHighlight){
+            sudoku.highlghtNum(selectNum);
+            this.freshUI();
+        }
     },
 
 
