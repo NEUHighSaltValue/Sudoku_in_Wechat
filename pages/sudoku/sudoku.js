@@ -1,6 +1,6 @@
 // pages/sudoku.js
 
-//-1.题目的红色和用户的红色要分别   -2.note重复消去数字  3.不应该把所有数据都获得  4.点击cat为true的时候把num去除了 5.选择数字时特殊处理selected，然后selectnum不回复-1
+//会有note模式下重复时加0的情况
 
 // importScripts('../../sudokuModel.js');
 import sudokuFile from '../../sudokuModel'
@@ -85,6 +85,7 @@ class Sudoku {
     }
 
     setData(x, y, num, note) {
+        let tempNum = num
         //Judge can fill the cell or not
         if (this.boardData[x][y].cat == false) {
             return;
@@ -110,10 +111,10 @@ class Sudoku {
             if (this.boardData[x][y].content == "0") {
                 this.boardData[x][y].content = num.toString();
             } else if (note == true) {
-                if (this.boardData[x][y].content.indexOf(num.toString()) == -1) {
-                    this.boardData[x][y].content += num.toString();
+                if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1) {
+                    this.boardData[x][y].content += tempNum.toString();
                 } else{
-                    this.boardData[x][y].content = this.boardData[x][y].content.split(num.toString()).join("");
+                    this.boardData[x][y].content = this.boardData[x][y].content.split(tempNum.toString()).join("");
                 }
             } else {
                 if(this.boardData[x][y].content == num.toString()){
