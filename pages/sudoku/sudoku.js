@@ -258,7 +258,7 @@ class Sudoku {
 
 //全局设置变量
 let currentNote = false;
-let sameNumHighlight = true;
+let sameNumHighlight = false;
 
 
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
