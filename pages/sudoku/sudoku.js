@@ -329,59 +329,61 @@ Page({
     })
     this.timeStart();
     var gameID = Math.floor(Math.random() * 1000) + level * 1000;
+    console.log(level)
     var newGameObject, newGameData, newGameAns;
     switch (level) {
-        case 1:
+        case 0:
             newGameObject = sudokuGameData1.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 2:
+        case 1:
             newGameObject = sudokuGameData2.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 3:
+        case 2:
             newGameObject = sudokuGameData3.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 4:
+        case 3:
             newGameObject = sudokuGameData4.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 5:
+        case 4:
             newGameObject = sudokuGameData5.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 6:
+        case 5:
             newGameObject = sudokuGameData6.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 7:
+        case 6:
             newGameObject = sudokuGameData7.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 8:
+        case 7:
             newGameObject = sudokuGameData8.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 9:
+        case 8:
             newGameObject = sudokuGameData9.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
-        case 10:
+        case 9:
             newGameObject = sudokuGameData10.searchSData(gameID);
             newGameData = newGameObject.data;
             newGameAns = newGameObject.ans;
             break;
     }
+    console.log(newGameObject)
     this.setData({
       generateOk: true
     })
