@@ -1,19 +1,32 @@
 /* pages/sudoku.wxss */
 page{
     /* Zixuan 页面背景色 */
-  background-color: #f9fae8
+  /* background-color: #ADD8E6; */
+  background-color: "black"
+}
+
+.background_image{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .function_button{
   text-align: center;
-  border-top: 4rpx;
   margin: 48rpx;
+  top: 44rpx;
+  position: relative;
 }
 
 .function_button .new{
   float: left;
    /* Zixuan  new 按钮的背景色 */
-  background-color: #fff
+  background-color: #E6E6FA
 }
 
 .function_button .time{
@@ -23,7 +36,14 @@ page{
 .function_button .note{
   float: right;
   /* Zixuan note 按钮的背景色*/
-  background-color: #fff
+  background-color: #FFF0F5
+}
+
+.boardContainer{
+  width: 675rpx;
+  height: 675rpx;
+  position: absolute;
+  margin-top: 44rpx;
 }
 
 .canvasBoard{ 
@@ -40,6 +60,14 @@ page{
   margin-left: 37.5rpx;
   width: 675rpx;
   height: 675rpx;
+  position: relative;
+}
+
+.canvasDiagonal{ 
+  margin-left: 37.5rpx;
+  width: 675rpx;
+  height: 675rpx;
+  position: absolute;
 }
 
 .canvasTable{
@@ -47,13 +75,8 @@ page{
   /* Zixuan  table 的背景色*/
   background-color: white;
   margin-left: 111.5rpx;
-  margin-top: 108rpx;
+  margin-top: 40rpx;
   width: 527rpx;
   height: 213.5rpx;
-}
-
-.canvasDiagonal{ 
-  margin-left: 37.5rpx;
-  width: 675rpx;
-  height: 675rpx;
+  position: relative;
 }
