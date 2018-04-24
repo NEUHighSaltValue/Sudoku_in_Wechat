@@ -4,10 +4,6 @@
 // importScripts('../../sudokuModel.js');
 import sudokuFile from '../../sudokuModel'
 
-
-//
-
-
 /*
 For each cell
 cat true means can fill the call, false not
@@ -277,7 +273,16 @@ let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
 let colorTable = ["grey", "black", "red", "yellow", "#ed2e0a"]
-let fileData = require('../../utils/util.js')
+let sudokuGameData1 = require('../../utils/data1.js')
+let sudokuGameData2 = require('../../utils/data2.js')
+let sudokuGameData3 = require('../../utils/data3.js')
+let sudokuGameData4 = require('../../utils/data4.js')
+let sudokuGameData5 = require('../../utils/data5.js')
+let sudokuGameData6 = require('../../utils/data6.js')
+let sudokuGameData7 = require('../../utils/data7.js')
+let sudokuGameData8 = require('../../utils/data8.js')
+let sudokuGameData9 = require('../../utils/data9.js')
+let sudokuGameData10 = require('../../utils/data10.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
 
 var selectX = -1;
@@ -289,7 +294,7 @@ var strH = '';
 var strM = '';
 var strS = '';
 var timer = '';
-var level = 0;
+var level = 1;
 var remainNum = 81;
 
 Page({
@@ -324,16 +329,64 @@ Page({
       timeText: '00:00'
     })
     this.timeStart();
+    level = Math.floor(Math.random() * 10);
     var gameID = Math.floor(Math.random() * 1000) + level * 1000;
-    let newGameObject = fileData.searchSData(gameID);
-    var newGameData = newGameObject.data;
-    var newGameAns = newGameObject.ans;
-    while (!newGameObject) {
-      gameID = Math.floor(Math.random() * 1000) + level * 1000;
-      newGameObject = fileData.searchSData(gameID);
-      newGameData = newGameObject.data;
-      newGameAns = newGameObject.ans;
+    if(gameID > 9868)
+      gameID = 9868
+    var newGameObject, newGameData, newGameAns;
+    switch (level) {
+        case 0:
+            newGameObject = sudokuGameData1.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 1:
+            newGameObject = sudokuGameData2.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 2:
+            newGameObject = sudokuGameData3.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 3:
+            newGameObject = sudokuGameData4.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 4:
+            newGameObject = sudokuGameData5.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 5:
+            newGameObject = sudokuGameData6.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 6:
+            newGameObject = sudokuGameData7.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 7:
+            newGameObject = sudokuGameData8.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 8:
+            newGameObject = sudokuGameData9.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
+        case 9:
+            newGameObject = sudokuGameData10.searchSData(gameID);
+            newGameData = newGameObject.data;
+            newGameAns = newGameObject.ans;
+            break;
     }
+    console.log(newGameObject)
     this.setData({
       generateOk: true
     })
@@ -431,6 +484,7 @@ Page({
       sudoku.setData(selectX, selectY, selectNum, currentNote);
       this.freshUI();
     }
+    selectNum = -1;
     this.drawTable();
   },
 
@@ -499,7 +553,7 @@ Page({
             mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
             board.setFontSize(cellWidth / ratio)
           }
-        } else if(i == j || i + j == 8) {
+        } else if((i == j || i + j == 8)&&level>4) {
           board.arc(((j + 0.5) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + j * lineWidth2) / ratio,                    ((i + 0.5) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2) /ratio,                     cellWidth / Math.sqrt(5) / ratio, 0, 2 * Math.PI)
           board.stroke()
           board.beginPath()
@@ -512,7 +566,9 @@ Page({
         this.timeStop();
         sudoku.freeze();
         //Shuyuan
-        this.timeText += "success"
+        this.setData({
+            timeText: '小志说你快和他一样帅了'
+        })
       }
     }
   }
