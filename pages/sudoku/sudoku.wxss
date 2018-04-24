@@ -1,5 +1,6 @@
 /* pages/sudoku.wxss */
 page{
+    /* Zixuan 页面背景色 */
   background-color: #f9fae8
 }
 
@@ -11,6 +12,7 @@ page{
 
 .function_button .new{
   float: left;
+   /* Zixuan  new 按钮的背景色 */
   background-color: #fff
 }
 
@@ -20,11 +22,13 @@ page{
 
 .function_button .note{
   float: right;
+  /* Zixuan note 按钮的背景色*/
   background-color: #fff
 }
 
 .canvasBoard{ 
   /* For UI designer, you can change board color here! */
+  /* Zixuan  board 的背景色*/
   background-color: white;
   margin-left: 37.5rpx;
   width: 675rpx;
@@ -40,6 +44,7 @@ page{
 
 .canvasTable{
   /* For UI designer, you can change board color here! */
+  /* Zixuan  table 的背景色*/
   background-color: white;
   margin-left: 111.5rpx;
   margin-top: 108rpx;

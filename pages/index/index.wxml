@@ -1,18 +1,9 @@
 <!--index.wxml-->
-<view class='loading' wx:if="{{!generateOk}}">
-  <import src="/pages/templates/loading/loading" />
-  <template is="loading" />
-</view>
- 
-
   
 <view class="function_button">
-  <button class ="new" type="default" size="mini"> new </button>
+  <button class ="new" type="default" size="mini"> login </button>
   <view class="time"> 00:00 </view> 
   <button class="redo" size="mini"> redo </button>
 </view>
 
 
-<view class="boardContainer">
-  <canvas canvas-id='can1' class='canvasBoard' bindtouchstart="canvasStart"></canvas>
-</view> 
