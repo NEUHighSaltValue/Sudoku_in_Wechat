@@ -132,7 +132,8 @@ class Sudoku {
         for (var tempNum of this.row[i][num - 1]) {
           let tempRow = parseInt(tempNum / 10);
           let tempCol = tempNum % 10;
-          if (this.boardData[tempRow][tempCol].color != 2 && this.boardData[tempRow][tempCol].color != 4) {
+          if (this.boardData[tempRow][tempCol].color != 2 && 
+          this.boardData[tempRow][tempCol].color != 4) {
             this.boardData[tempRow][tempCol].color = 3;
           }
         }
@@ -333,8 +334,10 @@ Page({
       timeText: '00:00'
     })
     this.timeStart();
+    level = Math.floor(Math.random() * 10);
     var gameID = Math.floor(Math.random() * 1000) + level * 1000;
-    console.log(level)
+    if(gameID > 9868)
+      gameID = 9868
     var newGameObject, newGameData, newGameAns;
     switch (level) {
         case 0:
@@ -560,8 +563,8 @@ Page({
           }
         } else if((i == j || i + j == 8)&&level>4) {
           board.arc(((j + 0.5) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + j * lineWidth2) / ratio,                    ((i + 0.5) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2) /ratio,                     cellWidth / Math.sqrt(5) / ratio, 0, 2 * Math.PI)
-            board.stroke()
-            board.beginPath()
+          board.stroke()
+          board.beginPath()
         }
       }
     }
