@@ -271,7 +271,7 @@ let tableWidthInPrx = 527;
 let tableHeighInPrx = 213.5;
 let tableWidthInPx = tableWidthInPrx * phoneWidth / 750;
 let tableHeighInPx = tableHeighInPrx * phoneWidth / 750;
-let lineWidth1 = 4.5;
+let lineWidth1 = 2;
 let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
@@ -298,7 +298,7 @@ var strH = '';
 var strM = '';
 var strS = '';
 var timer = '';
-var level = 4;
+var level = 0;
 var remainNum = 81;
 
 Page({

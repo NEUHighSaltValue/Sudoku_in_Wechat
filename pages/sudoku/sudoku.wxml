@@ -6,8 +6,6 @@
 
 <view class = "page_container">
 
-    <image src="../../images/timg.jpeg" class = 'background_image'></image>
-
     <view class="function_button">
     <button class ="new" type="default" size="mini" bindtap='newGame'> new </button>
     <view class="time"> {{timeText}} </view> 
