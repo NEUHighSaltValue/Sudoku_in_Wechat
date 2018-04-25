@@ -1,17 +1,32 @@
 /* pages/sudoku.wxss */
 page{
-  background-color: #f9fae8
+    /* Zixuan 页面背景色 */
+  /* background-color: #ADD8E6; */
+  background-color: "black"
+}
+
+.background_image{
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin-bottom: 0rpx;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
 }
 
 .function_button{
   text-align: center;
-  border-top: 4rpx;
   margin: 48rpx;
+  top: 44rpx;
+  position: relative;
 }
 
 .function_button .new{
   float: left;
-  background-color: #fff
+   /* Zixuan  new 按钮的背景色 */
+  background-color: #E6E6FA
 }
 
 .function_button .time{
@@ -20,11 +35,20 @@ page{
 
 .function_button .note{
   float: right;
-  background-color: #fff
+  /* Zixuan note 按钮的背景色*/
+  background-color: #FFF0F5
+}
+
+.boardContainer{
+  width: 675rpx;
+  height: 675rpx;
+  position: absolute;
+  margin-top: 44rpx;
 }
 
 .canvasBoard{ 
   /* For UI designer, you can change board color here! */
+  /* Zixuan  board 的背景色*/
   background-color: white;
   margin-left: 37.5rpx;
   width: 675rpx;
@@ -36,19 +60,23 @@ page{
   margin-left: 37.5rpx;
   width: 675rpx;
   height: 675rpx;
-}
-
-.canvasTable{
-  /* For UI designer, you can change board color here! */
-  background-color: white;
-  margin-left: 111.5rpx;
-  margin-top: 108rpx;
-  width: 527rpx;
-  height: 213.5rpx;
+  position: relative;
 }
 
 .canvasDiagonal{ 
   margin-left: 37.5rpx;
   width: 675rpx;
   height: 675rpx;
+  position: absolute;
+}
+
+.canvasTable{
+  /* For UI designer, you can change board color here! */
+  /* Zixuan  table 的背景色*/
+  background-color: white;
+  margin-left: 111.5rpx;
+  margin-top: 40rpx;
+  width: 527rpx;
+  height: 213.5rpx;
+  position: relative;
 }

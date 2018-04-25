@@ -9,7 +9,7 @@ For each cell
 cat true means can fill the call, false not
 note true means this cell is in note mode
 content contains the number filled
-color means the number's color: 0 means normal, 1 means ubchangable number, 2 means error, 3 means highlight in same number as user choose， 4 means unchangeable number error
+color means the number's color: 0 means normal, 1 means ubchangable number, 2 means error, 3 means highlight in same number as user choose， 4 means unchangeable number error, 5 means note
 */
 function cellModel() {
   this.cat = true;
@@ -147,7 +147,11 @@ class Sudoku {
         if (this.boardData[i][j].cat == false) {
           this.boardData[i][j].color = 1;
         } else {
-          this.boardData[i][j].color = 0;
+            if (this.boardData[i][j].note == true){
+                this.boardData[i][j].color = 5;
+            } else {
+                this.boardData[i][j].color = 0;
+            }
         }
       }
     }
@@ -272,7 +276,8 @@ let lineWidth1 = 4.5;
 let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
-let colorTable = ["grey", "black", "red", "yellow", "#ed2e0a"]
+//Zixuan board 里各种情况下的颜色
+let colorTable = ["grey", "black", "red", "yellow", "#ed2e0a","#98fb98"]
 let sudokuGameData1 = require('../../utils/data1.js')
 let sudokuGameData2 = require('../../utils/data2.js')
 let sudokuGameData3 = require('../../utils/data3.js')
@@ -294,7 +299,7 @@ var strH = '';
 var strM = '';
 var strS = '';
 var timer = '';
-var level = 1;
+var level = 4;
 var remainNum = 81;
 
 Page({
@@ -405,8 +410,8 @@ Page({
     var tempWidth = (tableWidthInPrx - lineWidth1 * 1.5) / ratio;
     var tempHeight = (tableHeighInPrx - lineWidth1 * 1.5) / ratio;
     let table = wx.createCanvasContext('table');
-
-    table.setStrokeStyle("#000000");
+    //Zixuan，table table 格子线的颜色
+    table.setStrokeStyle("gray");
     table.setLineWidth(lineWidth1 / ratio);
     table.rect(startPointX, startPointY, tempWidth, tempHeight);
     table.rect(startPointX, startPointY, tempWidth, tempHeight / 2);
@@ -417,15 +422,19 @@ Page({
     startPointX = (tableWidth * 3 + lineWidth1 * 3.5) / ratio;
     table.rect(startPointX, startPointY, tempWidth, tempHeight);
     table.stroke();
-    table.setFontSize(tableWidth / ratio);
+    table.setFontSize(tableWidth * 0.7 / ratio);
     table.setTextAlign = 'center';
-    let adjustmentForTable = [1.35, 2.24, 3.37, 4.38, 0.25, 1.25, 2.38, 3.37, 4.44]
+    //Zixuan table 里非选择数字的颜色
+    table.setFillStyle("#4169E1")
+    let adjustmentForTable = [1.4, 2.35, 3.45, 4.42, 0.25, 1.35, 2.38, 3.47, 4.44]
     for (var i = 1; i < 10; i++) {
-      if (i == num) {
-        table.setFillStyle("#2F4F4F");
+        if (i == num) {
+        //Zixuan，table 选中数字的颜色
+        table.setFillStyle("#6495ED");
       }
-      table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.5 + parseInt(i / 5) * 4.3) / 4 / ratio);
-      table.setFillStyle("#000000");
+      table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.5 + parseInt(i / 5) * 3.8) / 4 / ratio);
+    //Zixuan table 里非选择数字的颜色
+      table.setFillStyle("#4169E1");
     }
     table.draw();
 
@@ -434,11 +443,10 @@ Page({
 
   onReady: function (e) {
     //Board
-    // this.freshUI()
-    //For UI designer, you can change line color here!
     let board = wx.createCanvasContext('board');
+    //Zixuan board 里格子的线的颜色
     board.setStrokeStyle("#000000");
-    board.setLineWidth(lineWidth1 / ratio);
+    board.setLineWidth(lineWidth1*2 / ratio);
     var startPointX = lineWidth1 / 2 / ratio;
     var startPointY = lineWidth1 / 2 / ratio;
     var tempWidth = (boardWidthInPrx - lineWidth1 * 1.5) / ratio;
@@ -534,7 +542,7 @@ Page({
 
   freshUI: function () {
     let board = wx.createCanvasContext('boardData');
-    board.setFontSize(cellWidth / ratio);
+    board.setFontSize(cellWidth * 0.9 / ratio);
     var i, j, axis, baseLine;
     remainNum = 81;
     for (j = 0; j < 9; j++) {
@@ -549,9 +557,9 @@ Page({
           } else {
             baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2
             board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
-            board.setFontSize(cellWidth / Math.sqrt(sudoku.getData(i, j).content.length) / ratio)
+            board.setFontSize(cellWidth * 0.9 / Math.sqrt(sudoku.getData(i, j).content.length) / ratio)
             mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
-            board.setFontSize(cellWidth / ratio)
+            board.setFontSize(cellWidth * 0.9 / ratio)
           }
         } else if((i == j || i + j == 8)&&level>4) {
           board.arc(((j + 0.5) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + j * lineWidth2) / ratio,                    ((i + 0.5) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2) /ratio,                     cellWidth / Math.sqrt(5) / ratio, 0, 2 * Math.PI)
@@ -567,7 +575,7 @@ Page({
         sudoku.freeze();
         //Shuyuan
         this.setData({
-            timeText: '小志说你快和他一样帅了'
+            timeText: 'success'
         })
       }
     }
