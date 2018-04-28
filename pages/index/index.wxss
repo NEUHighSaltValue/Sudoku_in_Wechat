@@ -1,32 +1,104 @@
 /**index.wxss**/
-page{
-  background-color: #f9fae8
+
+.userInfo{
+    height: 200rpx;
+    width: 592rpx;
+    left: 79rpx;
+    top: 80rpx;
+    position: absolute;
+    border:4px solid black;
 }
 
-.function_button{
-  text-align: center;
-  border-top: 4rpx;
-  margin: 48rpx;
+.avatar{
+    height: 160rpx;
+    width: 160rpx;
+    position: relative;
+    top: 20rpx;
+    left: 20rpx;
 }
 
-.function_button .new{
-  float: left;
-  background-color: #fff
+.userInfoText{
+    width: 392rpx;
+    height: 200rpx;
+    position: relative;
+    top: -172rpx;
+    left: 200rpx;
 }
 
-.function_button .time{
-  display: inline
+.userName{
+    position: relative;
+    height: 100rpx;
+    width: 100%;
+    text-align: center;
+    line-height: 100rpx;
+    font-weight: bold;
 }
 
-.function_button .redo{
-  float: right;
-  background-color: #fff
+.userLevel{
+    position: relative;
+    height: 60rpx;
+    width: 100%;
+    text-align: center;
+    line-height: 60rpx;
+    font-weight: bold;
 }
 
-.canvasBoard{
-  background-color: white;
-  margin-left: 37.5rpx;
-  width: 675rpx;
-  height: 675rpx;
+.newGame{
+    position: absolute;
+    top: 308rpx;
+    left: 79rpx;
+    width: 280rpx;
+    height: 350rpx;
+    border:4px solid black;
+    line-height: 175rpx;
+    font-size: 90rpx;
+    text-align: center;
 }
 
+.result{
+    position: absolute;
+    top: 308rpx;
+    left: 391rpx;
+    width: 280rpx;
+    height: 250rpx;
+    border:4px solid black;
+    line-height: 125rpx;
+    font-size: 70rpx;
+    text-align: center;
+}
+
+.help{
+    position: absolute;
+    top: 686rpx;
+    left: 79rpx;
+    width: 280rpx;
+    height: 250rpx;
+    border:4px solid black;
+    line-height: 250rpx;
+    font-size: 90rpx;
+    text-align: center;
+}
+
+.pk{
+    position: absolute;
+    top: 586rpx;
+    left: 391rpx;
+    width: 280rpx;
+    height: 350rpx;
+    border:4px solid black;
+    line-height: 175rpx;
+    font-size: 90rpx;
+    text-align: center;
+}
+
+.setting{
+    position: absolute;
+    top: 964rpx;
+    left: 79rpx;
+    height: 120rpx;
+    width: 592rpx;
+    border:4px solid black;
+    line-height: 120rpx;
+    font-size: 70rpx;
+    text-align: center;
+}

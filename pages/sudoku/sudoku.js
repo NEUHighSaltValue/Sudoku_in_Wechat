@@ -277,7 +277,7 @@ let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
 //Zixuan board 里各种情况下的颜色
-let colorTable = ["grey", "black", "red", "yellow", "#ed2e0a","#98fb98"]
+let colorTable = ["gray", "black", "#CC6699", "#CC9900", "#CC0000", "#333399"]
 let sudokuGameData1 = require('../../utils/data1.js')
 let sudokuGameData2 = require('../../utils/data2.js')
 let sudokuGameData3 = require('../../utils/data3.js')
@@ -561,7 +561,7 @@ Page({
             mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
             board.setFontSize(cellWidth * 0.9 / ratio)
           }
-        } else if((i == j || i + j == 8)&&level>4) {
+        } else if((i == j || i + j == 8) && level>4) {
           board.arc(((j + 0.5) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + j * lineWidth2) / ratio,                    ((i + 0.5) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2) /ratio,                     cellWidth / Math.sqrt(5) / ratio, 0, 2 * Math.PI)
           board.stroke()
           board.beginPath()
@@ -574,9 +574,7 @@ Page({
         this.timeStop();
         sudoku.freeze();
         //Shuyuan
-        this.setData({
-            timeText: 'success'
-        })
+        wx.showToast();
       }
     }
   }

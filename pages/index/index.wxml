@@ -1,9 +1,28 @@
 <!--index.wxml-->
-  
-<view class="function_button">
-  <button class ="new" type="default" size="mini"> login </button>
-  <view class="time"> 00:00 </view> 
-  <button class="redo" size="mini"> redo </button>
+<view class = "userInfo">
+    <image class = "avatar" src="/images/avatar.jpg"> </image>
+    <view class = "userInfoText">
+        <view class = "userName">我丹不是你丹</view>
+        <view class = "userLevel"> 最强王者 </view> 
+    </view>
+</view>
+
+<view class = "newGame">
+    <view > 新建  </view>
+    <view > 游戏  </view>
+</view>
+
+<view class = "result">
+    <view > 战绩  </view>
+    <view > 查询  </view>
 </view>
 
 
+<view class = "help">帮助</view>
+
+<view class = "pk">
+    <view > 好友  </view>
+    <view > 对战  </view>
+</view>
+
+<view class = "setting"> 设置 </view>
