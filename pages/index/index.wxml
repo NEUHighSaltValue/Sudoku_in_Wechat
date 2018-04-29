@@ -1,5 +1,5 @@
 <!--index.wxml-->
-<view class = "userInfo">
+<view id = "userInfo" class="cell">
     <image class = "avatar" src="/images/avatar.jpg"> </image>
     <view class = "userInfoText">
         <view class = "userName">我丹不是你丹</view>
@@ -7,22 +7,22 @@
     </view>
 </view>
 
-<view class = "newGame">
+<view id="newGame" class="cell" bindtap='toNewGame'>
     <view > 新建  </view>
     <view > 游戏  </view>
 </view>
 
-<view class = "result">
+<view id = "result" class="cell">
     <view > 战绩  </view>
     <view > 查询  </view>
 </view>
 
 
-<view class = "help">帮助</view>
+<view id="help" class="cell" bindtap='toHelp'>帮助</view>
 
-<view class = "pk">
+<view id="pk" class="cell">
     <view > 好友  </view>
     <view > 对战  </view>
 </view>
 
-<view class = "setting"> 设置 </view>
+<view id="setting" class="cell"> 设置 </view>

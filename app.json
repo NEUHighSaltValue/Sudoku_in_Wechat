@@ -1,9 +1,9 @@
 {
     "pages": [
-        "pages/level_select/level_select",
         "pages/index/index",
-        "pages/sudoku/sudoku",
-        "pages/templates/loading/loading"
+        "pages/about/about",
+        "pages/level_select/level_select",
+        "pages/sudoku/sudoku"
     ],
     "window": {
         "backgroundTextStyle": "light",
