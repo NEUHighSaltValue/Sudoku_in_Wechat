@@ -20,7 +20,7 @@
 
 <view id="help" class="cell" bindtap='toHelp'>帮助</view>
 
-<view id="pk" class="cell">
+<view id="pk" class="cell" bindtap='toFight'>
     <view > 好友  </view>
     <view > 对战  </view>
 </view>
