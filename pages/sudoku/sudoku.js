@@ -368,7 +368,7 @@ Page({
     timeText: '00:00',
     timeShowOrNOt: true
   },
-
+  
   onReady() {
   },
 

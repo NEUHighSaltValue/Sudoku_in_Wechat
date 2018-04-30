@@ -29,7 +29,9 @@
 
 #search{
   position: relative;
-  top: 40rpx;
+  top: -400rpx; 
+  left: 240rpx;
+  width: 250rpx;
   font-size: 70rpx;
   text-align: center;
 }

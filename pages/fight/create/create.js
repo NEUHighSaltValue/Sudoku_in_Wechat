@@ -43,7 +43,6 @@ Page({
    */
   onShow: function () {
     this.setData({
-      userInfo: {},
       room_number: Math.floor(Math.random() * (9000) + 1000)
     })
   },

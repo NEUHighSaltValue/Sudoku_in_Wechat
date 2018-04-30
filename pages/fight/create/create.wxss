@@ -16,9 +16,13 @@
   color: #aaa;  
 }  
 
+.usermotto {  
+  margin-top: 200px;  
+} 
+
 #room{
   position: absolute;
-  top: 350rpx;
+  top: 400rpx;
   left: 160rpx;
   width: 400rpx;
   height: 150rpx;
