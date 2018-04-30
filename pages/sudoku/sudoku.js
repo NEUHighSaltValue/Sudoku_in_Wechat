@@ -83,6 +83,7 @@ class Sudoku {
     let tempNum = num
     //Judge can fill the cell or not
     if (this.boardData[x][y].cat == false) {
+      this.freshProperty();
       return;
     } else {
       if (this.boardData[x][y].content != "0" && this.boardData[x][y].content == num.toString()) {
@@ -107,7 +108,12 @@ class Sudoku {
         this.boardData[x][y].content = num.toString();
       } else if (note == true) {
         if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1) {
-          this.boardData[x][y].content += tempNum.toString();
+          //曲悦测试出的 bug, note 模式下按空的 table 后 board 内显示0
+          if (tempNum == 0) {
+            this.boardData[x][y].content = "0";
+          } else {
+            this.boardData[x][y].content += tempNum.toString();
+          }
         } else {
           this.boardData[x][y].content = this.boardData[x][y].content.split(tempNum.toString()).join("");
         }
@@ -132,8 +138,8 @@ class Sudoku {
         for (var tempNum of this.row[i][num - 1]) {
           let tempRow = parseInt(tempNum / 10);
           let tempCol = tempNum % 10;
-          if (this.boardData[tempRow][tempCol].color != 2 && 
-          this.boardData[tempRow][tempCol].color != 4) {
+          if (this.boardData[tempRow][tempCol].color != 2 &&
+            this.boardData[tempRow][tempCol].color != 4) {
             this.boardData[tempRow][tempCol].color = 3;
           }
         }
@@ -147,11 +153,11 @@ class Sudoku {
         if (this.boardData[i][j].cat == false) {
           this.boardData[i][j].color = 1;
         } else {
-            if (this.boardData[i][j].note == true){
-                this.boardData[i][j].color = 5;
-            } else {
-                this.boardData[i][j].color = 0;
-            }
+          if (this.boardData[i][j].note == true) {
+            this.boardData[i][j].color = 5;
+          } else {
+            this.boardData[i][j].color = 0;
+          }
         }
       }
     }
@@ -261,7 +267,9 @@ class Sudoku {
 
 //全局设置变量
 let currentNote = false;
-let sameNumHighlight = false;
+var sameNumHighlight = false;
+var errorShow = false;
+var timeShow = true;
 
 
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
@@ -272,12 +280,12 @@ let tableWidthInPrx = 527;
 let tableHeighInPrx = 213.5;
 let tableWidthInPx = tableWidthInPrx * phoneWidth / 750;
 let tableHeighInPx = tableHeighInPrx * phoneWidth / 750;
-let lineWidth1 = 4.5;
+let lineWidth1 = 2;
 let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
 //Zixuan board 里各种情况下的颜色
-let colorTable = ["grey", "black", "red", "yellow", "#ed2e0a","#98fb98"]
+let colorTable = ["gray", "black", "#CC6699", "#CC9900", "#CC0000", "#666666"]
 let sudokuGameData1 = require('../../utils/data1.js')
 let sudokuGameData2 = require('../../utils/data2.js')
 let sudokuGameData3 = require('../../utils/data3.js')
@@ -299,27 +307,33 @@ var strH = '';
 var strM = '';
 var strS = '';
 var timer = '';
-var level = 4;
+var level = 0;
 var remainNum = 81;
 
 Page({
   data: {
     generateOk: false,
     timeText: '00:00',
+    timeShowOrNOt: true
   },
 
-  //事件处理函数
-  bindViewTap: function () { },
+  onReady() {
+  },
 
-  onLoad: function () {
+  onLoad(option) {
+    console.log(option.level)
+    level = parseInt(option.level);
+    sameNumHighlight = getApp().globalData.highlightOrNot;
+    errorShow = getApp().globalData.errorOrNot;
+    timeShow = getApp().globalData.timeOrNot;
+    console.log(timeShow)
+    this.setData({
+      timeShowOrNOt: timeShow
+    });
     this.newGame();
   },
 
-  getUserInfo: function (e) { },
-
-  clickMe: function () { },
-
-  newGame: function () {
+  newGame() {
     this.setData({
       generateOk: false
     })
@@ -333,77 +347,76 @@ Page({
     this.setData({
       timeText: '00:00'
     })
-    this.timeStart();
-    level = Math.floor(Math.random() * 10);
-    var gameID = Math.floor(Math.random() * 1000) + level * 1000;
-    if(gameID > 9868)
+    var gameID = Math.floor(Math.random() * 200) + level * 1000;
+    if (gameID > 9868)
       gameID = 9868
     var newGameObject, newGameData, newGameAns;
     switch (level) {
-        case 0:
-            newGameObject = sudokuGameData1.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 1:
-            newGameObject = sudokuGameData2.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 2:
-            newGameObject = sudokuGameData3.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 3:
-            newGameObject = sudokuGameData4.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 4:
-            newGameObject = sudokuGameData5.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 5:
-            newGameObject = sudokuGameData6.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 6:
-            newGameObject = sudokuGameData7.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 7:
-            newGameObject = sudokuGameData8.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 8:
-            newGameObject = sudokuGameData9.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
-        case 9:
-            newGameObject = sudokuGameData10.searchSData(gameID);
-            newGameData = newGameObject.data;
-            newGameAns = newGameObject.ans;
-            break;
+      case 0:
+        newGameObject = sudokuGameData1.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 1:
+        newGameObject = sudokuGameData2.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 2:
+        newGameObject = sudokuGameData3.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 3:
+        newGameObject = sudokuGameData4.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 4:
+        newGameObject = sudokuGameData5.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 5:
+        newGameObject = sudokuGameData6.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 6:
+        newGameObject = sudokuGameData7.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 7:
+        newGameObject = sudokuGameData8.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 8:
+        newGameObject = sudokuGameData9.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
+      case 9:
+        newGameObject = sudokuGameData10.searchSData(gameID);
+        newGameData = newGameObject.data;
+        newGameAns = newGameObject.ans;
+        break;
     }
-    console.log(newGameObject)
-    this.setData({
-      generateOk: true
-    })
+    console.log(newGameObject);
     sudoku.setGame(newGameData, newGameAns);
-    this.freshUI();
+    setTimeout(() => {
+      this.setData({
+        generateOk: true
+      })
+      this.drawBoard();
+      this.drawTable();
+      this.timeStart();
+      this.freshUI();
+    }, 1200);
   },
 
-  canvasIdErrorCallback: function (e) {
-    console.error(e.detail.errMsg);
-  },
-
-  drawTable: function (num) {
+  drawTable(num) {
     //Table
     var startPointX = lineWidth1 / 2 / ratio;
     var startPointY = lineWidth1 / 2 / ratio;
@@ -426,14 +439,14 @@ Page({
     table.setTextAlign = 'center';
     //Zixuan table 里非选择数字的颜色
     table.setFillStyle("#4169E1")
-    let adjustmentForTable = [1.4, 2.35, 3.45, 4.42, 0.25, 1.35, 2.38, 3.47, 4.44]
+    let adjustmentForTable = [1.4, 2.35, 3.35, 4.3, 0.3, 1.3, 2.3, 3.32, 4.4]
     for (var i = 1; i < 10; i++) {
-        if (i == num) {
+      if (i == num) {
         //Zixuan，table 选中数字的颜色
         table.setFillStyle("#6495ED");
       }
-      table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.5 + parseInt(i / 5) * 3.8) / 4 / ratio);
-    //Zixuan table 里非选择数字的颜色
+      table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
+      //Zixuan table 里非选择数字的颜色
       table.setFillStyle("#4169E1");
     }
     table.draw();
@@ -441,12 +454,12 @@ Page({
     //!Table
   },
 
-  onReady: function (e) {
+  drawBoard() {
     //Board
     let board = wx.createCanvasContext('board');
     //Zixuan board 里格子的线的颜色
     board.setStrokeStyle("#000000");
-    board.setLineWidth(lineWidth1*2 / ratio);
+    board.setLineWidth(lineWidth1 * 2 / ratio);
     var startPointX = lineWidth1 / 2 / ratio;
     var startPointY = lineWidth1 / 2 / ratio;
     var tempWidth = (boardWidthInPrx - lineWidth1 * 1.5) / ratio;
@@ -480,11 +493,9 @@ Page({
     board.draw();
 
     //!Board
-
-    this.drawTable();
   },
 
-  cellSelect: function (event) {
+  cellSelect(event) {
     selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
     selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
     console.log(selectX + " " + selectY);
@@ -496,27 +507,26 @@ Page({
     this.drawTable();
   },
 
-  tableSelect: function (event) {
+  tableSelect(event) {
     selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
     this.drawTable(selectNum);
-    if (selectNum == 0) {
-      sameNumHighlight = !sameNumHighlight;
-      console.log("fresh")
-      sudoku.freshProperty();
-      this.freshUI();
-    }
     if (sameNumHighlight) {
       sudoku.highlightNum(selectNum);
       this.freshUI();
     }
   },
 
+  toLevelSelect() {
+    wx.redirectTo({
+      url: '/pages/level_select/level_select',
+    })
+  },
 
-  timeStart: function () {
+  timeStart() {
     timer = setInterval(this.countTime, 1000);
   },
 
-  countTime: function () {
+  countTime() {
     strH = zeroFill('' + parseInt(num / 3600 % 24), 2);
     strM = zeroFill('' + parseInt(num / 60 % 24), 2);
     strS = zeroFill('' + parseInt(num % 60), 2);
@@ -532,15 +542,15 @@ Page({
     num++;
   },
 
-  timeStop: function () {
+  timeStop() {
     clearInterval(timer)
   },
 
-  changeNote: function () {
+  changeNote() {
     currentNote = !currentNote;
   },
 
-  freshUI: function () {
+  freshUI() {
     let board = wx.createCanvasContext('boardData');
     board.setFontSize(cellWidth * 0.9 / ratio);
     var i, j, axis, baseLine;
@@ -561,8 +571,8 @@ Page({
             mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
             board.setFontSize(cellWidth * 0.9 / ratio)
           }
-        } else if((i == j || i + j == 8)&&level>4) {
-          board.arc(((j + 0.5) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + j * lineWidth2) / ratio,                    ((i + 0.5) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2) /ratio,                     cellWidth / Math.sqrt(5) / ratio, 0, 2 * Math.PI)
+        } else if ((i == j || i + j == 8) && level > 4) {
+          board.arc(((j + 0.5) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + j * lineWidth2) / ratio, ((i + 0.5) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2) / ratio, cellWidth / Math.sqrt(5) / ratio, 0, 2 * Math.PI)
           board.stroke()
           board.beginPath()
         }
@@ -574,11 +584,13 @@ Page({
         this.timeStop();
         sudoku.freeze();
         //Shuyuan
-        this.setData({
-            timeText: 'success'
-        })
+        wx.showToast();
       }
     }
+  },
+
+  canvasIdErrorCallback(e) {
+    console.error(e.detail.errMsg);
   }
 })
 
