@@ -1,0 +1,27 @@
+<view class="wrapper">
+
+    <text class="title_text">一、玩法介绍\n</text>
+        <text class="normal_text" decode="{{true}}" space="{{true}}">&nbsp;&nbsp;&nbsp;&nbsp;首先让我们认识一下行、列宫，如图所示，一组3*3格子称之为“宫”,1*9格子称之为“行”,9*1格子称之为“列”。</text>
+        <image id="image0" src='/images/introduction_image.jpg'></image>
+        <text class="normal_text">1.同样数字不能在同一行出现两次。</text>
+        <image id='image1' src='/images/hang.jpg'></image>
+        <text class="normal_text">2.同样数字不能在同一列出现两次。</text>
+        <image id='image2' src='/images/lie.jpg'></image>
+        <text class="normal_text">3.同样数字不能在同一宫出现两次。</text>
+        <image id='image3' src='/images/gong.jpg'></image>
+        <text class="normal_text" decode="{{true}}" space="{{true}}">&nbsp;&nbsp;&nbsp;&nbsp;当出现上述错误时，发生冲突的数字将会变为红色。若为对角线数独则还应注意两条主对角线上的九个数字不能重复。</text>
+    
+    <text class="title_text">二、功能键介绍\n</text>
+    <text class="normal_text" decode="{{true}}" space="{{true}}">1.new：开始一局新的游戏。</text>
+    <image id='image4' src="/images/new.jpg"></image>
+    <text class="normal_text">2.note：假设一个方格将要填入的数字有多种可能，点击一下进行标记，当标记结束后需再次点击来关闭。</text>
+    <image id='image5' src="/images/note.jpg"></image>
+    <text class="normal_text" decode="{{true}}" space="{{true}}">&nbsp;&nbsp;&nbsp;&nbsp;此外，为区分点击 note 与否时填入的数字，我们使用了不同的颜色（正常情况下填入的数字为灰色，点击 note 后数字为深蓝色）。</text>
+    <image id='image6' src="/images/note1.png"></image>
+    <text class="normal_text">3.下面板数字框：先点击想填入的数字，再点击想填入的方格，便可将数字填入对应格内。若填写错误，点击空白格再点击错误方格即可清除，或者点击要删去的数字再点击对应格子也可清楚。</text>
+    <image id="image7" src="/images/down.jpg"></image>
+    
+    <text class="title_text">三、设置介绍\n</text>
+        <text class="normal_text" decode="{{true}}" space="{{true}}">高亮功能：高亮模式下，在点击下数字面板中的数字时，页面中所有该数字将会发生颜色变化。</text>
+        <image id="image8" src="/images/gaoliang.png"></image>
+</view>

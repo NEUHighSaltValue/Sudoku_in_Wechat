@@ -1,0 +1,39 @@
+/* pages/level_select/level_select.wxss */
+.level_select_scroll{
+    width: 592rpx;
+    height: 1060rpx;
+    position: absolute;
+    top: 50rpx;
+    left: 79rpx;
+    border: 2rpx solid gray;
+}
+
+.level_diff{
+    text-align: center;
+}
+
+.level_select_list{
+    width: auto;
+    height: 180rpx;
+    border: 2rpx solid black;
+    margin-bottom: 9rpx;
+    margin-top: 9rpx;
+    margin-left: 6rpx;
+    margin-right: 6rpx;
+    border-radius: 12rpx;
+}
+
+.level_select_text{
+    position: absolute;
+    left: 80rpx;
+    height: 180rpx;
+    width: 180rpx;
+    line-height: 180rpx;
+}
+
+.level_select_iamge{
+    position: absolute;
+    left: 380rpx;
+    height: 180rpx;
+    width: 180rpx;
+} 

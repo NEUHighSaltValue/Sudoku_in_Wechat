@@ -1,0 +1,25 @@
+<!--pages/level_select/level_select.wxml-->
+<swiper class="level_select_scroll" indicator-dots="true">
+    <swiper-item>
+        <view class="level_diff"> 普通数独 </view>
+        <view class = "level_select_list"  wx:for="{{levelSelectList}}" wx:key="{{ index }}" bindtap='selectLevel' data-id="{{item.id1}}">
+                <view class="level_select_text">{{item.text}}</view>
+            <image class="level_select_iamge" mode="aspectFill" src="{{item.image1}}"> </image> 
+    </view>
+    </swiper-item>
+    <swiper-item>
+        <view class="level_diff"> 对角线数独 </view>
+        <view class = "level_select_list"  wx:for="{{levelSelectList}}" wx:key="{{ index }}" bindtap='selectLevel' data-id="{{item.id2}}">
+                <view class="level_select_text">{{item.text}}</view>
+            <image class="level_select_iamge" mode="aspectFill" src="{{item.image2}}"> </image> 
+    </view>
+    </swiper-item>
+</swiper>
+<!-- 
+<view> 123 </view>
+    <view class="level_select_wrapper" >
+        <view  class = "level_select_list"  wx:for="{{levelSelctList}}">
+            <view class="level_select_text">{{item.text}}</view>
+            <image class="level_select_iamge" mode="aspectFill" src="{{item.image}}"> </image>
+        </view>
+    </view> -->

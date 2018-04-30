@@ -124,7 +124,7 @@ class Sudoku {
           this.boardData[x][y].content = num.toString();
         }
       }
-      this.freshProperty()
+      //this.freshProperty()
     }
   }
 
@@ -562,10 +562,14 @@ Page({
           if (sudoku.getData(i, j).note == false) {
             remainNum--;
             baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2;
+            if(errorShow)
+              sudoku.freshProperty()
             board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
             board.fillText(String(sudoku.getData(i, j).content), axis / ratio, baseLine / ratio);
           } else {
             baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2
+            if (errorShow)
+              sudoku.freshProperty()
             board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
             board.setFontSize(cellWidth * 0.9 / Math.sqrt(sudoku.getData(i, j).content.length) / ratio)
             mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
