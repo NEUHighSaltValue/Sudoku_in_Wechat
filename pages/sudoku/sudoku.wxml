@@ -19,7 +19,8 @@
 
     <view class="function_button">
     <button class ="new" type="default" size="mini" bindtap='toLevelSelect'> new </button>
-    <view class="time"> {{timeText}} </view> 
+    <view wx:if="{{!timeShowOrNot}}" class="time"> {{timeText}} </view> 
+    <view wx:else class="time"> 干巴爹 </view>
     <button class="note" size="mini" bindtap='changeNote'> note </button>
     </view>
 

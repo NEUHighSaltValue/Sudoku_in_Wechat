@@ -1,0 +1,34 @@
+/* pages/setting/setting.wxss */
+
+.setting_list{
+    width: 90%;
+    height: 100%;
+    top: 20%;
+    left: 5%;
+    position: absolute;
+}
+
+.setting_cell{
+    width: 100%;
+    height: 200rpx;
+}
+
+.setting_text{
+    font-size: 70rpx;
+    line-height: 200rpx;
+    display: inline;
+    position: relative;
+    left: 20rpx;
+}
+
+.setting_switch{
+    height: 98rpx;
+    position: relative;
+    left: 250rpx;
+    top: -13rpx;
+}
+
+#mid_setting_cell{
+    border-top: 1px solid rgba(0, 0, 0, 0.1); 
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}

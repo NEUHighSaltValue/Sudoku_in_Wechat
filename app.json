@@ -1,6 +1,7 @@
 {
     "pages": [
         "pages/index/index",
+        "pages/setting/setting",
         "pages/about/about",
         "pages/level_select/level_select",
         "pages/sudoku/sudoku"

@@ -83,6 +83,7 @@ class Sudoku {
         let tempNum = num
         //Judge can fill the cell or not
         if (this.boardData[x][y].cat == false) {
+            this.freshProperty();
             return;
         } else {
             if (this.boardData[x][y].content != "0" && this.boardData[x][y].content == num.toString()) {
@@ -266,7 +267,9 @@ class Sudoku {
 
 //全局设置变量
 let currentNote = false;
-let sameNumHighlight = false;
+var sameNumHighlight = false;
+var errorShow = false;
+var timeShow = true;
 
 
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
@@ -311,6 +314,7 @@ Page({
     data: {
         generateOk: false,
         timeText: '00:00',
+        timeShowOrNOt: true
     },
 
     onReady() {
@@ -319,6 +323,13 @@ Page({
     onLoad(option) {
         console.log(option.level)
         level = parseInt(option.level);
+        sameNumHighlight = getApp().globalData.highlightOrNot;
+        errorShow = getApp().globalData.errorOrNot;
+        timeShow = getApp().globalData.timeOrNot;
+        console.log(timeShow)
+        this.setData({
+            timeShowOrNOt: timeShow
+        });
         this.newGame();
     },
 
@@ -499,12 +510,6 @@ Page({
     tableSelect(event) {
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
         this.drawTable(selectNum);
-        if (selectNum == 0) {
-            sameNumHighlight = !sameNumHighlight;
-            console.log("fresh")
-            sudoku.freshProperty();
-            this.freshUI();
-        }
         if (sameNumHighlight) {
             sudoku.highlightNum(selectNum);
             this.freshUI();

@@ -25,4 +25,4 @@
     <view > 对战  </view>
 </view>
 
-<view id="setting" class="cell"> 设置 </view>
+<view id="setting" class="cell" bindtap='toSetting'> 设置 </view>
