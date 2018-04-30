@@ -12,6 +12,13 @@ Page({
           url: '/pages/level_select/level_select',
       })
   },
+  toFight() {
+      if(!this.data.buttonClicked) { return }
+      buttonClicked(this)
+      wx.navigateTo({
+        url: '/pages/fight/fight',
+      })
+  },
   toHelp() {
       if (!this.data.buttonClicked) { return }
       buttonClicked(this);

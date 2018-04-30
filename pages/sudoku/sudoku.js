@@ -551,6 +551,7 @@ Page({
     selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
     selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
     //console.log(selectX + " " + selectY);
+    
     if (selectNum != -1) {
       sudoku.setData(selectX, selectY, selectNum, currentNote);
       if(errorShow) {

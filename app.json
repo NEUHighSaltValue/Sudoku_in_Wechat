@@ -1,10 +1,13 @@
 {
     "pages": [
+      "pages/fight/enter/enter",
         "pages/index/index",
         "pages/setting/setting",
         "pages/about/about",
         "pages/level_select/level_select",
-        "pages/sudoku/sudoku"
+        "pages/fight/fight",
+        "pages/sudoku/sudoku",
+        "pages/fight/create/create"
     ],
     "window": {
         "backgroundTextStyle": "light",
