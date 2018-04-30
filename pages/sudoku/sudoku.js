@@ -200,6 +200,58 @@ class Sudoku {
     }
   }
 
+  returnNum(i, j) {
+    if(this.getData(i, j).content == "0") {
+      return -1
+    } else if(this.getData(i, j).content.length > 1) {
+      return -1
+    } else {
+      return parseInt(this.getData(i, j).content) - 1
+    }
+  }
+
+  freshDiagonal() {
+    var coord1 = [-1, -1, -1, -1, -1, -1, -1, -1, -1]
+    var coord2 = [-1, -1, -1, -1, -1, -1, -1, -1, -1]
+    for(var i = 0; i < 9; i++) {
+      for(var j = 0; j < 9; j++) {
+        var num = this.returnNum(i, j)
+        if(i == j && num != -1 && coord1[num] == -1) {
+          coord1[num] = i * 10 + j
+          console.log(i + " " + j)
+        } else if(i == j && num != -1 && coord1[num] != -1) {
+          if (this.boardData[parseInt(coord1[num] / 10)][coord1[num] % 10].cat == true) {
+            this.boardData[parseInt(coord1[num] / 10)][coord1[num] % 10].color = 2
+          } else {
+            this.boardData[parseInt(coord1[num] / 10)][coord1[num] % 10].color = 4
+          }
+          if (this.boardData[i][j].cat == true) {
+            this.boardData[i][j].color = 2
+          } else {
+            this.boardData[i][j].color = 4
+          }
+          coord1[num] = i * 10 + j;
+        }
+
+        if (i+j == 8 && num != -1 && coord2[num] == -1) {
+          coord2[num] = i * 10 + j;
+        } else if (i+j == 8 && num != -1 && coord2[num] != -1) {
+          if (this.boardData[parseInt(coord2[num] / 10)][coord2[num] % 10].cat == true) {
+            this.boardData[parseInt(coord2[num] / 10)][coord2[num] % 10].color = 2
+          } else {
+            this.boardData[parseInt(coord2[num] / 10)][coord2[num] % 10].color = 4
+          }
+          if (this.boardData[i][j].cat == true) {
+            this.boardData[i][j].color = 2
+          } else {
+            this.boardData[i][j].color = 4
+          }
+          coord2[num] = i * 10 + j;
+        }
+      }
+    }
+  }
+
 
   setGame(gameData, gameAns) {
     var position = 0;
@@ -403,7 +455,7 @@ Page({
         newGameAns = newGameObject.ans;
         break;
     }
-    console.log(newGameObject);
+    //console.log(newGameObject);
     sudoku.setGame(newGameData, newGameAns);
     setTimeout(() => {
       this.setData({
@@ -498,9 +550,14 @@ Page({
   cellSelect(event) {
     selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
     selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-    console.log(selectX + " " + selectY);
+    //console.log(selectX + " " + selectY);
     if (selectNum != -1) {
       sudoku.setData(selectX, selectY, selectNum, currentNote);
+      if(errorShow) {
+        sudoku.freshProperty()
+        if(level > 5)
+          sudoku.freshDiagonal()
+      }
       this.freshUI();
     }
     selectNum = -1;
@@ -562,14 +619,10 @@ Page({
           if (sudoku.getData(i, j).note == false) {
             remainNum--;
             baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2;
-            if(errorShow)
-              sudoku.freshProperty()
             board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
             board.fillText(String(sudoku.getData(i, j).content), axis / ratio, baseLine / ratio);
           } else {
             baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2
-            if (errorShow)
-              sudoku.freshProperty()
             board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
             board.setFontSize(cellWidth * 0.9 / Math.sqrt(sudoku.getData(i, j).content.length) / ratio)
             mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
