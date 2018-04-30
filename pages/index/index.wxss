@@ -18,7 +18,8 @@
     width: 160rpx;
     position: relative;
     top: 20rpx;
-    left: 20rpx;
+    left: 40rpx;
+    border-radius: 80rpx;
 }
 
 .userInfoText{
