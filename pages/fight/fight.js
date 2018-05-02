@@ -1,92 +1,42 @@
 // pages/fight/fight.js
-var app = getApp()
 Page({
-
-  /**
-   * 页面的初始数据
-   */
   data: {
     userInfo: {},
+    roomid: 0
   },
   toCreate() {
-    //console.log("create")
-    wx.navigateTo({
-      url: '/pages/fight/create/create',
-    })
+      wx.request({
+          url: 'http://47.95.195.115:801/sudoku',
+          data: {
+              event: 'newPK',
+              userid: "ola-84h2gKJdDqccaQEH2XoWmy1Z",
+              gameid: "123"
+          },
+          method: "POST",
+          success: res => {
+              console.log(res.data)
+              var line = res.data
+              console.log(line)
+              line = line.split("(")[1]
+              console.log(line)
+              line = line.split(",")[0]
+              console.log(line)
+              let num = parseInt(line)
+              console.log(num)
+              this.setData({
+                  roomid: num
+              })
+          },
+          complete: ()=>{
+              wx.navigateTo({
+                  url: '/pages/fight/create/create?roomid=' + this.data.roomid,
+              })
+          }
+      })   
   },
   toEnter() {
     wx.navigateTo({
       url: '/pages/fight/enter/enter',
     })
-  },
-  //事件处理函数  
-  bindViewTap: function () {
-    wx.navigateTo({
-      url: '../logs/logs'
-    })
-  },  
-
-  /**
-   * 生命周期函数--监听页面加载
-   */
-  onLoad: function () {
-    //console.log('onLoad')
-    var that = this
-    //调用应用实例的方法获取全局数据  
-    app.getUserInfo(function (userInfo) {
-      //更新数据  
-      that.setData({
-        userInfo: userInfo
-      })
-    })
-  },
-
-  /**
-   * 生命周期函数--监听页面初次渲染完成
-   */
-  onReady: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-  
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-  
-  },
-
-  /**
-   * 用户点击右上角分享
-   */
-  onShareAppMessage: function () {
-  
   }
 })
