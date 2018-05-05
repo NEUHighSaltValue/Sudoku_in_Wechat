@@ -7,8 +7,7 @@ Page({
       buttonClicked: true,
       imgurl: ''
   },
-  onShow(){
-
+  onReady(){
       wx.getSetting({
           success: res => {
               if (res.authSetting['scope.userInfo']) {

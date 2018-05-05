@@ -1,6 +1,7 @@
 {
-    "pages": [      
+    "pages": [
         "pages/index/index",
+        "pages/result/result",
         "pages/setting/setting",
         "pages/about/about",
         "pages/level_select/level_select",
