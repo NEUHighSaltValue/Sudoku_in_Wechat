@@ -46,12 +46,16 @@ Page({
               content: '网络异常，战绩无法正常记录\n是否确定开始游戏',
               success: function (res) {
                   if (res.confirm) {
-                    wx.navigateTo({
-                      url: '/pages/level_select/level_select',
-                    })
+                      wx.navigateTo({
+                          url: '/pages/level_select/level_select',
+                      })
                   }
               }
             })
+          } else{
+              wx.navigateTo({
+                  url: '/pages/level_select/level_select',
+              })
           }
         },
       })
