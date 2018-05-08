@@ -8,36 +8,36 @@ Page({
         levelSelectList: [
             {
                 text: "入门级",
-                image1: "/images/rumenji.png",
-                image2: "/images/drumenji.png",
+                image1: "/images/level0.png",
+                image2: "/images/level5.png",
                 id1:"0",
                 id2:"5"
             },
             {
                 text: "初级",
-                image1: "/images/chuji.png",
-                image2: "/images/dchuji.png",
+                image1: "/images/level1.png",
+                image2: "/images/level6.png",
                 id1: "1",
                 id2: "6"
             },
             {
                 text: "中级",
-                image1: "/images/zhongji.png",
-                image2: "/images/dzhongji.png",
+                image1: "/images/level2.png",
+                image2: "/images/level7.png",
                 id1: "2",
                 id2: "7"
             },
             {
                 text: "高级",
-                image1: "/images/gaoji.png",
-                image2: "/images/dgaoji.png",
+                image1: "/images/level3.png",
+                image2: "/images/level8.png",
                 id1: "3",
                 id2: "8"
             },
             {
                 text: "骨灰级",
-                image1: "/images/guhuiji.png",
-                image2: "/images/dguhuiji.png",
+                image1: "/images/level4.png",
+                image2: "/images/level9.png",
                 id1: "4",
                 id2: "9"
             }          

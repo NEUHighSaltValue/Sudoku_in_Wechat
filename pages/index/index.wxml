@@ -1,8 +1,8 @@
 <!--index.wxml-->
 <view id = "userInfo" class="cell">
-    <image class = "avatar" src="/images/avatar.jpg"> </image>
+    <image class = "avatar" src="{{imgurl}}"> </image>
     <view class = "userInfoText">
-        <view class = "userName">我丹不是你丹</view>
+        <view class = "userName">{{nickName}}</view>
         <view class = "userLevel"> 最强王者 </view> 
     </view>
 </view>
