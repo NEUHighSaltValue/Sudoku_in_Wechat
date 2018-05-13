@@ -2,29 +2,26 @@
 //获取应用实例
 var scene
 const app = getApp()
+var storage
 
 Page({
   data: {
     buttonClicked: true,
     imgurl: '',
     nickname: "",
-    userInformation: false
+    userInformation: true
   },
   onReady() {
     wx.getSetting({
       success: res => {
         if (res.authSetting['scope.userInfo']) {
-          console.log("enter")
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
           wx.getUserInfo({
             success: res => {
-              console.log("enter2")
               // 可以将 res 发送给后台解码出 unionId
-              console.log("2", res.rawData)
               let nickName = res.rawData.split('\"nickName\":\"')[1].split('\"')[0]
               let imgurl = res.rawData.split('\"avatarUrl\":\"')[1].split('\"')[0]
               console.log(imgurl)
-
               this.setData({
                 imgurl: imgurl,
                 nickName: nickName
@@ -33,8 +30,6 @@ Page({
             complete: res => {
             }
           })
-        } else {
-          console.log("fail")
         }
       }
     })
@@ -63,6 +58,13 @@ Page({
           })
         }
       },
+    })
+  },
+  toResult() {
+    if (!this.data.buttonClicked) { return }
+    buttonClicked(this);
+    wx.navigateTo({
+      url: '/pages/result/result',
     })
   },
   toFight() {
@@ -114,7 +116,7 @@ Page({
   toIndex() {
     if (!this.data.buttonClicked) { return }
     buttonClicked(this);
-    wx.navigateTo({
+    wx.redirectTo({
       url: '/pages/index/index',
     })
   },
@@ -125,13 +127,11 @@ Page({
         this.setData({
           userInformation: true
         })
-        //console.log('yes')
       },
       fail: res => {
         this.setData({
           userInformation: false
         })
-        //console.log('no')
       }
     })
   }

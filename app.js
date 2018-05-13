@@ -9,13 +9,11 @@ App({
     wx.getSetting({
       success: res => {
         if (res.authSetting['scope.userInfo']) {
-          console.log("app")
           // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
           wx.getUserInfo({
             success: res => {
               // 可以将 res 发送给后台解码出 unionId
               this.globalData.userInfo = res.userInfo
-              //console.log(this.globalData.userInfo)
               wx.login({
                 success: function (res) {
                   if (res.code) {
@@ -29,7 +27,6 @@ App({
                       method: "POST",
                       success: res => {
                         that.globalData.userInfo2 = res.data
-                        console.log(that.globalData.userInfo2)
                         var brand = null, sys = null, version = null;
                         wx.getSystemInfo({
                           success: function (res) {
@@ -50,7 +47,6 @@ App({
                           },
                           method: "POST",
                           success: res => {
-                            console.log("lalala", res)
                           }
                         })
                       }
@@ -81,7 +77,6 @@ App({
                   method: "POST",
                   success: res => {
                     that.globalData.userInfo2 = res.data
-                    console.log(that.globalData.userInfo2)
                     var brand = null, sys = null, version = null;
                     wx.getSystemInfo({
                       success: function (res) {
@@ -90,7 +85,6 @@ App({
                         version = res.version;
                       }
                     })
-                    console.log(that.globalData.userInfo2)
                     wx.request({
                       url: 'https://www.tianzhipengfei.xin/sudoku',
                       data: {
@@ -103,7 +97,6 @@ App({
                       },
                       method: "POST",
                       success: res => {
-                        console.log("lalala", res)
                       }
                     })
                   }

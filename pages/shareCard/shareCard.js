@@ -14,11 +14,11 @@ var avaImage;//avatar
 var isPk = false;
 var isgetQr=false;
 var userName = "G!NTOKI";
-var avatarPath = "https://wx.qlogo.cn/mmopen/vi_32/g358vshZe0EXpvC7nqGm6B709QmkRDibrHqicngfQDY3bFM60QYt4TBtXwE5Eiakic10XzvAfmc1vfbEuWtz4R2oUA/132";
+var avatarPath = "\images\avatar.png";
 var gameLevel = "骨灰级";
 var usedTime = "00:55";
 var rank = 1;
-var imagePath ='/images/guhuiji.png';
+var imagePath ='/images/level0.png';
 
 var shareImg;
 
@@ -88,7 +88,7 @@ function paint() {
 //从后端服务器获取二维码
 function getQrCode(){
   wx.request({
-    url: 'http://47.95.195.115:801/sudoku',
+    url: 'https://www.tianzhipengfei.xin/sudoku',
     data: {
       event: 'getQR',
       scene: sc,

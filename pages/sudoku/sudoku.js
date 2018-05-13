@@ -218,7 +218,6 @@ class Sudoku {
                 var num = this.returnNum(i, j)
                 if (i == j && num != -1 && coord1[num] == -1) {
                     coord1[num] = i * 10 + j
-                    console.log(i + " " + j)
                 } else if (i == j && num != -1 && coord1[num] != -1) {
                     if (this.boardData[parseInt(coord1[num] / 10)][coord1[num] % 10].cat == true) {
                         this.boardData[parseInt(coord1[num] / 10)][coord1[num] % 10].color = 2
@@ -277,7 +276,6 @@ class Sudoku {
             for (var j = 0; j < 9; j++) {
                 temp = temp + this.boardData[i][j].content + " ";
             }
-            console.log(temp);
         }
     }
 
@@ -302,8 +300,6 @@ class Sudoku {
                 userAns += this.boardData[i][j].content;
             }
         }
-        console.log(userAns);
-        console.log(this.ans);
         return userAns == this.ans;
     }
 
@@ -360,6 +356,7 @@ var strS = '';
 var timer = '';
 var level = 0;
 var remainNum = 81;
+var NowTime;
 
 Page({
     data: {
@@ -369,12 +366,10 @@ Page({
     },
 
     onLoad(option) {
-        console.log(option.level)
         level = parseInt(option.level);
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
-        console.log(timeShow)
         this.setData({
             timeShowOrNOt: timeShow
         });
@@ -410,7 +405,6 @@ Page({
             },
             method: "POST",
             success: res => {
-                console.log(res.data)
                 newGameObject = res.data;
                 newGameData = newGameObject.data;
                 newGameAns = newGameObject.ans;
@@ -480,7 +474,6 @@ Page({
                     },
                     method: "POST",
                     success: res => {
-                        console.log(res)
                     }
                 })
                 sudoku.setGame(newGameData, newGameAns);
@@ -580,7 +573,6 @@ Page({
     cellSelect(event) {
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-        //console.log(selectX + " " + selectY);
 
         if (selectNum != -1) {
             sudoku.setData(selectX, selectY, selectNum, currentNote);
@@ -667,12 +659,33 @@ Page({
             }
         }
         board.draw();
-        if (remainNum == 0) {
-            if (sudoku.judgeCorrect()) {
+        if (remainNum < 81) {
+            if (sudoku.judgeCorrect() || true) {
                 this.timeStop();
                 sudoku.freeze();
+                let that = this;
                 //Shuyuan
-                console.log(num)
+                var storage = ""
+                wx.getStorage({
+                  key: 'key',
+                  success: function(res) {
+                    if (res.data) {
+                      storage = res.data + '?'
+                    } else{
+                      console.log("no key")
+                    }
+                  },
+                  fail: function(res) {
+                    storage = ""
+                  },
+                  complete: function(){
+                    wx.setStorage({
+                      key: 'key',
+                      data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' + 
+                      that.data.timeText + '|' + mutiDraw.getNowFormatDate()
+                    })
+                  }
+                })
                 wx.request({
                   url: 'https://www.tianzhipengfei.xin/sudoku',
                     data: {
@@ -683,7 +696,6 @@ Page({
                     },
                     method: "POST",
                     success: res => {
-                        console.log(res)
                     }
                 })
                 wx.showToast();

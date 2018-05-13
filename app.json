@@ -1,15 +1,15 @@
 {
   "pages": [
-    "pages/shareCard/shareCard",
     "pages/index/index",
     "pages/setting/setting",
     "pages/about/about",
     "pages/level_select/level_select",
     "pages/fight/fight",
+    "pages/result/result",
     "pages/sudoku/sudoku",
     "pages/fight/create/create",
-    "pages/fight/enter/enter"
-   
+    "pages/fight/enter/enter",
+    "pages/shareCard/shareCard"
   ],
   "window": {
     "backgroundTextStyle": "light",

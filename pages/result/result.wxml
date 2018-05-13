@@ -5,9 +5,9 @@
         <view class="result_list" wx:for="{{resultList}}">
             <view class="result_item"> 
                 <image class= 'result_image' src='/images/level0.png'> </image>
-                <view class= 'result_type' > 骨灰级 </view>
-                <view class= 'result_time'>03:23</view>
-                <view class= 'result_date'>05-01 17:32</view>
+                <view class= 'result_type' > {{index}}: {{resultList.item_type}} </view>
+                <view class= 'result_time'> {{index}}: {{resultList.item_time}} </view>
+                <view class= 'result_date'> {{index}}: {{resultList.item_date}} </view>
             </view>
         </view>
     </scroll-view>

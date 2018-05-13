@@ -65,4 +65,75 @@ function drawMultipleNumbers(board, content, x, y) {
   }
 }
 
+function getNowFormatDate() {
+  var date = new Date();
+  var seperator1 = "-";
+  var seperator2 = ":";
+  var month = date.getMonth() + 1;
+  var strDate = date.getDate();
+  if (month >= 1 && month <= 9) {
+    month = "0" + month;
+  }
+  if (strDate >= 0 && strDate <= 9) {
+    strDate = "0" + strDate;
+  }
+  var currentdate = date.getFullYear() + seperator1 + month + seperator1 + strDate
+    + " " + date.getHours() + seperator2 + date.getMinutes()
+    + seperator2 + date.getSeconds();
+  return currentdate;
+}
+
+function levelTranslation(level) {
+  switch(level+1) {
+    case 1: 
+      return '普通数独-入门级';
+    case 2:
+      return '普通数独-初级';
+    case 3:
+      return '普通数独-中级';
+    case 4:
+      return '普通数独-高级';
+    case 5:
+      return '普通数独-骨灰级';
+    case 6:
+      return '对角线数独-入门级';
+    case 7:
+      return '对角线数独-初级';
+    case 8:
+      return '对角线数独-中级';
+    case 9:
+      return '对角线数独-高级';
+    case 10:
+      return '对角线数独-骨灰级';
+  }
+}
+
+function levelImgPath(level) {
+  switch (level+1) {
+    case 1:
+      return '/images/level' + level + '.png';
+    case 2:
+      return '/images/level' + level + '.png';
+    case 3:
+      return '/images/level' + level + '.png';
+    case 4:
+      return '/images/level' + level + '.png';
+    case 5:
+      return '/images/level' + level + '.png';
+    case 6:
+      return '/images/level' + level + '.png';
+    case 7:
+      return '/images/level' + level + '.png';
+    case 8:
+      return '/images/level' + level + '.png';
+    case 9:
+      return '/images/level' + level + '.png';
+    case 10:
+      return '/images/level' + level + '.png';
+  }
+}
+
 module.exports.drawMultipleNumbers = drawMultipleNumbers
+module.exports.getNowFormatDate = getNowFormatDate
+module.exports.levelTranslation = levelTranslation
+module.exports.levelImgPath = levelImgPath
