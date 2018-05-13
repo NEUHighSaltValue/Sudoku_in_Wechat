@@ -47,6 +47,14 @@ App({
                           },
                           method: "POST",
                           success: res => {
+                            wx.setStorage({
+                              key: 'openid',
+                              data: that.globalData.userInfo2.openid
+                            })
+                            wx.setStorage({
+                              key: 'avatar',
+                              data: that.globalData.userInfo.avatarUrl.replace("wx.qlogo.cn", "tianzhipengfei.xin/wechat_image"),
+                            })
                           }
                         })
                       }
@@ -97,6 +105,10 @@ App({
                       },
                       method: "POST",
                       success: res => {
+                        wx.setStorage({
+                          key: 'openid',
+                          data: that.globalData.userInfo2.openid
+                        })
                       }
                     })
                   }
