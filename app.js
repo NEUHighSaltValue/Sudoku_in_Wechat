@@ -9,13 +9,13 @@ App({
         wx.getSetting({
             success: res => {
                 if (res.authSetting['scope.userInfo']) {
-                    console.log("have per")
+                    console.log("app")
                     // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
                     wx.getUserInfo({
                         success: res => {
                             // 可以将 res 发送给后台解码出 unionId
                             this.globalData.userInfo = res.userInfo
-                            console.log(this.globalData.userInfo)
+                            //console.log(this.globalData.userInfo)
                             wx.login({
                                 success: function (res) {
                                     if (res.code) {
@@ -67,8 +67,8 @@ App({
                             }
                         }
                     })
-                } 
-            }
+                }
+            } 
         })
         
     },
@@ -79,7 +79,7 @@ App({
     if (this.globalData.userInfo) {
       typeof cb == "function" && cb(this.globalData.userInfo)
     } else {
-      //调用登录接口  
+      //调用登录接口    
       wx.login({
         success: function () {
           wx.getUserInfo({

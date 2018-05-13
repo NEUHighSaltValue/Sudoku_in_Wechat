@@ -1,13 +1,13 @@
 <!--pages/fight/enter/enter.wxml-->
 <view class="container">  
-  <view  bindtap="bindViewTap" class="userinfo">  
+  <view  class="userinfo">  
     <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>  
     <text class="userinfo-nickname">{{userInfo.nickName}}</text>  
   </view>  
 </view>
 <view class="itemView" id="room-num">房间号：
     <input class="input" name="userName" placeholder="请输入房间号"
-    bindinput ="userNameInput"/>
+    bindinput ="numInput" type='number' adjust-position='true' value="{{room_number}}"/>
   </view>
 <view class="viewName" id="search" style="background-color:#fbf9fe">
   <button class="loginBtn" bindtap="loginBtnClick">登录</button>
