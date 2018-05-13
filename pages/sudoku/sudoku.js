@@ -403,7 +403,7 @@ Page({
             gameID=gameID-869;
         }
         wx.request({
-            url: 'http://47.95.195.115:801/sudoku',
+          url: 'https://www.tianzhipengfei.xin/sudoku',
             data: {
                 event: 'getGameData',
                 gameid: gameID
@@ -472,7 +472,7 @@ Page({
             },
             complete:() => {
                 wx.request({
-                    url: 'http://47.95.195.115:801/sudoku',
+                  url: 'https://www.tianzhipengfei.xin/sudoku',
                     data: {
                         event: 'newGame',
                         gameid: gameID,
@@ -674,7 +674,7 @@ Page({
                 //Shuyuan
                 console.log(num)
                 wx.request({
-                    url: 'http://47.95.195.115:801/sudoku',
+                  url: 'https://www.tianzhipengfei.xin/sudoku',
                     data: {
                         event: 'finishGame',
                         gameid: gameID,

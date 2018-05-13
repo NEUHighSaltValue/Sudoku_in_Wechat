@@ -6,7 +6,7 @@ Page({
   },
   toCreate() {
       wx.request({
-          url: 'http://47.95.195.115:801/sudoku',
+        url: 'https://www.tianzhipengfei.xin/sudoku',
           data: {
               event: 'newPK',
               userid: "ola-84h2gKJdDqccaQEH2XoWmy1Z",
@@ -14,22 +14,53 @@ Page({
           },
           method: "POST",
           success: res => {
-              console.log(res.data)
+              //console.log(res.data)
               var line = res.data
-              console.log(line)
+              //console.log(line)
               line = line.split("(")[1]
-              console.log(line)
+              //console.log(line)
               line = line.split(",")[0]
-              console.log(line)
+              //console.log(line)
               let num = parseInt(line)
-              console.log(num)
+              //console.log(num)
               this.setData({
                   roomid: num
               })
           },
-          complete: ()=>{
-              wx.navigateTo({
-                  url: '/pages/fight/create/create?roomid=' + this.data.roomid,
+          complete: () => {
+              wx.getSetting({
+                success: (res) => {
+                 if(res.authSetting['scope.userInfo']) {
+                  wx.navigateTo({
+                    url: '/pages/fight/create/create?roomid=' + this.data.roomid,
+                  })
+                 }
+                 else {
+                   wx.authorize({
+                     scope: 'scope.userInfo',
+                     success() {
+                       wx.showModal({
+                         title: '微信授权',
+                         content: '小程序需要获取用户信息',
+                         cancelText: '拒绝',
+                         confirmText: '允许',
+                         success: function(res) {
+                           if(res.confirm) {
+                             wx.openSetting({
+                               success: (res) => {
+                                 res.authSetting = {
+                                  "scope.userInfo": true,
+                                  "scope.userLocation": true
+                                 }
+                               }
+                             })
+                           }
+                         }
+                       })
+                     }
+                   })
+                 }
+                }
               })
           }
       })   

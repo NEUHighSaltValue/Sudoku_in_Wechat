@@ -1,10 +1,15 @@
 <!--index.wxml-->
-<view id = "userInfo" class="cell">
-    <image class = "avatar" src="{{imgurl}}"> </image>
-    <view class = "userInfoText">
-        <view class = "userName">{{nickName}}</view>
-        <view class = "userLevel"> 最强王者 </view> 
-    </view>
+<view wx:if="{{userInformation}}">
+  <view id = "userInfo" class="cell">
+      <image class = "avatar" src="{{imgurl}}"> </image>
+      <view class = "userInfoText">
+          <view class = "userName">{{nickName}}</view>
+          <view class = "userLevel"> 最强王者 </view> 
+      </view>
+  </view>
+</view>
+<view wx:else>
+  <button id='authorize' open-type='getUserInfo' bindgetuserinfo='toIndex'> 授权 </button>
 </view>
 
 <view id="newGame" class="cell" bindtap='toNewGame'>
@@ -26,3 +31,4 @@
 </view>
 
 <view id="setting" class="cell" bindtap='toSetting'> 设置 </view>
+
