@@ -15,6 +15,9 @@
   </view>
 </view>
 
+<view class='shareCard' hidden='{{completed}}' >
+
+</view>
 <view class = "page_container">
 
     <view class="function_button">

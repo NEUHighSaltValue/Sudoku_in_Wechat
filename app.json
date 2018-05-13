@@ -1,20 +1,21 @@
 {
-    "pages": [
-        "pages/index/index",
-        "pages/result/result",
-        "pages/setting/setting",
-        "pages/about/about",
-        "pages/level_select/level_select",
-        "pages/sudoku/sudoku",
-        "pages/fight/fight",
-        "pages/fight/create/create",
-        "pages/fight/enter/enter"
-    ],
-    "window": {
-        "backgroundTextStyle": "light",
-        "navigationBarBackgroundColor": "#fff",
-        "navigationBarTitleText": "WeChat",
-        "navigationBarTextStyle": "black",
-        "backgroudColor": "#FBF4D9"
-    }
+  "pages": [
+    "pages/shareCard/shareCard",
+    "pages/index/index",
+    "pages/setting/setting",
+    "pages/about/about",
+    "pages/level_select/level_select",
+    "pages/fight/fight",
+    "pages/sudoku/sudoku",
+    "pages/fight/create/create",
+    "pages/fight/enter/enter"
+   
+  ],
+  "window": {
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#fff",
+    "navigationBarTitleText": "WeChat",
+    "navigationBarTextStyle": "black",
+    "backgroudColor": "#FBF4D9"
+  }
 }
