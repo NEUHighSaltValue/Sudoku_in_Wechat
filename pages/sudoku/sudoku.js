@@ -345,6 +345,23 @@ let sudokuGameData9 = require('../../utils/data9.js')
 let sudokuGameData10 = require('../../utils/data10.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
 
+let phoneHeight = wx.getSystemInfoSync().screenHeight;
+let canvasWidth = phoneWidth * 0.667;
+let canvasHeight = phoneHeight * 0.52;
+var sc;// scene
+var ACCESS_TOKEN;
+var QrPath;
+var avaImage;//avatar
+var isPk = false;
+var isgetQr = false;
+var userName = "G!NTOKI";
+var avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
+var gameLevel = "骨灰级";
+var usedTime = "00:55";
+var rank = 1;
+var imagePath = '/images/level0.png';
+var shareImg;
+
 var selectX = -1;
 var selectY = -1;
 var selectNum = -1;
@@ -362,10 +379,12 @@ Page({
     data: {
         generateOk: false,
         timeText: '00:00',
-        timeShowOrNOt: true
+        timeShowOrNOt: true,
+        completed: false
     },
 
     onLoad(option) {
+        sc = option.scence;
         level = parseInt(option.level);
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
@@ -662,7 +681,9 @@ Page({
         if (remainNum < 81) {
             if (sudoku.judgeCorrect() || true) {
                 this.timeStop();
-                sudoku.freeze();
+                sudoku.freeze(); 
+                sc = decodeURIComponent(sc)
+                getQrCode();
                 let that = this;
                 //Shuyuan
                 var storage = ""
@@ -698,6 +719,9 @@ Page({
                     success: res => {
                     }
                 })
+                this.setData({
+                    completed: true
+                })
                 wx.showToast();
             }
         }
@@ -705,6 +729,44 @@ Page({
 
     canvasIdErrorCallback(e) {
         console.error(e.detail.errMsg);
+    },
+
+    save: function (e) {
+        var that = this;
+        console.log(shareImg);
+        setTimeout(function () {
+            wx.saveImageToPhotosAlbum({
+                filePath: shareImg,
+                success(res) {
+                    wx.showModal({
+                        title: '保存成功',
+                        content: '图片成功保存到相册了，去发圈~',
+                        showCancel: false,
+                        confirmText: '好哒',
+                        confirmColor: '#000000',
+                        success: function (res) {
+                            if (res.confirm) {
+                                wx.navigateBack({
+                                    delta: 5
+                                })
+                            }
+                        }
+                    })
+                },
+                fail(res) {
+                    wx.showToast({
+                        title: '网络异常',
+                        icon: 'loading'
+                    })
+                }
+            })
+        }, 200)
+
+    },
+    close: function (e) {
+        wx.navigateBack({
+            delta: 5
+        })
     }
 })
 
@@ -714,4 +776,94 @@ function zeroFill(str, n) {
         str = '0' + str
     }
     return str
+}
+
+
+//获得ACCESS_TOKEN、二维码后在画布上进行绘制
+function paint() {
+    const ctx = wx.createCanvasContext('cardCanvas');
+    ctx.setFillStyle('#FFFFFF')
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.setFontSize(28)
+    ctx.setFillStyle('#EE0000')
+    ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
+
+    ctx.setFontSize(18)
+    ctx.setFillStyle('#000000')
+    ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
+    ctx.fillText('解决 ' + gameLevel + ' 数独', (120) / ratio, phoneHeight * 0.16)
+
+    if (!isPk) {
+        ctx.fillText('P K 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
+    }
+    ctx.stroke();
+
+    var r = 60;
+    ctx.drawImage(imagePath, 113 / ratio, phoneHeight * 0.25, 275 / ratio, 275 / ratio)
+    if (isgetQr) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc((238 + 13) / ratio, phoneHeight * 0.25 + 137.5 / ratio, r / ratio, 0, 2 * Math.PI);
+        ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
+
+        ctx.beginPath();
+        ctx.drawImage(avatarPath, (250 - r) / ratio, phoneHeight * 0.25 + 137.5 / ratio - r / ratio, 2 * r / ratio, 2 * r / ratio);
+
+        ctx.restore();
+    }
+
+
+    ctx.stroke();
+    //ctx.draw();
+    ctx.draw(false, function () {
+        setTimeout(function () {
+            wx.canvasToTempFilePath({
+                fileType: 'jpg',
+                canvasId: 'cardCanvas',
+                success: function (res) {
+                    shareImg = res.tempFilePath;
+                }
+            }, this)
+        }, 200)
+    })
+}
+//从后端服务器获取二维码
+function getQrCode() {
+    wx.request({
+        url: 'https://www.tianzhipengfei.xin/sudoku',
+        data: {
+            event: 'getQR',
+            scene: sc,
+            width: 430
+        },
+        method: "POST",
+        success: res => {
+            QrPath = res.data
+
+            wx.getImageInfo({
+                src: QrPath,
+                success: function (sres) {
+                    imagePath = sres.path;
+                    isgetQr = true;
+                    wx.getImageInfo({
+                        src: avatarPath,
+                        success: function (sres) {
+                            avatarPath = sres.path;
+                        },
+                        complete: function (cres) {
+                            paint();
+                        }
+                    })
+                },
+                complete: function (fres) {
+                    paint();
+                }
+            })
+
+            //paint();
+        },
+        complete: res => {
+            paint();
+        }
+    })
 }

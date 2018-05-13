@@ -48,9 +48,9 @@
     line-height: 56rpx;
     top: -190rpx;
     left: 180rpx;
+    margin-left: 30rpx;
     width: 250rpx;
     position: relative;
-    text-align: center;
 }
 
 .result_time{

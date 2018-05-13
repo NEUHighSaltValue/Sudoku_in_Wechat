@@ -26,8 +26,6 @@ Page({
                 imgurl: imgurl,
                 nickName: nickName
               })
-            },
-            complete: res => {
             }
           })
         }
@@ -116,8 +114,19 @@ Page({
   toIndex() {
     if (!this.data.buttonClicked) { return }
     buttonClicked(this);
-    wx.redirectTo({
-      url: '/pages/index/index',
+    let that = this;
+    wx.getUserInfo({
+        success: res => {
+            // 可以将 res 发送给后台解码出 unionId
+            let nickName = res.rawData.split('\"nickName\":\"')[1].split('\"')[0]
+            let imgurl = res.rawData.split('\"avatarUrl\":\"')[1].split('\"')[0]
+            console.log(imgurl)
+            this.setData({
+                imgurl: imgurl,
+                nickName: nickName,
+                userInformation: true
+            })
+        }        
     })
   },
   onLoad: function (options) {

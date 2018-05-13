@@ -175,15 +175,15 @@ page{
 
 /* shareCard */
 .shareCard{
-  background: black;
+  background: rgba(0,0,0,0.7);
   border: 1px solid black;
   position: absolute;
+  top: 0rpx;
   width: 100%;
   height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
-
 }
 
 .my_canvas{
@@ -198,7 +198,7 @@ page{
   font-size: 18px;
   background: white;
   z-index: 999;  
-  margin-left: 85%; 
+  margin-left: 87%; 
 }
 .saveButton{
   width: 400rpx;
@@ -207,5 +207,5 @@ page{
   margin-top: 6.67%;
   z-index: 999;  
   font-size: 18px;
-  border-radius: 10px
+  border-radius: 10px;
 }  
