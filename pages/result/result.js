@@ -3,15 +3,15 @@ Page({
   data: {
       resultList: [
         {
+          key: 0,
           item_imgPath: "",
           item_type: "",
           item_time: "",
-          item_data: ""
+          item_date: ""
         }
       ]
   },
   onLoad() {
-    console.log("enter")
     var storage = [];
     try {
       var value = wx.getStorageSync('key')
@@ -32,6 +32,7 @@ function splitData(data) {
   var lines = new Array()
   var words = new Array()
   var result = new Array()
+  var count = 0
   lines = data.split("?")
   for (var i = 0; i < lines.length; i++) {
     words[i] = new Array()
@@ -39,15 +40,12 @@ function splitData(data) {
   }
   for (var i = 0; i < words.length; i++) {
     var item = {
-      item_imgPath: "",
-      item_type: "",
-      item_time: "",
-      item_data: ""
+      key: count++,
+      item_imgPath: words[i][0],
+      item_type: words[i][1],
+      item_time: words[i][2],
+      item_date: words[i][3]
     }
-    item.item_imgPath = words[i][0]
-    item.item_type = words[i][1]
-    item.item_time = words[i][2]
-    item.item_data = words[i][3]
     result.push(item)
   }
   return result

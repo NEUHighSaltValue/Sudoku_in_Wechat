@@ -2,13 +2,13 @@
 <view class="title"> 战绩 </view>
 <view class="container">
     <scroll-view class="result_scroll" scroll-y>
-        <view class="result_list" wx:for="{{resultList}}">
-            <view class="result_item"> 
-                <image class= 'result_image' src='/images/level0.png'> </image>
-                <view class= 'result_type' > {{index}}: {{resultList.item_type}} </view>
-                <view class= 'result_time'> {{index}}: {{resultList.item_time}} </view>
-                <view class= 'result_date'> {{index}}: {{resultList.item_date}} </view>
-            </view>
+        <view class="result_list" wx:for="{{resultList}}" wx:key="key"> 
+          <view class="result_item"> 
+              <image class= 'result_image' src='{{item.item_imgPath}}'> </image>
+              <view class= 'result_type' > {{item.item_type}} </view>
+              <view class= 'result_time'> {{item.item_time}} </view>
+              <view class= 'result_date'> {{item.item_date}} </view>
+          </view>
         </view>
     </scroll-view>
 </view>
