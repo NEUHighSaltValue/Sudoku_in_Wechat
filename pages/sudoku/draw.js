@@ -133,7 +133,33 @@ function levelImgPath(level) {
   }
 }
 
+function getExperience(level) {
+  switch(level) {
+    case 0:
+      return 3;
+    case 1:
+      return 6;
+    case 2:
+      return 10;
+    case 3:
+      return 15;
+    case 4:
+      return 20;
+    case 5:
+      return 6;
+    case 6: 
+      return 10;
+    case 7:
+      return 15;
+    case 8:
+      return 20;
+    case 9:
+      return 25;
+  }
+}
+
 module.exports.drawMultipleNumbers = drawMultipleNumbers
 module.exports.getNowFormatDate = getNowFormatDate
 module.exports.levelTranslation = levelTranslation
 module.exports.levelImgPath = levelImgPath
+module.exports.getExperience = getExperience

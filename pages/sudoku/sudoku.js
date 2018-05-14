@@ -684,6 +684,28 @@ Page({
                 let that = this;
                 //Shuyuan
                 var storage = ""
+                var exprNow = 0
+                wx.getStorage({
+                  key: 'expr',
+                  success: function (res) {
+                    if (res.data) {
+                      exprNow = parseInt(res.data) + mutiDraw.getExperience(level)
+                    } else {
+                      console.log("no expr")
+                    }
+                  },
+                  fail: function (res) {
+                    exprNow = mutiDraw.getExperience(level)
+                  },
+                  complete: function () {
+                    wx.setStorage({
+                      key: 'expr',
+                      data: exprNow
+                    })
+                    //console.log(exprNow)
+                  }
+                })
+                
                 wx.getStorage({
                   key: 'key',
                   success: function(res) {
