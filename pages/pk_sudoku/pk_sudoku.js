@@ -377,9 +377,36 @@ Page({
         generateOk: false,
         timeText: '00:00',
         timeShowOrNOt: true,
-        completed: false
+        completed: false,
+        PKHiden: true,
+        pkUserList:[
+            {
+                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
+                "percentage": "完",
+                "finished": 1
+            },
+            {
+                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
+                "percentage": "100%"
+            },
+            {
+                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
+                "percentage": "80%"
+            },
+            {
+                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
+                "percentage": "80%"
+            }
+        ]
     },
-
+    changePKHiden(){
+        console.log("before tap ", this.data.PKHiden)
+        let tempHiden = !this.data.PKHiden
+        this.setData({
+            PKHiden: tempHiden
+        })
+        console.log("after tap ", this.data.PKHiden)
+    },
     onLoad(option) {
         sc = option.scence;
         level = 1;
