@@ -18,8 +18,15 @@
 
 <view class = "page_container" hidden='{{completed}}'>
     <view class="rank_container">
-        <scroll-view class="pk_users"></scroll-view>
-        <image class="drag_icon" src="/images/drag_down.png"></image>
+        <image class="{{PKHiden ? 'drag_icon_hiden' : 'drag_icon'}}" bindtap='changePKHiden' src="/images/drag_down.png"></image>
+        <scroll-view  scroll-x="true">
+            <view class="pk_users" hidden="{{PKHiden}}">
+                <view class="user_item" wx:for="{{pkUserList}}">
+                    <image class= 'user_avatar' src='{{item.avatar}}'></image>
+                    <view class="{{item.finished ? 'user_percentage_done' : 'user_percentage'}}">{{item.percentage}}</view>
+                </view>
+            </view>
+        </scroll-view>
     </view>
     <view class="function_button">
     <view wx:if="{{!timeShowOrNot}}" class="time"> {{timeText}} </view> 
