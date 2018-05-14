@@ -1,20 +1,52 @@
 // pages/result/result.js
 Page({
   data: {
-      resultList: []
+      resultList: [
+        {
+          key: 0,
+          item_imgPath: "",
+          item_type: "",
+          item_time: "",
+          item_date: ""
+        }
+      ]
   },
-  onLoad(){
-      wx.request({
-          url: 'http://47.95.195.115:801/sudoku',
-          data: {
-              event: 'searchGameResult',
-              userid: "ola-84h2gKJdDqccaQEH2XoWmy1Q",
-              searchnum: 5
-          },
-          method: "POST",
-          success: res => {
-              console.log(res)
-          }
-      })
+  onLoad() {
+    var storage = [];
+    try {
+      var value = wx.getStorageSync('key')
+      if (value) {
+        storage = splitData(value)
+      }
+    } catch (e) {
+      console.log('get storage error')
+    }
+    this.setData({
+      resultList: storage
+    })
+    console.log(this.data.resultList)
   }
 })
+
+function splitData(data) {
+  var lines = new Array()
+  var words = new Array()
+  var result = new Array()
+  var count = 0
+  lines = data.split("?")
+  for (var i = 0; i < lines.length; i++) {
+    words[i] = new Array()
+    words[i] = lines[i].split("|")
+  }
+  for (var i = 0; i < words.length; i++) {
+    var item = {
+      key: count++,
+      item_imgPath: words[i][0],
+      item_type: words[i][1],
+      item_time: words[i][2],
+      item_date: words[i][3]
+    }
+    result.push(item)
+  }
+  return result
+}

@@ -15,9 +15,7 @@
   </view>
 </view>
 
-<view class='shareCard' hidden='{{completed}}' >
 
-</view>
 <view class = "page_container">
 
     <view class="function_button">
@@ -35,4 +33,12 @@
     <canvas canvas-id='table' id='table' class='canvasTable' bindtouchstart="tableSelect" disable-scroll="true"></canvas>
     </view> 
 
+</view>
+
+<view class='shareCard' hidden='{{!completed}}' >
+    <canvas class="my_canvas" canvas-id='cardCanvas' >
+        <icon class='closeButton' type="cancel" bindtap='close' color="black" size="34"></icon>
+  </canvas>
+   
+   <button class='saveButton' bindtap='save'>保存分享到朋友圈</button>
 </view>

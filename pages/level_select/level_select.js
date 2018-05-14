@@ -44,8 +44,8 @@ Page({
       ]
   },
   selectLevel(e){
-      wx.redirectTo({
-          url: '/pages/sudoku/sudoku?level=' + e.currentTarget.dataset.id,
-      })
-  }
+    wx.redirectTo({
+        url: '/pages/sudoku/sudoku?level=' + e.currentTarget.dataset.id,
+    })
+  },
 })

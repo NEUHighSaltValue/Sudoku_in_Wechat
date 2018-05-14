@@ -44,19 +44,19 @@
 }
 
 .result_type{
-    font-size: 40rpx;
+    font-size: 30rpx;
     line-height: 56rpx;
     top: -190rpx;
     left: 180rpx;
+    margin-left: 30rpx;
     width: 250rpx;
     position: relative;
-    text-align: center;
 }
 
 .result_time{
     font-size: 80rpx;
     line-height: 112rpx;
-    top: -189rpx;
+    top: -169rpx;
     left: 280rpx;
     width: 250rpx;
     text-align: center;
@@ -64,10 +64,10 @@
 }
  
 .result_date{
-    font-size: 40rpx;
+    font-size: 30rpx;
     line-height: 56rpx;
-    top: -358rpx;
-    left: 310rpx;
+    top: -308rpx;
+    left: 270rpx;
     width: 400rpx;
     text-align: center;
     position: relative;

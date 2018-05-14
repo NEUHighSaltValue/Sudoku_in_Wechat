@@ -124,7 +124,7 @@ class Sudoku {
                     this.boardData[x][y].content = num.toString();
                 }
             }
-            //this.freshProperty()
+            this.freshProperty()
         }
     }
 
@@ -155,12 +155,15 @@ class Sudoku {
                 } else {
                     if (this.boardData[i][j].note == true) {
                         this.boardData[i][j].color = 5;
+                        console.log("note: ",i, j)
                     } else {
                         this.boardData[i][j].color = 0;
                     }
                 }
             }
         }
+    }
+    judgeError(){
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
                 if (this.row[i][j].size > 1) {
@@ -218,7 +221,6 @@ class Sudoku {
                 var num = this.returnNum(i, j)
                 if (i == j && num != -1 && coord1[num] == -1) {
                     coord1[num] = i * 10 + j
-                    console.log(i + " " + j)
                 } else if (i == j && num != -1 && coord1[num] != -1) {
                     if (this.boardData[parseInt(coord1[num] / 10)][coord1[num] % 10].cat == true) {
                         this.boardData[parseInt(coord1[num] / 10)][coord1[num] % 10].color = 2
@@ -277,7 +279,6 @@ class Sudoku {
             for (var j = 0; j < 9; j++) {
                 temp = temp + this.boardData[i][j].content + " ";
             }
-            console.log(temp);
         }
     }
 
@@ -302,8 +303,6 @@ class Sudoku {
                 userAns += this.boardData[i][j].content;
             }
         }
-        console.log(userAns);
-        console.log(this.ans);
         return userAns == this.ans;
     }
 
@@ -336,7 +335,7 @@ let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
 //Zixuan board 里各种情况下的颜色
-let colorTable = ["gray", "black", "#CC6699", "#CC9900", "#CC0000", "#666666"]
+let colorTable = ["gray", "black", "#CC6699", "#CC9900", "#CC0000", "#333399"]
 let sudokuGameData1 = require('../../utils/data1.js')
 let sudokuGameData2 = require('../../utils/data2.js')
 let sudokuGameData3 = require('../../utils/data3.js')
@@ -349,6 +348,23 @@ let sudokuGameData9 = require('../../utils/data9.js')
 let sudokuGameData10 = require('../../utils/data10.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
 
+let phoneHeight = wx.getSystemInfoSync().screenHeight;
+let canvasWidth = phoneWidth * 0.667;
+let canvasHeight = phoneHeight * 0.52;
+var sc;// scene
+var ACCESS_TOKEN;
+var QrPath;
+var avaImage;//avatar
+var isPk = false;
+var isgetQr = false;
+var userName = "G!NTOKI";
+var avatarPath;
+var gameLevel = "骨灰级";
+var usedTime = "00:55";
+var rank = 1;
+var imagePath = '/images/level0.png';
+var shareImg;
+
 var selectX = -1;
 var selectY = -1;
 var selectNum = -1;
@@ -360,21 +376,22 @@ var strS = '';
 var timer = '';
 var level = 0;
 var remainNum = 81;
+var NowTime;
 
 Page({
     data: {
         generateOk: false,
         timeText: '00:00',
-        timeShowOrNOt: true
+        timeShowOrNOt: true,
+        completed: false
     },
 
     onLoad(option) {
-        console.log(option.level)
+        sc = option.scence;
         level = parseInt(option.level);
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
-        console.log(timeShow)
         this.setData({
             timeShowOrNOt: timeShow
         });
@@ -403,14 +420,13 @@ Page({
             gameID=gameID-869;
         }
         wx.request({
-            url: 'http://47.95.195.115:801/sudoku',
+          url: 'https://www.tianzhipengfei.xin/sudoku',
             data: {
                 event: 'getGameData',
                 gameid: gameID
             },
             method: "POST",
             success: res => {
-                console.log(res.data)
                 newGameObject = res.data;
                 newGameData = newGameObject.data;
                 newGameAns = newGameObject.ans;
@@ -472,7 +488,7 @@ Page({
             },
             complete:() => {
                 wx.request({
-                    url: 'http://47.95.195.115:801/sudoku',
+                  url: 'https://www.tianzhipengfei.xin/sudoku',
                     data: {
                         event: 'newGame',
                         gameid: gameID,
@@ -480,7 +496,6 @@ Page({
                     },
                     method: "POST",
                     success: res => {
-                        console.log(res)
                     }
                 })
                 sudoku.setGame(newGameData, newGameAns);
@@ -580,14 +595,15 @@ Page({
     cellSelect(event) {
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-        //console.log(selectX + " " + selectY);
 
         if (selectNum != -1) {
+            console.log(selectX, selectY, selectNum, currentNote)
             sudoku.setData(selectX, selectY, selectNum, currentNote);
             if (errorShow) {
-                sudoku.freshProperty()
-                if (level > 5)
+                sudoku.judgeError()
+                if (level >= 5){
                     sudoku.freshDiagonal()
+                }
             }
             this.freshUI();
         }
@@ -646,6 +662,7 @@ Page({
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
+                // console.log(i, j, sudoku.getData(i, j).color)
                 if (parseInt(sudoku.getData(i, j).content) != 0) {
                     if (sudoku.getData(i, j).note == false) {
                         remainNum--;
@@ -667,14 +684,39 @@ Page({
             }
         }
         board.draw();
-        if (remainNum == 0) {
-            if (sudoku.judgeCorrect()) {
+        if (remainNum < 81) {
+            if (sudoku.judgeCorrect() || true) {
                 this.timeStop();
-                sudoku.freeze();
+                sudoku.freeze(); 
+                sc = decodeURIComponent(sc)
+                getQrCodeAndAvatar();
+                usedTime = this.data.timeText;
+                gameLevel = mutiDraw.levelTranslation(level)
+                let that = this;
                 //Shuyuan
-                console.log(num)
+                var storage = ""
+                wx.getStorage({
+                  key: 'key',
+                  success: function(res) {
+                    if (res.data) {
+                      storage = res.data + '?'
+                    } else{
+                      console.log("no key")
+                    }
+                  },
+                  fail: function(res) {
+                    storage = ""
+                  },
+                  complete: function(){
+                    wx.setStorage({
+                      key: 'key',
+                      data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' + 
+                      that.data.timeText + '|' + mutiDraw.getNowFormatDate()
+                    })
+                  }
+                })
                 wx.request({
-                    url: 'http://47.95.195.115:801/sudoku',
+                  url: 'https://www.tianzhipengfei.xin/sudoku',
                     data: {
                         event: 'finishGame',
                         gameid: gameID,
@@ -683,8 +725,10 @@ Page({
                     },
                     method: "POST",
                     success: res => {
-                        console.log(res)
                     }
+                })
+                this.setData({
+                    completed: true
                 })
                 wx.showToast();
             }
@@ -693,6 +737,44 @@ Page({
 
     canvasIdErrorCallback(e) {
         console.error(e.detail.errMsg);
+    },
+
+    save: function (e) {
+        var that = this;
+        console.log(shareImg);
+        setTimeout(function () {
+            wx.saveImageToPhotosAlbum({
+                filePath: shareImg,
+                success(res) {
+                    wx.showModal({
+                        title: '保存成功',
+                        content: '图片成功保存到相册了，去发圈~',
+                        showCancel: false,
+                        confirmText: '好哒',
+                        confirmColor: '#000000',
+                        success: function (res) {
+                            if (res.confirm) {
+                                wx.navigateBack({
+                                    delta: 5
+                                })
+                            }
+                        }
+                    })
+                },
+                fail(res) {
+                    wx.showToast({
+                        title: '网络异常',
+                        icon: 'loading'
+                    })
+                }
+            })
+        }, 200)
+
+    },
+    close: function (e) {
+        wx.navigateBack({
+            delta: 5
+        })
     }
 })
 
@@ -702,4 +784,105 @@ function zeroFill(str, n) {
         str = '0' + str
     }
     return str
+}
+
+
+//获得ACCESS_TOKEN、二维码后在画布上进行绘制
+function paint() {
+    const ctx = wx.createCanvasContext('cardCanvas');
+    ctx.setFillStyle('#FFFFFF')
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.setFontSize(28)
+    ctx.setFillStyle('#EE0000')
+    ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
+
+    ctx.setFontSize(18)
+    ctx.setFillStyle('#000000')
+    ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
+    ctx.fillText('解决 ' + gameLevel , (120) / ratio, phoneHeight * 0.16)
+
+    if (!isPk) {
+        ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
+    }
+    ctx.stroke();
+
+    var r = 60;
+    ctx.drawImage(imagePath, 113 / ratio, phoneHeight * 0.25, 275 / ratio, 275 / ratio)
+    if (isgetQr) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc((238 + 13) / ratio, phoneHeight * 0.25 + 137.5 / ratio, r / ratio, 0, 2 * Math.PI);
+        ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
+
+        ctx.beginPath();
+        ctx.drawImage(avatarPath, (250 - r) / ratio, phoneHeight * 0.25 + 137.5 / ratio - r / ratio, 2 * r / ratio, 2 * r / ratio);
+
+        ctx.restore();
+    }
+
+
+    ctx.stroke();
+    //ctx.draw();
+    ctx.draw(false, function () {
+        setTimeout(function () {
+            wx.canvasToTempFilePath({
+                fileType: 'jpg',
+                canvasId: 'cardCanvas',
+                success: function (res) {
+                    shareImg = res.tempFilePath;
+                }
+            }, this)
+        }, 200)
+    })
+}
+//从后端服务器获取二维码和头像
+function getQrCodeAndAvatar() {
+    wx.getStorage({
+        key: 'avatar',
+        success: function (res) {
+            avatarPath = res.data;
+        },
+        fail: function (){
+            avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
+        },
+        complete: function(){
+            wx.request({
+                url: 'https://www.tianzhipengfei.xin/sudoku',
+                data: {
+                    event: 'getQR',
+                    scene: sc,
+                    width: 430
+                },
+                method: "POST",
+                success: res => {
+                    QrPath = res.data
+
+                    wx.getImageInfo({
+                        src: QrPath,
+                        success: function (sres) {
+                            imagePath = sres.path;
+                            isgetQr = true;
+                            wx.getImageInfo({
+                                src: avatarPath,
+                                success: function (sres) {
+                                    avatarPath = sres.path;
+                                },
+                                complete: function (cres) {
+                                    paint();
+                                }
+                            })
+                        },
+                        complete: function (fres) {
+                            paint();
+                        }
+                    })
+
+                    //paint();
+                },
+                complete: res => {
+                    paint();
+                }
+            })
+        }
+    });
 }

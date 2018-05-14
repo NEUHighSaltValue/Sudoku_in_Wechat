@@ -5,6 +5,12 @@
     border-radius: 24rpx;
 }
 
+#authorize{
+  top: 140rpx;
+  left: 10rpx;
+  width: 220rpx;
+}
+
 #userInfo{
     height: 200rpx;
     width: 592rpx;
