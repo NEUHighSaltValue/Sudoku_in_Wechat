@@ -197,7 +197,6 @@ page{
   width: 60rpx;
   height: 60rpx;
   font-size: 18px;
-  background: white;
   z-index: 999;  
   margin-left: 87%; 
 }
