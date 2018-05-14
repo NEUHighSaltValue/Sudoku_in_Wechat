@@ -109,7 +109,6 @@ page{
 
 .function_button{
   text-align: center;
-  margin: 48rpx;
   top: 0rpx;
   height: 20rpx;
   position: relative;
@@ -197,6 +196,7 @@ page{
   width: 60rpx;
   height: 60rpx;
   font-size: 18px;
+  background: white;
   z-index: 999;  
   margin-left: 87%; 
 }
@@ -209,3 +209,69 @@ page{
   font-size: 18px;
   border-radius: 10px;
 }  
+
+.rank_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 999;
+    position: absolute;
+    bottom: 0rpx;
+}
+
+.pk_users{
+    height: 140rpx;
+    width: 750rpx;
+    display: flex;
+}
+
+.pk_users_hide{
+    height: 140rpx;
+    width: 750rpx;
+    display: flex;
+}
+
+.user_item{
+    background: white;
+    display: flex;
+    flex-shrink: 0;
+    width: 210rpx;
+    align-items: center;
+}
+
+.user_avatar{
+    width: 90rpx;
+    height: 90rpx;
+    margin-left: 20rpx;
+}
+
+.user_percentage{
+    width: 100rpx;
+    margin-left: 20rpx;
+    text-align: center;
+}
+
+.user_percentage_done{
+    width: 100rpx;
+    margin-left: 20rpx;
+    text-align: center;
+    font-size: 50rpx;
+}
+
+.drag_icon{
+    height: 50rpx;
+    width: 100rpx;
+    background: gray;
+    border-radius:4em 4em 0em 0em ;
+    opacity: 0.8;
+}
+
+.drag_icon_hiden{
+    height: 50rpx;
+    width: 100rpx;
+    background: gray;
+    border-radius:0em 0em 4em 4em ;
+    opacity: 0.8;
+    transform:rotate(180deg);
+    margin-left: 325rpx;
+}

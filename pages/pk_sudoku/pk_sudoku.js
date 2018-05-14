@@ -1,9 +1,3 @@
-//HPY: -1.note模式下出现双击填0的情况   -2.selectNum颜色不明显
-//LJL: -1. sameNumHighlight(need to talk more)
-
-// importScripts('../../sudokuModel.js');
-import sudokuFile from '../../sudokuModel'
-
 /*
 For each cell
 cat true means can fill the call, false not
@@ -155,7 +149,7 @@ class Sudoku {
                 } else {
                     if (this.boardData[i][j].note == true) {
                         this.boardData[i][j].color = 5;
-                        console.log("note: ",i, j)
+                        console.log("note: ", i, j)
                     } else {
                         this.boardData[i][j].color = 0;
                     }
@@ -163,7 +157,7 @@ class Sudoku {
             }
         }
     }
-    judgeError(){
+    judgeError() {
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
                 if (this.row[i][j].size > 1) {
@@ -383,12 +377,39 @@ Page({
         generateOk: false,
         timeText: '00:00',
         timeShowOrNOt: true,
-        completed: false
+        completed: false,
+        PKHiden: true,
+        pkUserList:[
+            {
+                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
+                "percentage": "完",
+                "finished": 1
+            },
+            {
+                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
+                "percentage": "100%"
+            },
+            {
+                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
+                "percentage": "80%"
+            },
+            {
+                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
+                "percentage": "80%"
+            }
+        ]
     },
-
+    changePKHiden(){
+        console.log("before tap ", this.data.PKHiden)
+        let tempHiden = !this.data.PKHiden
+        this.setData({
+            PKHiden: tempHiden
+        })
+        console.log("after tap ", this.data.PKHiden)
+    },
     onLoad(option) {
         sc = option.scence;
-        level = parseInt(option.level);
+        level = 1;
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
@@ -415,12 +436,12 @@ Page({
         })
 
         var newGameObject, newGameData, newGameAns;
-        gameID = Math.floor(Math.random() * 1000) + level * 1000+1;
-        if(gameID>9868){
-            gameID=gameID-869;
+        gameID = Math.floor(Math.random() * 1000) + level * 1000 + 1;
+        if (gameID > 9868) {
+            gameID = gameID - 869;
         }
         wx.request({
-          url: 'https://www.tianzhipengfei.xin/sudoku',
+            url: 'https://www.tianzhipengfei.xin/sudoku',
             data: {
                 event: 'getGameData',
                 gameid: gameID
@@ -431,7 +452,7 @@ Page({
                 newGameData = newGameObject.data;
                 newGameAns = newGameObject.ans;
             },
-            fail: () =>{
+            fail: () => {
                 this.gameID = Math.floor(Math.random() * 200) + level * 1000;
                 switch (level) {
                     case 0:
@@ -486,7 +507,18 @@ Page({
                         break;
                 }
             },
-            complete:() => {
+            complete: () => {
+                wx.request({
+                    url: 'https://www.tianzhipengfei.xin/sudoku',
+                    data: {
+                        event: 'newGame',
+                        gameid: gameID,
+                        userid: "123"
+                    },
+                    method: "POST",
+                    success: res => {
+                    }
+                })
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({
@@ -590,7 +622,7 @@ Page({
             sudoku.setData(selectX, selectY, selectNum, currentNote);
             if (errorShow) {
                 sudoku.judgeError()
-                if (level >= 5){
+                if (level >= 5) {
                     sudoku.freshDiagonal()
                 }
             }
@@ -673,10 +705,10 @@ Page({
             }
         }
         board.draw();
-        if (remainNum < 81) {
-            if (sudoku.judgeCorrect() || true) {
+        if (remainNum == 0) {
+            if (sudoku.judgeCorrect()) {
                 this.timeStop();
-                sudoku.freeze(); 
+                sudoku.freeze();
                 sc = decodeURIComponent(sc)
                 getQrCodeAndAvatar();
                 usedTime = this.data.timeText;
@@ -685,31 +717,31 @@ Page({
                 //Shuyuan
                 var storage = ""
                 wx.getStorage({
-                  key: 'key',
-                  success: function(res) {
-                    if (res.data) {
-                      storage = res.data + '?'
-                    } else{
-                      console.log("no key")
+                    key: 'key',
+                    success: function (res) {
+                        if (res.data) {
+                            storage = res.data + '?'
+                        } else {
+                            console.log("no key")
+                        }
+                    },
+                    fail: function (res) {
+                        storage = ""
+                    },
+                    complete: function () {
+                        wx.setStorage({
+                            key: 'key',
+                            data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' +
+                            that.data.timeText + '|' + mutiDraw.getNowFormatDate()
+                        })
                     }
-                  },
-                  fail: function(res) {
-                    storage = ""
-                  },
-                  complete: function(){
-                    wx.setStorage({
-                      key: 'key',
-                      data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' + 
-                      that.data.timeText + '|' + mutiDraw.getNowFormatDate()
-                    })
-                  }
                 })
                 wx.request({
-                  url: 'https://www.tianzhipengfei.xin/sudoku',
+                    url: 'https://www.tianzhipengfei.xin/sudoku',
                     data: {
                         event: 'finishGame',
                         gameid: gameID,
-                        userid: getApp().globalData.userInfo2.openid,
+                        userid: "123",
                         finishTime: num
                     },
                     method: "POST",
@@ -779,123 +811,97 @@ function zeroFill(str, n) {
 
 //获得ACCESS_TOKEN、二维码后在画布上进行绘制
 function paint() {
-  console.log("begin paint")
-  const ctx = wx.createCanvasContext('cardCanvas');
-  //画背景图
-  //ctx.drawImage(图片路径。左上角x,左上角y,图片宽，图片高)
-  ctx.drawImage("/images/background_circle.jpg", 0,0, canvasWidth, canvasHeight)
-  
-  //写文字
-  ctx.setFontSize(28)
-  ctx.setFillStyle('#EE0000')
-  //ctx.fillText(字符串，x,y)
-  ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
+    const ctx = wx.createCanvasContext('cardCanvas');
+    ctx.setFillStyle('#FFFFFF')
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    ctx.setFontSize(28)
+    ctx.setFillStyle('#EE0000')
+    ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
 
-  ctx.setFontSize(18)
-  ctx.setFillStyle('#000000')
-  ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
-  ctx.fillText('解决 ' + gameLevel, (120) / ratio, phoneHeight * 0.16)
-  
-  //非PK版shareCard
-  // if (!isPk) {
-  //   ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
-  // }
-  ctx.stroke();
-  
-  var QrCodeRadius = 200/2;//小程序码半径，275是小程序码边长
-  var avatarRadius = 45;//头像半径
-  var QrCodeYRatio = 0.12;//小程序码左上角Y位置占整个canvas的比例
+    ctx.setFontSize(18)
+    ctx.setFillStyle('#000000')
+    ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
+    ctx.fillText('解决 ' + gameLevel, (120) / ratio, phoneHeight * 0.16)
 
-  ctx.save();
-  ctx.beginPath();
-  //ctx.arc(圆心x，圆心y，半径，初始弧度，要画弧度)
-  ctx.arc((250 - QrCodeRadius) / ratio + QrCodeRadius/ratio, phoneHeight * QrCodeYRatio + QrCodeRadius/ratio,            QrCodeRadius / ratio, 0, 2 * Math.PI);
-  ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
-
-  ctx.beginPath();
-  ctx.drawImage(imagePath, (250 - QrCodeRadius) / ratio, phoneHeight * QrCodeYRatio, QrCodeRadius * 2 / ratio, QrCodeRadius * 2 / ratio)
-  ctx.restore();
-
-  if (isgetQr) {
-    ctx.save(); 
-    ctx.setStrokeStyle('#FFFFFF')
-    ctx.beginPath(); 
-    //头像
-    //ctx.arc((238 + 13) / ratio, phoneHeight * 0.25 + 137.5 / ratio, r / ratio, 0, 2 * Math.PI);
-    ctx.arc((238 + 13) / ratio, phoneHeight * QrCodeYRatio + QrCodeRadius / ratio, avatarRadius / ratio, 0, 2 * Math.PI);
+    ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
     ctx.stroke();
-    ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
-    ctx.beginPath();
-    //头像
-    ctx.drawImage(avatarPath, (250 - avatarRadius) / ratio, phoneHeight * QrCodeYRatio + QrCodeRadius / ratio - avatarRadius / ratio, 2 * avatarRadius / ratio, 2 * avatarRadius / ratio);
-    ctx.restore();
-  }
-  ctx.stroke();
-  ctx.draw(false, function () {
-    setTimeout(function () {
-      wx.canvasToTempFilePath({
-        fileType: 'jpg',
-        canvasId: 'cardCanvas',
-        success: function (res) {
-          shareImg = res.tempFilePath;
-        }
-      }, this)
-    }, 200)
-  })
+
+    var r = 60;
+    ctx.drawImage(imagePath, 113 / ratio, phoneHeight * 0.25, 275 / ratio, 275 / ratio)
+    if (isgetQr) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc((238 + 13) / ratio, phoneHeight * 0.25 + 137.5 / ratio, r / ratio, 0, 2 * Math.PI);
+        ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
+
+        ctx.beginPath();
+        ctx.drawImage(avatarPath, (250 - r) / ratio, phoneHeight * 0.25 + 137.5 / ratio - r / ratio, 2 * r / ratio, 2 * r / ratio);
+
+        ctx.restore();
+    }
+
+    ctx.stroke();
+    //ctx.draw();
+    ctx.draw(false, function () {
+        setTimeout(function () {
+            wx.canvasToTempFilePath({
+                fileType: 'jpg',
+                canvasId: 'cardCanvas',
+                success: function (res) {
+                    shareImg = res.tempFilePath;
+                }
+            }, this)
+        }, 200)
+    })
 }
 //从后端服务器获取二维码和头像
 function getQrCodeAndAvatar() {
-  wx.getStorage({
-    key: 'avatar',
-    success: function (res) {
-      console.log(res.data)
-      avatarPath = res.data;
-    },
-    fail: function () {
-      avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
-    },
-    complete: function () {
-      wx.request({
-        url: 'https://www.tianzhipengfei.xin/sudoku',
-        data: {
-          event: 'getQR',
-          scene: sc,
-          width: 430
+    wx.getStorage({
+        key: 'avatar',
+        success: function (res) {
+            avatarPath = res.data;
         },
-        method: "POST",
-        success: res => {
-          QrPath = res.data
-          //console.log(QrPath)
-          //console.log(avatarPath)
-          wx.getImageInfo({
-            src: QrPath,
-            success: function (sres) {
-              imagePath = sres.path;
-              isgetQr = true;
-              wx.getImageInfo({
-                src: avatarPath,
-                success: function (sres) {
-                  avatarPath = sres.path;
+        fail: function () {
+            avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
+        },
+        complete: function () {
+            wx.request({
+                url: 'https://www.tianzhipengfei.xin/sudoku',
+                data: {
+                    event: 'getQR',
+                    scene: sc,
+                    width: 430
                 },
-                complete: function (cres) {
-                  paint();
-                }
-              })
-            },
-            complete: function (fres) {
-              //paint();
-            }
-          })
+                method: "POST",
+                success: res => {
+                    QrPath = res.data
 
-          //paint();
-        },
-        fail: res => {
-          paint();
-        },
-        complete: res => {
-          //paint();
+                    wx.getImageInfo({
+                        src: QrPath,
+                        success: function (sres) {
+                            imagePath = sres.path;
+                            isgetQr = true;
+                            wx.getImageInfo({
+                                src: avatarPath,
+                                success: function (sres) {
+                                    avatarPath = sres.path;
+                                },
+                                complete: function (cres) {
+                                    paint();
+                                }
+                            })
+                        },
+                        complete: function (fres) {
+                            paint();
+                        }
+                    })
+
+                    //paint();
+                },
+                complete: res => {
+                    paint();
+                }
+            })
         }
-      })
-    }
-  }); 
+    });
 }
