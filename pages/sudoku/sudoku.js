@@ -727,10 +727,11 @@ Page({
                     success: res => {
                     }
                 })
+
+                wx.showToast();
                 this.setData({
                     completed: true
                 })
-                wx.showToast();
             }
         }
     },
@@ -819,7 +820,6 @@ function paint() {
 
         ctx.restore();
     }
-
 
     ctx.stroke();
     //ctx.draw();

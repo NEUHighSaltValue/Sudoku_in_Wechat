@@ -16,7 +16,7 @@
 </view>
 
 
-<view class = "page_container">
+<view class = "page_container" hidden='{{completed}}'>
 
     <view class="function_button">
     <button class ="new" type="default" size="mini" bindtap='toLevelSelect'> new </button>
