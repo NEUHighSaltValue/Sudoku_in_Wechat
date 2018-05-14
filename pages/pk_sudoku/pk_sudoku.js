@@ -149,7 +149,7 @@ class Sudoku {
                 } else {
                     if (this.boardData[i][j].note == true) {
                         this.boardData[i][j].color = 5;
-                        console.log("note: ",i, j)
+                        console.log("note: ", i, j)
                     } else {
                         this.boardData[i][j].color = 0;
                     }
@@ -157,7 +157,7 @@ class Sudoku {
             }
         }
     }
-    judgeError(){
+    judgeError() {
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
                 if (this.row[i][j].size > 1) {
@@ -382,7 +382,7 @@ Page({
 
     onLoad(option) {
         sc = option.scence;
-        level = parseInt(option.level);
+        level = 1;
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
@@ -409,12 +409,12 @@ Page({
         })
 
         var newGameObject, newGameData, newGameAns;
-        gameID = Math.floor(Math.random() * 1000) + level * 1000+1;
-        if(gameID>9868){
-            gameID=gameID-869;
+        gameID = Math.floor(Math.random() * 1000) + level * 1000 + 1;
+        if (gameID > 9868) {
+            gameID = gameID - 869;
         }
         wx.request({
-          url: 'https://www.tianzhipengfei.xin/sudoku',
+            url: 'https://www.tianzhipengfei.xin/sudoku',
             data: {
                 event: 'getGameData',
                 gameid: gameID
@@ -425,7 +425,7 @@ Page({
                 newGameData = newGameObject.data;
                 newGameAns = newGameObject.ans;
             },
-            fail: () =>{
+            fail: () => {
                 this.gameID = Math.floor(Math.random() * 200) + level * 1000;
                 switch (level) {
                     case 0:
@@ -480,7 +480,18 @@ Page({
                         break;
                 }
             },
-            complete:() => {
+            complete: () => {
+                wx.request({
+                    url: 'https://www.tianzhipengfei.xin/sudoku',
+                    data: {
+                        event: 'newGame',
+                        gameid: gameID,
+                        userid: "123"
+                    },
+                    method: "POST",
+                    success: res => {
+                    }
+                })
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({
@@ -584,7 +595,7 @@ Page({
             sudoku.setData(selectX, selectY, selectNum, currentNote);
             if (errorShow) {
                 sudoku.judgeError()
-                if (level >= 5){
+                if (level >= 5) {
                     sudoku.freshDiagonal()
                 }
             }
@@ -670,7 +681,7 @@ Page({
         if (remainNum == 0) {
             if (sudoku.judgeCorrect()) {
                 this.timeStop();
-                sudoku.freeze(); 
+                sudoku.freeze();
                 sc = decodeURIComponent(sc)
                 getQrCodeAndAvatar();
                 usedTime = this.data.timeText;
@@ -679,31 +690,31 @@ Page({
                 //Shuyuan
                 var storage = ""
                 wx.getStorage({
-                  key: 'key',
-                  success: function(res) {
-                    if (res.data) {
-                      storage = res.data + '?'
-                    } else{
-                      console.log("no key")
+                    key: 'key',
+                    success: function (res) {
+                        if (res.data) {
+                            storage = res.data + '?'
+                        } else {
+                            console.log("no key")
+                        }
+                    },
+                    fail: function (res) {
+                        storage = ""
+                    },
+                    complete: function () {
+                        wx.setStorage({
+                            key: 'key',
+                            data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' +
+                            that.data.timeText + '|' + mutiDraw.getNowFormatDate()
+                        })
                     }
-                  },
-                  fail: function(res) {
-                    storage = ""
-                  },
-                  complete: function(){
-                    wx.setStorage({
-                      key: 'key',
-                      data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' + 
-                      that.data.timeText + '|' + mutiDraw.getNowFormatDate()
-                    })
-                  }
                 })
                 wx.request({
-                  url: 'https://www.tianzhipengfei.xin/sudoku',
+                    url: 'https://www.tianzhipengfei.xin/sudoku',
                     data: {
                         event: 'finishGame',
                         gameid: gameID,
-                        userid: getApp().globalData.userInfo2.openid,
+                        userid: "123",
                         finishTime: num
                     },
                     method: "POST",
@@ -783,11 +794,9 @@ function paint() {
     ctx.setFontSize(18)
     ctx.setFillStyle('#000000')
     ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
-    ctx.fillText('解决 ' + gameLevel , (120) / ratio, phoneHeight * 0.16)
+    ctx.fillText('解决 ' + gameLevel, (120) / ratio, phoneHeight * 0.16)
 
-    if (!isPk) {
-        ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
-    }
+    ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
     ctx.stroke();
 
     var r = 60;
@@ -825,10 +834,10 @@ function getQrCodeAndAvatar() {
         success: function (res) {
             avatarPath = res.data;
         },
-        fail: function (){
+        fail: function () {
             avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
         },
-        complete: function(){
+        complete: function () {
             wx.request({
                 url: 'https://www.tianzhipengfei.xin/sudoku',
                 data: {
