@@ -12,6 +12,7 @@ Page({
     nickname: "",
     userInformation: true,
     level_item: {
+      name: "",
       ratio: 0.0,
       str: ""
     }

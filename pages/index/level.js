@@ -58,26 +58,29 @@ function level_exprience(level) {
 function level_ratio() {
   var level = getLevel()
   var item = {
+    name: "",
     ratio: 0.0,
     str: ""
   }
   wx.getStorage({
     key: 'expr',
     success: function(res) {
+      item.name = level_name(level)
       item.ratio = parseInt(res.data) / level_exprience(level)
       item.str = parseInt(res.data) + "/" + level_exprience(level)
       if(item.ratio == 1.0) {
-        console.log('be',item)
+        item.name = level_name(level+1)
         item.ratio = parseInt(res.data) / level_exprience(level+1)
         item.str = parseInt(res.data) + "/" + level_exprience(level+1)
-        console.log(item)
       }
       if(parseInt(res.data) >= 2880) {
+        item.name = "最强王者"
         item.ratio = 1.0
         item.str = "2880/2880"
       }
     },
     fail: function() {
+      item.name = "青铜"
       item.ratio = 0.0
       item.str = "0/20"
     }
