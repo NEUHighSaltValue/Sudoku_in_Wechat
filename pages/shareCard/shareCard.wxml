@@ -1,8 +1,0 @@
-<!--pages/shareCard/shareCard.wxml-->
-<view class="shareCard" >
-  <canvas class="my_canvas" canvas-id='cardCanvas' >
-    <button class='closeButton' bindtap='close'>X</button>
-  </canvas>
-   
-   <button class='saveButton' bindtap='save'>保存分享到朋友圈</button> 
-</view>

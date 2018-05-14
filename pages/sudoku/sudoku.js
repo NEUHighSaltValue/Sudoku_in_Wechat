@@ -124,7 +124,7 @@ class Sudoku {
                     this.boardData[x][y].content = num.toString();
                 }
             }
-            //this.freshProperty()
+            this.freshProperty()
         }
     }
 
@@ -155,12 +155,15 @@ class Sudoku {
                 } else {
                     if (this.boardData[i][j].note == true) {
                         this.boardData[i][j].color = 5;
+                        console.log("note: ",i, j)
                     } else {
                         this.boardData[i][j].color = 0;
                     }
                 }
             }
         }
+    }
+    judgeError(){
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
                 if (this.row[i][j].size > 1) {
@@ -332,7 +335,7 @@ let lineWidth2 = 1.5;
 let cellWidth = (boardWidthInPrx - lineWidth1 * 4 - lineWidth2 * 6) / 9;
 let tableWidth = (tableWidthInPrx - lineWidth1 * 6) / 5;
 //Zixuan board 里各种情况下的颜色
-let colorTable = ["gray", "black", "#CC6699", "#CC9900", "#CC0000", "#666666"]
+let colorTable = ["gray", "black", "#CC6699", "#CC9900", "#CC0000", "#333399"]
 let sudokuGameData1 = require('../../utils/data1.js')
 let sudokuGameData2 = require('../../utils/data2.js')
 let sudokuGameData3 = require('../../utils/data3.js')
@@ -355,7 +358,7 @@ var avaImage;//avatar
 var isPk = false;
 var isgetQr = false;
 var userName = "G!NTOKI";
-var avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
+var avatarPath;
 var gameLevel = "骨灰级";
 var usedTime = "00:55";
 var rank = 1;
@@ -594,11 +597,13 @@ Page({
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
 
         if (selectNum != -1) {
+            console.log(selectX, selectY, selectNum, currentNote)
             sudoku.setData(selectX, selectY, selectNum, currentNote);
             if (errorShow) {
-                sudoku.freshProperty()
-                if (level > 5)
+                sudoku.judgeError()
+                if (level >= 5){
                     sudoku.freshDiagonal()
+                }
             }
             this.freshUI();
         }
@@ -657,6 +662,7 @@ Page({
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
+                // console.log(i, j, sudoku.getData(i, j).color)
                 if (parseInt(sudoku.getData(i, j).content) != 0) {
                     if (sudoku.getData(i, j).note == false) {
                         remainNum--;
@@ -683,7 +689,9 @@ Page({
                 this.timeStop();
                 sudoku.freeze(); 
                 sc = decodeURIComponent(sc)
-                getQrCode();
+                getQrCodeAndAvatar();
+                usedTime = this.data.timeText;
+                gameLevel = mutiDraw.levelTranslation(level)
                 let that = this;
                 //Shuyuan
                 var storage = ""
@@ -791,10 +799,10 @@ function paint() {
     ctx.setFontSize(18)
     ctx.setFillStyle('#000000')
     ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
-    ctx.fillText('解决 ' + gameLevel + ' 数独', (120) / ratio, phoneHeight * 0.16)
+    ctx.fillText('解决 ' + gameLevel , (120) / ratio, phoneHeight * 0.16)
 
     if (!isPk) {
-        ctx.fillText('P K 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
+        ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
     }
     ctx.stroke();
 
@@ -827,43 +835,54 @@ function paint() {
         }, 200)
     })
 }
-//从后端服务器获取二维码
-function getQrCode() {
-    wx.request({
-        url: 'https://www.tianzhipengfei.xin/sudoku',
-        data: {
-            event: 'getQR',
-            scene: sc,
-            width: 430
+//从后端服务器获取二维码和头像
+function getQrCodeAndAvatar() {
+    wx.getStorage({
+        key: 'avatar',
+        success: function (res) {
+            avatarPath = res.data;
         },
-        method: "POST",
-        success: res => {
-            QrPath = res.data
+        fail: function (){
+            avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
+        },
+        complete: function(){
+            wx.request({
+                url: 'https://www.tianzhipengfei.xin/sudoku',
+                data: {
+                    event: 'getQR',
+                    scene: sc,
+                    width: 430
+                },
+                method: "POST",
+                success: res => {
+                    QrPath = res.data
 
-            wx.getImageInfo({
-                src: QrPath,
-                success: function (sres) {
-                    imagePath = sres.path;
-                    isgetQr = true;
                     wx.getImageInfo({
-                        src: avatarPath,
+                        src: QrPath,
                         success: function (sres) {
-                            avatarPath = sres.path;
+                            imagePath = sres.path;
+                            isgetQr = true;
+                            wx.getImageInfo({
+                                src: avatarPath,
+                                success: function (sres) {
+                                    avatarPath = sres.path;
+                                },
+                                complete: function (cres) {
+                                    paint();
+                                }
+                            })
                         },
-                        complete: function (cres) {
+                        complete: function (fres) {
                             paint();
                         }
                     })
+
+                    //paint();
                 },
-                complete: function (fres) {
+                complete: res => {
                     paint();
                 }
             })
-
-            //paint();
-        },
-        complete: res => {
-            paint();
         }
-    })
+    });
 }

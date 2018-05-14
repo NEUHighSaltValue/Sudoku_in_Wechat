@@ -184,6 +184,7 @@ page{
   display: flex;
   align-items: center;
   flex-direction: column;
+  z-index: 999;
 }
 
 .my_canvas{

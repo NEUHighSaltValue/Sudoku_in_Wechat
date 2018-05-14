@@ -51,9 +51,11 @@ App({
                               key: 'openid',
                               data: that.globalData.userInfo2.openid
                             })
+                            var tempAvatarURL = that.globalData.userInfo.avatarUrl;
+                            tempAvatarURL.replace("wx.qlogo.cn", "tianzhipengfei.xin/wechat_image")
                             wx.setStorage({
                               key: 'avatar',
-                              data: that.globalData.userInfo.avatarUrl.replace("wx.qlogo.cn", "tianzhipengfei.xin/wechat_image"),
+                              data: tempAvatarURL,
                             })
                           }
                         })

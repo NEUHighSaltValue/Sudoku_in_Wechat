@@ -8,8 +8,7 @@
     "pages/result/result",
     "pages/sudoku/sudoku",
     "pages/fight/create/create",
-    "pages/fight/enter/enter",
-    "pages/shareCard/shareCard"
+    "pages/fight/enter/enter"
   ],
   "window": {
     "backgroundTextStyle": "light",

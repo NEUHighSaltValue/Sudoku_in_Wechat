@@ -126,6 +126,11 @@ Page({
                 nickName: nickName,
                 userInformation: true
             })
+            var tempAvatarURL = imgurl.replace("wx.qlogo.cn", "tianzhipengfei.xin/wechat_image")
+            wx.setStorage({
+                key: 'avatar',
+                data: tempAvatarURL
+            })
         }        
     })
   },
