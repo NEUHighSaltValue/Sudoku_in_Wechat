@@ -1,3 +1,9 @@
+//HPY: -1.note模式下出现双击填0的情况   -2.selectNum颜色不明显
+//LJL: -1. sameNumHighlight(need to talk more)
+
+// importScripts('../../sudokuModel.js');
+import sudokuFile from '../../sudokuModel'
+
 /*
 For each cell
 cat true means can fill the call, false not
@@ -667,8 +673,8 @@ Page({
             }
         }
         board.draw();
-        if (remainNum == 0) {
-            if (sudoku.judgeCorrect()) {
+        if (remainNum < 81) {
+            if (sudoku.judgeCorrect() || true) {
                 this.timeStop();
                 sudoku.freeze(); 
                 sc = decodeURIComponent(sc)
@@ -773,99 +779,123 @@ function zeroFill(str, n) {
 
 //获得ACCESS_TOKEN、二维码后在画布上进行绘制
 function paint() {
-    const ctx = wx.createCanvasContext('cardCanvas');
-    ctx.setFillStyle('#FFFFFF')
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    ctx.setFontSize(28)
-    ctx.setFillStyle('#EE0000')
-    ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
+  console.log("begin paint")
+  const ctx = wx.createCanvasContext('cardCanvas');
+  //画背景图
+  //ctx.drawImage(图片路径。左上角x,左上角y,图片宽，图片高)
+  ctx.drawImage("/images/background_circle.jpg", 0,0, canvasWidth, canvasHeight)
+  
+  //写文字
+  ctx.setFontSize(28)
+  ctx.setFillStyle('#EE0000')
+  //ctx.fillText(字符串，x,y)
+  ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
 
-    ctx.setFontSize(18)
-    ctx.setFillStyle('#000000')
-    ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
-    ctx.fillText('解决 ' + gameLevel , (120) / ratio, phoneHeight * 0.16)
+  ctx.setFontSize(18)
+  ctx.setFillStyle('#000000')
+  ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
+  ctx.fillText('解决 ' + gameLevel, (120) / ratio, phoneHeight * 0.16)
+  
+  //非PK版shareCard
+  // if (!isPk) {
+  //   ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
+  // }
+  ctx.stroke();
+  
+  var QrCodeRadius = 200/2;//小程序码半径，275是小程序码边长
+  var avatarRadius = 45;//头像半径
+  var QrCodeYRatio = 0.12;//小程序码左上角Y位置占整个canvas的比例
 
-    if (!isPk) {
-        ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
-    }
+  ctx.save();
+  ctx.beginPath();
+  //ctx.arc(圆心x，圆心y，半径，初始弧度，要画弧度)
+  ctx.arc((250 - QrCodeRadius) / ratio + QrCodeRadius/ratio, phoneHeight * QrCodeYRatio + QrCodeRadius/ratio,            QrCodeRadius / ratio, 0, 2 * Math.PI);
+  ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
+
+  ctx.beginPath();
+  ctx.drawImage(imagePath, (250 - QrCodeRadius) / ratio, phoneHeight * QrCodeYRatio, QrCodeRadius * 2 / ratio, QrCodeRadius * 2 / ratio)
+  ctx.restore();
+
+  if (isgetQr) {
+    ctx.save(); 
+    ctx.setStrokeStyle('#FFFFFF')
+    ctx.beginPath(); 
+    //头像
+    //ctx.arc((238 + 13) / ratio, phoneHeight * 0.25 + 137.5 / ratio, r / ratio, 0, 2 * Math.PI);
+    ctx.arc((238 + 13) / ratio, phoneHeight * QrCodeYRatio + QrCodeRadius / ratio, avatarRadius / ratio, 0, 2 * Math.PI);
     ctx.stroke();
-
-    var r = 60;
-    ctx.drawImage(imagePath, 113 / ratio, phoneHeight * 0.25, 275 / ratio, 275 / ratio)
-    if (isgetQr) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.arc((238 + 13) / ratio, phoneHeight * 0.25 + 137.5 / ratio, r / ratio, 0, 2 * Math.PI);
-        ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
-
-        ctx.beginPath();
-        ctx.drawImage(avatarPath, (250 - r) / ratio, phoneHeight * 0.25 + 137.5 / ratio - r / ratio, 2 * r / ratio, 2 * r / ratio);
-
-        ctx.restore();
-    }
-
-    ctx.stroke();
-    //ctx.draw();
-    ctx.draw(false, function () {
-        setTimeout(function () {
-            wx.canvasToTempFilePath({
-                fileType: 'jpg',
-                canvasId: 'cardCanvas',
-                success: function (res) {
-                    shareImg = res.tempFilePath;
-                }
-            }, this)
-        }, 200)
-    })
+    ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
+    ctx.beginPath();
+    //头像
+    ctx.drawImage(avatarPath, (250 - avatarRadius) / ratio, phoneHeight * QrCodeYRatio + QrCodeRadius / ratio - avatarRadius / ratio, 2 * avatarRadius / ratio, 2 * avatarRadius / ratio);
+    ctx.restore();
+  }
+  ctx.stroke();
+  ctx.draw(false, function () {
+    setTimeout(function () {
+      wx.canvasToTempFilePath({
+        fileType: 'jpg',
+        canvasId: 'cardCanvas',
+        success: function (res) {
+          shareImg = res.tempFilePath;
+        }
+      }, this)
+    }, 200)
+  })
 }
 //从后端服务器获取二维码和头像
 function getQrCodeAndAvatar() {
-    wx.getStorage({
-        key: 'avatar',
-        success: function (res) {
-            avatarPath = res.data;
+  wx.getStorage({
+    key: 'avatar',
+    success: function (res) {
+      console.log(res.data)
+      avatarPath = res.data;
+    },
+    fail: function () {
+      avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
+    },
+    complete: function () {
+      wx.request({
+        url: 'https://www.tianzhipengfei.xin/sudoku',
+        data: {
+          event: 'getQR',
+          scene: sc,
+          width: 430
         },
-        fail: function (){
-            avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
-        },
-        complete: function(){
-            wx.request({
-                url: 'https://www.tianzhipengfei.xin/sudoku',
-                data: {
-                    event: 'getQR',
-                    scene: sc,
-                    width: 430
+        method: "POST",
+        success: res => {
+          QrPath = res.data
+          //console.log(QrPath)
+          //console.log(avatarPath)
+          wx.getImageInfo({
+            src: QrPath,
+            success: function (sres) {
+              imagePath = sres.path;
+              isgetQr = true;
+              wx.getImageInfo({
+                src: avatarPath,
+                success: function (sres) {
+                  avatarPath = sres.path;
                 },
-                method: "POST",
-                success: res => {
-                    QrPath = res.data
-
-                    wx.getImageInfo({
-                        src: QrPath,
-                        success: function (sres) {
-                            imagePath = sres.path;
-                            isgetQr = true;
-                            wx.getImageInfo({
-                                src: avatarPath,
-                                success: function (sres) {
-                                    avatarPath = sres.path;
-                                },
-                                complete: function (cres) {
-                                    paint();
-                                }
-                            })
-                        },
-                        complete: function (fres) {
-                            paint();
-                        }
-                    })
-
-                    //paint();
-                },
-                complete: res => {
-                    paint();
+                complete: function (cres) {
+                  paint();
                 }
-            })
+              })
+            },
+            complete: function (fres) {
+              //paint();
+            }
+          })
+
+          //paint();
+        },
+        fail: res => {
+          paint();
+        },
+        complete: res => {
+          //paint();
         }
-    });
+      })
+    }
+  }); 
 }

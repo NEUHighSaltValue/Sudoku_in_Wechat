@@ -1,5 +1,5 @@
 <!--pages/sudoku.wxml-->
-<view class='loading' hidden="true">
+<view class='loading' hidden="{{generateOk}}">
   <view class="loading" style="position: absolute; top:0; right: 0; bottom: 0; left: 0;  background: white ; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 99999">
     <view class="sk-cube-grid">
         <view class="sk-cube sk-cube1"></view>
@@ -37,7 +37,7 @@
 
 <view class='shareCard' hidden='{{!completed}}' >
     <canvas class="my_canvas" canvas-id='cardCanvas' >
-        <icon class='closeButton' type="cancel" bindtap='close' color="black" size="34"></icon>
+        <image class='closeButton' src='/images/close.png' bindtap='close' color="black" size="34"></image>
   </canvas>
    
    <button class='saveButton' bindtap='save'>保存分享到朋友圈</button>
