@@ -748,8 +748,6 @@ Page({
                     success: res => {
                     }
                 })
-
-                wx.showToast();
                 this.setData({
                     completed: true
                 })

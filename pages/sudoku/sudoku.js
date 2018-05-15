@@ -1,9 +1,3 @@
-//HPY: -1.note模式下出现双击填0的情况   -2.selectNum颜色不明显
-//LJL: -1. sameNumHighlight(need to talk more)
-
-// importScripts('../../sudokuModel.js');
-import sudokuFile from '../../sudokuModel'
-
 /*
 For each cell
 cat true means can fill the call, false not
@@ -357,12 +351,11 @@ var QrPath;
 var avaImage;//avatar
 var isPk = false;
 var isgetQr = false;
-var userName = "G!NTOKI";
 var avatarPath;
-var gameLevel = "骨灰级";
-var usedTime = "00:55";
+var gameLeve;
+var usedTime;
 var rank = 1;
-var imagePath = '/images/level0.png';
+var imagePath;
 var shareImg;
 
 var selectX = -1;
@@ -787,14 +780,15 @@ function paint() {
   
   //写文字
   ctx.setFontSize(28)
-  ctx.setFillStyle('#EE0000')
+  ctx.setFillStyle('#CC3300')
   //ctx.fillText(字符串，x,y)
-  ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
+  ctx.fillText('完成!', (182) / ratio, phoneHeight * 0.368)
 
-  ctx.setFontSize(18)
+  ctx.setFontSize(16)
   ctx.setFillStyle('#000000')
-  ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
-  ctx.fillText('解决 ' + gameLevel, (120) / ratio, phoneHeight * 0.16)
+  ctx.fillText('用时:' + usedTime, (164) / ratio, (phoneHeight * 0.41))
+
+  ctx.fillText('解决:' + gameLevel, (106) / ratio, phoneHeight * 0.445)
   
   //非PK版shareCard
   // if (!isPk) {
