@@ -10,7 +10,7 @@ Page({
     buttonClicked: true,
     imgurl: '',
     nickname: "",
-    userInformation: true,
+    userInformation: false,
     level_item: {
       name: "",
       ratio: 0.0,
