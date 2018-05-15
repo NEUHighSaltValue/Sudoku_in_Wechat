@@ -47,10 +47,10 @@
 
 .userLevel{
     position: relative;
-    height: 60rpx;
+    height: 55rpx;
     width: 100%;
-    text-align: center;
-    line-height: 60rpx;
+    text-align: left;
+    line-height: 30rpx;
     font-weight: bold;
 }
 
@@ -107,4 +107,25 @@
     line-height: 120rpx;
     font-size: 70rpx;
     text-align: center;
+}
+
+.total{
+    border:1px solid #ccc;
+    border-radius: 6px;
+    height:15px;
+    width: 80%;
+    text-align: center;
+}
+
+.now{
+    background-color: orange;
+    height:15px;
+    z-index: 1;
+    border-top-left-radius:6px;
+    border-bottom-left-radius:6px ;
+}
+
+.vl{
+    line-height: 15px;
+    text-align: left;
 }

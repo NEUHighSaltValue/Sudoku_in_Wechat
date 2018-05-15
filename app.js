@@ -152,5 +152,4 @@ App({
     timeOrNot: true,
     highlightOrNot: false
   }
-
 })

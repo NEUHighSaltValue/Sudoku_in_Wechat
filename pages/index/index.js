@@ -3,13 +3,19 @@
 var scene
 const app = getApp()
 var storage
+let level_js = require('../../pages/index/level.js')
 
 Page({
   data: {
     buttonClicked: true,
     imgurl: '',
     nickname: "",
-    userInformation: true
+    userInformation: true,
+    level_item: {
+      name: "",
+      ratio: 0.0,
+      str: ""
+    }
   },
   onReady() {
     wx.getSetting({
@@ -136,18 +142,36 @@ Page({
   },
   onLoad: function (options) {
     scene = decodeURIComponent(options.scene)
+    var that = this
+    var item = level_js.level_ratio()
     wx.getUserInfo({
       success: res=> {
-        this.setData({
-          userInformation: true
+        that.setData({
+          userInformation: true,
+          level_item: item
         })
       },
       fail: res => {
-        this.setData({
-          userInformation: false
+        that.setData({
+          userInformation: false,
+          level_item: item
         })
       }
     })
+  },
+  onShow: function() {
+    var item = level_js.level_ratio()
+    var that = this
+    wx.getUserInfo({
+      complete: res => {
+        that.setData({
+          userInformation: true,
+          level_item: item
+        })
+      }
+    })
+    //console.log(this.data.level_item)
+    //console.log('item', item)
   }
 })
 

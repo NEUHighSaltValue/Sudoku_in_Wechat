@@ -4,7 +4,12 @@
       <image class = "avatar" src="{{imgurl}}"> </image>
       <view class = "userInfoText">
           <view class = "userName">{{nickName}}</view>
-          <view class = "userLevel"> 最强王者 </view> 
+          <view class = "userLevel"> {{level_item.name}} </view> 
+          <view class="total"> 
+            <view class="now" style='width:{{level_item.ratio*100}}%'>
+              <view class="vl"> {{level_item.str}} </view>
+            </view> 
+          </view>
       </view>
   </view>
 </view>
