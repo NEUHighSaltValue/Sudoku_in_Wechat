@@ -1,4 +1,0 @@
-<!--pages/waiting/waiting.wxml-->
-<view class="roomNum"> -Room 1- </view>
-<view class="roomNum"> -普通数独- </view>
-<view class="roomNum"> -骨灰级- </view>
