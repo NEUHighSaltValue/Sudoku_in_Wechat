@@ -3,7 +3,7 @@ function getLevel() {
   try {
     var expri = wx.getStorageSync('expr')
     if (expri) {
-      console.log(expri)
+      //console.log(expri)
     }
   } catch (e) {
     // Do something when catch error

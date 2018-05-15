@@ -1,1 +1,43 @@
 /* pages/waiting/waiting.wxss */
+.userinfo-wrapper{
+  margin-left: 75rpx;
+  display: flex; 
+  flex-wrap: wrap;
+  align-content: flex-start; 
+  flex-direction: row;
+}
+
+.userItem {  
+  width: 180rpx;
+  height: 220rpx;
+  border-radius: 50%;
+  margin-right: 30rpx;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}  
+  
+.userinfo-avatar {  
+  height: 160rpx;
+  width: 160rpx;
+  border-radius: 80rpx;
+}  
+
+.button_style{
+  text-align: center;
+  margin: 40rpx;
+  top: 150rpx;
+  height: 20rpx;
+  position: relative;
+}
+
+.button_style .start{
+  float: left
+}
+.button_style .ready{
+  float: left
+}
+.button_style .request{
+  float: right
+}
+  

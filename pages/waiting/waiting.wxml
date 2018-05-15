@@ -2,3 +2,24 @@
 <view class="roomNum"> -Room 1- </view>
 <view class="roomNum"> -普通数独- </view>
 <view class="roomNum"> -骨灰级- </view>
+<view class="userinfo-wrapper">
+  <view class="userItem"  wx:for="{{userInfoList}}" wx:key="key">
+    <image class="userinfo-avatar" src="{{item.userInfo.avatarUrl}}" background-size="cover"></image>
+    <view wx:if="{{item.isReady}}">
+      <view class="userinfo-ready" style='color: green'> 准备 </view>
+    </view>
+    <view wx:else>
+      <view class="userinfo-ready" style='color: red'> 未准备 </view>
+    </view>
+  </view>
+</view>
+<view class='button_style'>
+  <view wx:if="{{myInfo.isMaster}}">
+    <button class='start' size='mini' bindtap='readyChange'> 开始 </button>
+    <button class='request' size='mini'> 邀请 </button>
+  </view>
+  <view wx:else>
+    <button class='ready' size='mini' bindtap='readyChange'> 准备 </button>
+    <button class='request' size='mini'> 邀请 </button>
+  </view>
+</view>

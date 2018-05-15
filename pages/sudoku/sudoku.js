@@ -352,7 +352,7 @@ var avaImage;//avatar
 var isPk = false;
 var isgetQr = false;
 var avatarPath;
-var gameLeve;
+var gameLevel;
 var usedTime;
 var rank = 1;
 var imagePath;
@@ -420,60 +420,116 @@ Page({
             },
             method: "POST",
             success: res => {
-                newGameObject = res.data;
-                newGameData = newGameObject.data;
-                newGameAns = newGameObject.ans;
+              newGameObject = res.data;
+              newGameData = newGameObject.data;
+              newGameAns = newGameObject.ans;
+              if(newGameAns == undefined) {
+                this.gameID = Math.floor(Math.random() * 200) + level * 1000;
+                switch (level) {
+                  case 0:
+                    newGameObject = sudokuGameData1.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    //console.log(gameID)
+                    break;
+                  case 1:
+                    newGameObject = sudokuGameData2.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 2:
+                    newGameObject = sudokuGameData3.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 3:
+                    newGameObject = sudokuGameData4.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 4:
+                    newGameObject = sudokuGameData5.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 5:
+                    newGameObject = sudokuGameData6.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 6:
+                    newGameObject = sudokuGameData7.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 7:
+                    newGameObject = sudokuGameData8.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 8:
+                    newGameObject = sudokuGameData9.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 9:
+                    newGameObject = sudokuGameData10.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                }
+              }
             },
             fail: () =>{
                 this.gameID = Math.floor(Math.random() * 200) + level * 1000;
                 switch (level) {
                     case 0:
-                        newGameObject = sudokuGameData1.searchSData(gameID);
+                        newGameObject = sudokuGameData1.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 1:
-                        newGameObject = sudokuGameData2.searchSData(gameID);
+                        newGameObject = sudokuGameData2.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 2:
-                        newGameObject = sudokuGameData3.searchSData(gameID);
+                        newGameObject = sudokuGameData3.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 3:
-                        newGameObject = sudokuGameData4.searchSData(gameID);
+                        newGameObject = sudokuGameData4.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 4:
-                        newGameObject = sudokuGameData5.searchSData(gameID);
+                        newGameObject = sudokuGameData5.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 5:
-                        newGameObject = sudokuGameData6.searchSData(gameID);
+                        newGameObject = sudokuGameData6.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 6:
-                        newGameObject = sudokuGameData7.searchSData(gameID);
+                        newGameObject = sudokuGameData7.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 7:
-                        newGameObject = sudokuGameData8.searchSData(gameID);
+                        newGameObject = sudokuGameData8.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 8:
-                        newGameObject = sudokuGameData9.searchSData(gameID);
+                        newGameObject = sudokuGameData9.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 9:
-                        newGameObject = sudokuGameData10.searchSData(gameID);
+                        newGameObject = sudokuGameData10.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
@@ -666,8 +722,8 @@ Page({
             }
         }
         board.draw();
-        if (remainNum < 81) {
-            if (sudoku.judgeCorrect() || true) {
+        if (remainNum == 0) {
+            if (sudoku.judgeCorrect()) {
                 this.timeStop();
                 sudoku.freeze(); 
                 sc = decodeURIComponent(sc)
@@ -678,24 +734,28 @@ Page({
                 //Shuyuan
                 var storage = ""
                 var exprNow = 0
-                wx.getStorage({
-                  key: 'expr',
-                  success: function (res) {
-                    if (res.data) {
-                      exprNow = parseInt(res.data) + mutiDraw.getExperience(level)
-                    } else {
-                      console.log("no expr")
-                    }
-                  },
-                  fail: function (res) {
-                    exprNow = mutiDraw.getExperience(level)
-                  },
-                  complete: function () {
-                    wx.setStorage({
+                wx.getUserInfo({
+                  success: function(res) {
+                    wx.getStorage({
                       key: 'expr',
-                      data: exprNow
+                      success: function (res) {
+                        if (res.data) {
+                          exprNow = parseInt(res.data) + mutiDraw.getExperience(level)
+                        } else {
+                          console.log("no expr")
+                        }
+                      },
+                      fail: function (res) {
+                        exprNow = mutiDraw.getExperience(level)
+                      },
+                      complete: function () {
+                        wx.setStorage({
+                          key: 'expr',
+                          data: exprNow
+                        })
+                        //console.log(exprNow)
+                      }
                     })
-                    //console.log(exprNow)
                   }
                 })
                 

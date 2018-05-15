@@ -88,7 +88,7 @@ Page({
           wx.getUserInfo({
             success: function(res) {
               wx.navigateTo({
-                url: '/pages/fight/fight',
+                url: '/pages/waiting/waiting',
               })
             },
             fail: function(res) {
@@ -165,7 +165,6 @@ Page({
     wx.getUserInfo({
       complete: res => {
         that.setData({
-          userInformation: true,
           level_item: item
         })
       }

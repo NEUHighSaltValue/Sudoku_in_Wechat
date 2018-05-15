@@ -1,6 +1,5 @@
 {
     "pages": [
-        "pages/waiting/waiting",
         "pages/index/index",
         "pages/pk_sudoku/pk_sudoku",
         "pages/setting/setting",
@@ -9,7 +8,8 @@
         "pages/fight/fight",
         "pages/result/result",
         "pages/sudoku/sudoku",
-        "pages/fight/create/create"
+        "pages/fight/create/create",
+        "pages/waiting/waiting"
     ],
     "window": {
         "backgroundTextStyle": "light",
