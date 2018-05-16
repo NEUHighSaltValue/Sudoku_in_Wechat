@@ -1,10 +1,15 @@
 // pages/waiting/waiting.js
+var levelName="",sudokuName="";
+let levelTable=["入门级","初级","中级","高级","骨灰级"]
 Page({
 
   /**
    * 页面的初始数据
    */
-  data: {
+    data: {
+        sudokuName: "",
+        levelName: "",
+        roomId:"",
     userInfoList: [
       {
         key: 0,
@@ -27,11 +32,27 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+      console.log(options)
+      console.log(options.level)
+    let level = options.level;
+    let roomid = options.roomid
+    var tempSudokuName=""
+    if(level<5){
+        sudokuName = "数独"; 
+        tempSudokuName = "普通数独";
+    } else {
+        sudokuName = "对角线数独";
+        tempSudokuName = "对角线数独";
+    }
+    levelName = levelTable[level%5]
     var that = this
     try {
       var value = wx.getStorageSync('openid')
       if(value) {
         this.setData({
+            roomId: roomid,
+            sudokuName: tempSudokuName,
+            levelName: levelName,
           userInfoList: [
             { key: 1, isReady: false, userInfo: getApp().globalData.userInfo },
             { key: 2, isReady: false, userInfo: getApp().globalData.userInfo },
@@ -39,7 +60,11 @@ Page({
             { key: 4, isReady: true, userInfo: getApp().globalData.userInfo },
             { key: 5, isReady: true, userInfo: getApp().globalData.userInfo },
             { key: 6, isReady: false, userInfo: getApp().globalData.userInfo },
-            { key: 7, isReady: false, userInfo: getApp().globalData.userInfo }
+            { key: 7, isReady: false, userInfo: getApp().globalData.userInfo },
+            { key: 8, isReady: false, userInfo: getApp().globalData.userInfo },
+            { key: 9, isReady: false, userInfo: getApp().globalData.userInfo },
+            { key: 10, isReady: false, userInfo: getApp().globalData.userInfo },
+            { key: 11, isReady: false, userInfo: getApp().globalData.userInfo }
           ],
           myInfo: {
             isMaster: true,
@@ -110,7 +135,19 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-  
+  onShareAppMessage: function (res) {
+      return {
+          title: '敢来和我一起挑战'+levelName+sudokuName+"吗",
+          path: '/page/user?id=123',
+          success: function (res) {
+              // 转发成功
+          },
+          fail: function (res) {
+              // 转发失败
+          }
+      }
+  },
+  inviteFriends: function(){
+      this.onShareAppMessage({"from":"button"})
   }
 })

@@ -88,7 +88,7 @@ Page({
           wx.getUserInfo({
             success: function(res) {
               wx.navigateTo({
-                url: '/pages/waiting/waiting',
+                  url: '/pages/level_select/level_select?mode=pk',
               })
             },
             fail: function(res) {
