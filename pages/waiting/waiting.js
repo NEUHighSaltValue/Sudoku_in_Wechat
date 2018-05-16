@@ -11,16 +11,11 @@ Page({
   /**
    * 页面的初始数据
    */
-data: {
-    sudokuName: "",
-    levelName: "",
-    roomId:"",
-    isMaster: false,
-    flag: 0,
-    masterInfo: {
-      url: "",
-      isStart: 0
-    },
+    data: {
+        sudokuName: "",
+        levelName: "",
+        roomId:"",
+        isReady: false,
     userInfoList: [
       {
         key: 0,
@@ -38,6 +33,12 @@ data: {
         isReady: 0
       }
     }
+  },
+  readyChange: function(){
+    let temp = !this.data.isReady
+    this.setData({
+      isReady: temp
+    })
   },
   /**
    * 生命周期函数--监听页面加载

@@ -1,5 +1,6 @@
 <!--pages/setting/setting.wxml-->
 <view class="setting_list">
+  <view class="title"> 设置 </view>
     <view class = "setting_cell">
         <view class = "setting_text"> 高亮提醒 </view>
         <switch class="setting_switch" checked="{{highlightChange}}" bindchange="highlightChangeFunc"/>

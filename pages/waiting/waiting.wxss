@@ -1,12 +1,17 @@
 /* pages/waiting/waiting.wxss */
+page{
+  background: #DBEDF3;
+}
 .header{
+    position: relative;
+    top:40rpx;
     display: flex;
     flex-direction: column;
     margin-bottom: 60rpx;
     align-items: center;
 }
 .headerText{
-    font-size: 48rpx;
+    font-size: 30rpx;
     text-align: center;
 }
 #room{
@@ -19,21 +24,35 @@
     margin-bottom: 30rpx;
 }
 
+.userinfo-ready{
+  position: relative;
+  top:10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+}
+
+.scrollWrapper{
+  background: white;
+  border-radius: 20rpx;
+  margin-left: 60rpx;
+  width: 630rpx;
+}
 
 .userinfo-wrapper{
-  margin-left: 75rpx;
   display: flex; 
-  height: 676rpx;
+  height: 720rpx;
   flex-wrap: wrap;
   align-content: flex-start; 
   flex-direction: row;
 }
 
-.userItem {  
+.userItem { 
+  padding-top: 20rpx; 
+  padding-left: 15rpx;
+  padding-right: 15rpx;
   width: 180rpx;
   height: 220rpx;
-  border-radius: 50%;
-  margin-right: 30rpx;
   align-items: center;
   display: flex;
   flex-direction: column;
@@ -43,6 +62,7 @@
   height: 160rpx;
   width: 160rpx;
   border-radius: 80rpx;
+  box-shadow: 4rpx 4rpx gray;
 }  
 
 .crown_style {
@@ -51,26 +71,39 @@
 }
 
 .button_style{
-  margin: 75rpx;
+  margin-top: 50rpx;
   line-height: 80rpx;   
   font-size: 40rpx;
   display: flex;
 }
-.ready{
-    background: #F8F8F8;
-    width: 200rpx;
-    height: 80rpx;
-    text-align: center;
-    border: 1rpx solid black;
-    border-radius: 20rpx;
-}
-.request{
-    border: 1rpx solid black;
-    background: #F8F8F8;
-    width: 200rpx;
-    height: 80rpx;
-    text-align: center;
-    margin-left: 200rpx;
-    border-radius: 20rpx;
-}
   
+  .inviteIcon{
+    width: 200rpx;
+    height: 42rpx;
+    margin-top: 30rpx;
+  }
+
+  .inviteButton{
+    border: 1rpx #DBEDF3 solid;
+    box-shadow: 2rpx 2rpx gray;
+  }
+
+  .readyIcon{
+    width: 200rpx;
+    height: 42rpx;
+    margin-top: 30rpx;
+  }
+
+.readyButton{
+  border: 1rpx #DBEDF3 solid;
+    box-shadow: 2rpx 2rpx gray;
+}
+
+.crownIcon{
+  position: absolute;
+  top: 180rpx;
+  left: 40rpx;
+  transform:rotate(-32deg);
+  height: 150rpx;
+  width: 150rpx;
+}

@@ -1,24 +1,37 @@
 /* pages/setting/setting.wxss */
 
+page{
+  background: #DBEDF3;
+}
+
+.title{
+    font-size: 60rpx;
+    line-height: 200rpx;
+    position: relative;
+    text-align: center;
+}
+
 .setting_list{
+    background: white;
     width: 90%;
-    height: 100%;
     top: 20%;
     left: 5%;
     position: absolute;
+    padding-bottom: 40rpx;
+    border: 2rpx solid black;
 }
 
 .setting_cell{
     width: 100%;
-    height: 200rpx;
+    height: 100rpx;
 }
 
 .setting_text{
-    font-size: 70rpx;
-    line-height: 200rpx;
+    font-size: 40rpx;
+    line-height: 100rpx;
     display: inline;
     position: relative;
-    left: 20rpx;
+    left: 80rpx;
 }
 
 .setting_switch{

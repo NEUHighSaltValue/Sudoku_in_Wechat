@@ -1,46 +1,56 @@
-/**index.wxss**/
+/**index.wxss*/
+page{
+  background: #DBEDF3;
+}
+
 .cell{
-    border:2px solid black;
-    border-radius: 24rpx;
+    border-radius: 10rpx;
 }
 
 #authorize{
   top: 140rpx;
   left: 10rpx;
   width: 220rpx;
+  background:#E4EDDB;
 }
 
 #userInfo{
-    height: 200rpx;
-    width: 592rpx;
-    left: 79rpx;
+    height: 207rpx;
+    width: 681rpx;
+    left: 39.5rpx;
     top: 80rpx;
     position: absolute;
+    /* background-image: linear-gradient(135deg, #8BD8ED 0%, #00BBF0 100%); */
+    background: white;
 }
 
 .avatar{
-    height: 160rpx;
-    width: 160rpx;
+
+    height: 150rpx;
+    width: 150rpx;
     position: relative;
-    top: 20rpx;
-    left: 40rpx;
-    border-radius: 80rpx;
+    top: 23.5rpx;
+    left: 80rpx;
+    border-radius: 75rpx;
+    border: 5rpx #DBEDF3 solid;
+    
 }
 
 .userInfoText{
-    width: 392rpx;
+    width: 352rpx;
     height: 200rpx;
     position: relative;
     top: -172rpx;
-    left: 200rpx;
+    left: 280rpx;
 }
 
 .userName{
     position: relative;
-    height: 100rpx;
-    width: 100%;
+    height: 80rpx;
+    width: 352rpx;
     text-align: center;
-    line-height: 100rpx;
+    line-height: 80rpx;
+    font-size: 30rpx;
     font-weight: bold;
 }
 
@@ -48,72 +58,80 @@
     position: relative;
     height: 55rpx;
     width: 100%;
-    text-align: left;
+    text-align: center;
     line-height: 30rpx;
     font-weight: bold;
 }
 
 #newGame{
     position: absolute;
-    top: 308rpx;
-    left: 79rpx;
-    width: 280rpx;
-    height: 350rpx;
-    line-height: 175rpx;
-    font-size: 90rpx;
+    top: 301rpx;
+    left: 39.5rpx;
+    width: 333.5rpx;
+    height: 364rpx;
+    line-height: 110rpx;
+    font-size: 45rpx;
     text-align: center;
+    /* background-image: linear-gradient(to bottom, #4BBEFB 0%, #30A9F5 100%);     */
+
+    background: white;
 }
 
 #result{
     position: absolute;
-    top: 308rpx;
-    left: 391rpx;
-    width: 280rpx;
-    height: 250rpx;
-    line-height: 125rpx;
-    font-size: 70rpx;
+    top: 301rpx;
+    left: 384rpx;
+    width: 333.5rpx;
+    height: 264rpx;
+    line-height: 110rpx;
+    font-size: 45rpx;
     text-align: center;
+    /* background-image: linear-gradient(135deg, #A39DFC 0%, #A85BD5 100%); */
+    background: white;
 }
 
 #help{
     position: absolute;
-    top: 686rpx;
-    left: 79rpx;
-    width: 280rpx;
-    height: 250rpx;
-    line-height: 250rpx;
-    font-size: 90rpx;
+    top: 679rpx;
+    left: 39.5rpx;
+    width: 333.5rpx;
+    height: 264rpx;
+    line-height: 110rpx;
+    font-size: 45rpx;
     text-align: center;
+     /* background-image: linear-gradient(45deg, #F9AD61 0%, #F2824C 100%); */
+    background: white;
 }
 
 #pk{
     position: absolute;
-    top: 586rpx;
-    left: 391rpx;
-    width: 280rpx;
-    height: 350rpx;
-    line-height: 175rpx;
-    font-size: 90rpx;
+    top: 579rpx;
+    left: 384rpx;
+    width: 333.5rpx;
+    height: 364rpx;
+    line-height: 110rpx;
+    font-size: 45rpx;
     text-align: center;
+    /* background-image: linear-gradient(135deg, #FC79B0 0%, #FF8BA0 100%); */
+
+    background: white;
 }
 
 #setting{
     position: absolute;
-    top: 964rpx;
-    left: 79rpx;
-    height: 120rpx;
-    width: 592rpx;
-    line-height: 120rpx;
-    font-size: 70rpx;
-    text-align: center;
+    top: 957rpx;
+    left: 39.5rpx;
+    height: 127rpx;
+    width: 544rpx;
+    /* background-image: linear-gradient(135deg, #A39DFC 0%, #7971FA 100%); */
+    background: white;
 }
 
 .total{
-    border:1px solid #ccc;
+    border:1px solid #000;
     border-radius: 6px;
     height:15px;
-    width: 80%;
-    text-align: center;
+    width: 100%;
 }
 
 .now{
@@ -126,5 +144,84 @@
 
 .vl{
     line-height: 15px;
-    text-align: left;
+    font-size: 12px;
+    width: 352rpx;
+    text-align: center;
+}
+
+.userLevelWrapper{
+  position: relative;
+  width: 352rpx;
+}
+
+#newGameIcon{
+  width: 150rpx;
+  height: 150rpx;
+  position: relative;
+  top: 60rpx;
+  left: 60rpx;
+}
+
+#trophy{
+  width: 120rpx;
+  height: 120rpx;
+  position: relative;
+   top:20rpx;
+  left: 40rpx;
+}
+
+#helpIcon{
+  width: 100rpx;
+  height: 91rpx;
+  position: relative;
+  left: 60rpx;
+}
+
+#pkIcon{
+  width: 150rpx;
+  height: 136.5rpx;
+  position: relative;
+  top:80rpx;
+  left: 40rpx;
+}
+
+#settingText{
+    line-height: 63rpx;
+    display: inline;
+    font-size: 45rpx;
+    text-align: center;
+    position: relative;
+    left: 30rpx;
+}
+
+#settingIcon{
+  width: 80rpx;
+  height: 80rpx;
+  position: relative;
+  left:280rpx;
+  top: 25rpx
+}
+
+#about{
+  position: absolute;
+  width: 127rpx;
+  height: 127rpx;
+  left:590.5rpx;
+  top: 957rpx;
+  /* background-color:antiquewhite;  */
+
+    background: white;
+}
+
+#infoIcon{
+  width: 100rpx;
+  height: 100rpx;
+  position: relative;
+  left: 14rpx;
+  top: 14rpx;
+}
+
+.itemText{
+  text-align: left;
+  padding-left: 30rpx;
 }

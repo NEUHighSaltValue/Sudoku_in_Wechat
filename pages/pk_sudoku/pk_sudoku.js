@@ -413,7 +413,7 @@ Page({
         data: '-1',
       })
         sc = option.scence;
-        gameID = option.gameid;
+        gameID = 2;
         level = 1;
         this.setData({
             timeShowOrNOt: timeShow

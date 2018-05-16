@@ -1,10 +1,13 @@
 /* pages/result/result.wxss */
+page{
+  background: #DBEDF3;
+}
 .title{
     position: relative;
     top: 40rpx;
     height: 20%;
     text-align: center;
-    font-size: 80rpx;
+    font-size: 60rpx;
     line-height: 112rpx;
 }
 
@@ -28,6 +31,7 @@
     flex-direction: column;
     margin-bottom: 20rpx;
     border: 2rpx solid black;
+    background: white;
 }
 
 .result_item{
@@ -41,24 +45,25 @@
     height: 200rpx;
     position: relative;
     left: 20rpx;
+    top:10rpx;
 }
 
 .result_type{
     font-size: 30rpx;
     line-height: 56rpx;
     top: -190rpx;
-    left: 180rpx;
+    left: 220rpx;
     margin-left: 30rpx;
     width: 250rpx;
     position: relative;
 }
 
 .result_time{
-    font-size: 80rpx;
+    font-size: 50rpx;
     line-height: 112rpx;
     top: -169rpx;
     left: 280rpx;
-    width: 250rpx;
+    width: 403rpx;
     text-align: center;
     position: relative;
 }
@@ -67,8 +72,9 @@
     font-size: 30rpx;
     line-height: 56rpx;
     top: -308rpx;
-    left: 270rpx;
+    left: 224rpx;
     width: 400rpx;
-    text-align: center;
+    text-align: left;
     position: relative;
+    margin-left: 30rpx;
 } 
