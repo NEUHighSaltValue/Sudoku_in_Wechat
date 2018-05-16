@@ -54,6 +54,7 @@ Page({
   },
   selectLevel(e) {
       let level = e.currentTarget.dataset.id
+      console.log(level)
       if (!this.data.buttonClicked) { return }
       buttonClicked(this);
       if(!pk){
@@ -68,7 +69,7 @@ Page({
           wx.getStorage({
               key: 'openid',
               success: function(res) {
-                  let openid = res.data
+                  let openid = res.data + "s"
                   wx.request({
                       url: 'https://www.tianzhipengfei.xin/sudoku',
                       data: {
@@ -80,7 +81,8 @@ Page({
                       success: res => {
                           let roomid = res.data.split('(')[1].split(',')[0]
                           wx.redirectTo({
-                              url: '/pages/waiting/waiting?level=' + level + '&roomid='+roomid + '&gameid='+gameID,
+                              url: '/pages/waiting/waiting?level=' + level + '&roomid='+roomid + '&gameid='+gameID
+                              + '&isMaster='+1,
                           })
                       },
                       fail: res => {

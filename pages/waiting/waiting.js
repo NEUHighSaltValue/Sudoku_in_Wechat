@@ -1,16 +1,22 @@
 // pages/waiting/waiting.js
-var levelName="",sudokuName="";
 let levelTable=["入门级","初级","中级","高级","骨灰级"]
-var gameid;
+let typeTable=["普通数独","对角线数独"]
+var gameid, level, roomid;
+var value
 Page({
 
   /**
    * 页面的初始数据
    */
-    data: {
-        sudokuName: "",
-        levelName: "",
-        roomId:"",
+data: {
+    sudokuName: "",
+    levelName: "",
+    roomId:"",
+    isMaster: false,
+    masterInfo: {
+      url: "",
+      isStart: 0
+    },
     userInfoList: [
       {
         key: 0,
@@ -33,40 +39,37 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-    let level = options.level;
-    let roomid = options.roomid
+    console.log('op', options)
+    level = options.level;
+    roomid = options.roomid
     gameid=options.gameid;
-    var tempSudokuName=""
-    if(level<5){
-        sudokuName = "数独"; 
-        tempSudokuName = "普通数独";
-    } else {
-        sudokuName = "对角线数独";
-        tempSudokuName = "对角线数独";
-    }
-    levelName = levelTable[level%5]
     var that = this
     try {
-      var value = wx.getStorageSync('openid')
+      value = wx.getStorageSync('openid')
       if(value) {
-      this.setData({
-          roomId: roomid,
-          sudokuName: tempSudokuName,
-          levelName: levelName,
-          myInfo: {
-            key: 1,
-            info: {
-              isMaster: 1,
-              url: getApp().globalData.userInfo.avatarUrl,
-              openid: value,
-              roomId: 1,
-              isReady: 0
+        //console.log('value')
+        let tempSudokuName = typeTable[parseInt( level / 5)];
+        let tempTypeName = levelTable[level % 5];
+        console.log(tempSudokuName, tempTypeName)
+        that.setData({  
+            roomId: roomid,
+            sudokuName: typeTable[parseInt(level / 5)],
+            levelName: levelTable[level%5],
+            myInfo: {
+              key: 1,
+              info: {
+                isMaster: parseInt(options.isMaster),
+                url: getApp().globalData.userInfo.avatarUrl,
+                openid: value,
+                roomId: roomid,
+                isReady: 0
+              }
             }
-          }
         })
+        console.log('myInfo', this.data.myInfo.info)
       }
     } catch(e) {
-      // Do something when catch error
+      console.log(e)
     }
     wx.connectSocket({
       url: 'wss://www.tianzhipengfei.xin/pk',
@@ -78,7 +81,7 @@ Page({
       })
       that.readMessage()
     })
-    console.log(JSON.stringify(that.data.myInfo))
+    //console.log(JSON.stringify(that.data.myInfo))
   },
 
   OnShow() {
@@ -90,21 +93,26 @@ Page({
     })
   },
 
+  startPK() {
+    wx.redirectTo({
+      url: '/pages/pk_sudoku/pk_sudoku?gameid=' + gameid,
+    })
+  },
+
   readyChange() {
     console.log('ready')
     var that = this
     try {
-      var value = wx.getStorageSync('openid')
       if (value) {
         this.setData({
           myInfo: {
             key: 1,
             info: {
-              isMaster: true,
+              isMaster: this.data.isMaster,
               url: getApp().globalData.userInfo.avatarUrl,
               openid: value,
-              roomId: 1,
-              isReady: !that.data.isReady
+              roomId: this.data.roomId,
+              isReady: !this.data.myInfo.info.isReady
             }
           }
         })
@@ -114,16 +122,8 @@ Page({
       // Do something when catch error
     }
     //console.log(JSON.stringify(this.data.myInfo))
-    
-    wx.onSocketOpen(function (res) {
-      console.log('send')
-      wx.sendSocketMessage({
-        data: JSON.stringify(this.data.myInfo)
-      })
-      wx.onSocketMessage(function(res){
-        console.log('grasp')
-        console.log(res.data)
-      })
+    wx.sendSocketMessage({
+      data: JSON.stringify(this.data.myInfo)
     })
     wx.onSocketError(function(res) {
       console.log('error')
@@ -137,24 +137,47 @@ Page({
   
   },
 
+  onUnload: function() {
+    console.log('un')
+    this.setData({
+      myInfo: {
+        key: 5,
+        info: {
+          roomId: this.data.roomId,
+          openid: value
+        }
+      }
+    })
+    wx.sendSocketMessage({
+      data: this.data.myInfo,
+    })
+    wx.closeSocket({
+      
+    })
+  },
+
+  onHide: function() {
+    console.log('hi')
+  },
+
   readMessage() {
     var infos
     var infolist = []
     var that = this
+    //console.log('read')
     wx.onSocketMessage(function(res){
       infos = JSON.parse(res.data).info
+      console.log('infos', JSON.parse(res.data))
       if(infos){
         console.log(infos)
         if (infos.Master) {
-          infolist[0] = {
-            key: 1,
-            url: infos.Master.url,
-            isReady: infos.Master.isStart
-          }
+          that.setData({
+            masterInfo: infos.Master
+          })
         }
         for (var i = 0; i < infos.members.length; i++) {
-          infolist[i + 1] = infos.members[i]
-          infolist[i + 1].key = i + 1
+          infolist[i] = infos.members[i]
+          infolist[i].key = i + 1
         }
         that.setData({
           userInfoList: infolist
@@ -164,49 +187,26 @@ Page({
   },
 
   /**
-   * 生命周期函数--监听页面隐藏
-   */
-  onHide: function () {
-  
-  },
-
-  /**
-   * 生命周期函数--监听页面卸载
-   */
-  onUnload: function () {
-  
-  },
-
-  /**
-   * 页面相关事件处理函数--监听用户下拉动作
-   */
-  onPullDownRefresh: function () {
-  
-  },
-
-  /**
-   * 页面上拉触底事件的处理函数
-   */
-  onReachBottom: function () {
-  
-  },
-
-  /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function (res) {
-      return {
-          title: '敢来和我一起挑战'+levelName+sudokuName+"吗",
-          path: '/page/user?id=123',
-          success: function (res) {
-              // 转发成功
-          },
-          fail: function (res) {
-              // 转发失败
-          }
+  onShareAppMessage: function () {
+      //console.log(res)
+      if(this.data.sudokuName) {
+        //console.log(res)
+        return {
+            title: '敢来和我一起挑战'+this.data.levelName+this.data.sudokuName+"吗",
+            path: '/pages/waiting/waiting?level=' + level + '&roomid=' + roomid + '&gameid=' + gameid
+            + '&isMaster=' + 0,
+            success: function (res) {
+                console.log('success')
+            },
+            fail: function (res) {
+                console.log('fail')
+            }
+        }
       }
   },
   inviteFriends: function(){
-      this.onShareAppMessage({"from":"button"})
+    this.onShareAppMessage()
   }
 })

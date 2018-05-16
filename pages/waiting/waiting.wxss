@@ -45,6 +45,11 @@
   border-radius: 80rpx;
 }  
 
+.crown_style {
+  height: 60rpx;
+  width: 120rpx;
+}
+
 .button_style{
   margin: 75rpx;
   line-height: 80rpx;   

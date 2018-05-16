@@ -6,20 +6,24 @@
 </view>
 
 <scroll-view class="scrollWrapper" scroll-y>
-    <view class="userinfo-wrapper">
+<view class="userinfo-wrapper">
+    <view class="userItem">
+      <image class="userinfo-avatar" src="{{masterInfo.url}}"></image>
+      <image class="crown_style" src="/images/crown.png"></image>
+    </view>
     <view class="userItem"  wx:for="{{userInfoList}}" wx:key="key">
-        <image class="userinfo-avatar" src="{{item.url}}" background-size="cover"></image>
+        <image class="userinfo-avatar" src="{{item.url}}" background-size="cover"></image>          
         <view wx:if="{{item.isReady}}">
-        <view class="userinfo-ready" style='color: green'> 准备 </view>
+          <view class="userinfo-ready" style='color: green'> 准备 </view>
         </view>
         <view wx:else>
-        <view class="userinfo-ready" style='color: red'> 未准备 </view>
+          <view class="userinfo-ready" style='color: red'> 未准备 </view>
         </view>
     </view>
-    </view>
+</view>
 </scroll-view>
 <view class='button_style'>
-    <view wx:if="{{myInfo.info.isMaster}}" class='ready' bindtap='readyChange'> 开始 </view>
+    <view wx:if="{{myInfo.info.isMaster}}" class='ready' bindtap='startPK'> 开始 </view>
     <view wx:else class='ready' bindtap='readyChange'> 准备 </view>
     <button class='request' bindtap='inviteFriends' open-type="share"> 邀请 </button>
 </view>

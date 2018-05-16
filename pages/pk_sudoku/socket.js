@@ -11,7 +11,7 @@ function send_data() {
           openid: value,
           roomId: 1,
           rank: 0,
-          comTime: Number.MAX_VALUE
+          comTime: 10000000
         }
       }
     }
