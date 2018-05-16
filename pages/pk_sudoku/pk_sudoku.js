@@ -407,7 +407,7 @@ Page({
     },
     onLoad(option) {
         sc = option.scence;
-        gameID = option.gameid;
+        gameID = 2;
         level = 1;
         this.setData({
             timeShowOrNOt: timeShow

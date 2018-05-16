@@ -11,6 +11,7 @@ Page({
         sudokuName: "",
         levelName: "",
         roomId:"",
+        isReady: false,
     userInfoList: [
       {
         key: 0,
@@ -28,6 +29,12 @@ Page({
         isReady: false
       }
     }
+  },
+  readyChange: function(){
+    let temp = !this.data.isReady
+    this.setData({
+      isReady: temp
+    })
   },
   /**
    * 生命周期函数--监听页面加载

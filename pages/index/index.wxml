@@ -4,12 +4,13 @@
       <image class = "avatar" src="{{imgurl}}"> </image>
       <view class = "userInfoText">
           <view class = "userName">{{nickName}}</view>
-          <view class = "userLevel"> {{level_item.name
-          }} </view> 
-          <view class="total"> 
-            <view class="now" style='width:{{level_item.ratio*100}}%'>
-              <view class="vl"> {{level_item.str}} </view>
-            </view> 
+          <view class="userLevelWrapper">
+            <view class = "userLevel"> {{level_item.name}} </view> 
+            <view class="total"> 
+              <view class="now" style='width:{{level_item.ratio*347}}rpx'>
+                <view class="vl"> {{level_item.str}} </view>
+              </view> 
+            </view>
           </view>
       </view>
   </view>
@@ -19,22 +20,34 @@
 </view>
 
 <view id="newGame" class="cell" bindtap='toNewGame'>
-    <view > 新建  </view>
-    <view > 游戏  </view>
+    <view class="itemText"> 新建游戏</view>
+     <image id="newGameIcon" src="/images/new-game.png"/> 
 </view>
 
 <view id = "result" class="cell" bindtap='toResult'>
-    <view > 战绩  </view>
-    <view > 查询  </view>
+    <view class="itemText" > 战绩查询  </view>
+    <image id="trophy" src="/images/trophy.png"/>
 </view>
 
 
-<view id="help" class="cell" bindtap='toHelp'>帮助</view>
+<view id="help" class="cell" bindtap='toHelp'>
+    <view class="itemText">帮助</view>
+
+    <image id="helpIcon" src="/images/help.png"/>
+</view>
 
 <view id="pk" class="cell" bindtap='toFight'>
-    <view > 好友  </view>
-    <view > 对战  </view>
+    <view class="itemText"> 好友对战  </view>
+    <image id="pkIcon" src="/images/pk.png"/>
+    
 </view>
 
-<view id="setting" class="cell" bindtap='toSetting'> 设置 </view>
+<view id="setting" class="cell" bindtap='toSetting'>
+   <view id="settingText"> 设置 </view> 
+   <image id="settingIcon" src="/images/setting.png"/>
+</view>
+
+<view id="about" class="cell" bindtap='showInfo'>
+  <image id="infoIcon" src="/images/info.png"/>
+</view>
 
