@@ -409,9 +409,6 @@ Page({
         sc = option.scence;
         gameID = option.gameid;
         level = 1;
-        sameNumHighlight = getApp().globalData.highlightOrNot;
-        errorShow = getApp().globalData.errorOrNot;
-        timeShow = getApp().globalData.timeOrNot;
         this.setData({
             timeShowOrNOt: timeShow
         });
