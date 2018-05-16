@@ -4,6 +4,10 @@ App({
     wx.authorize({
       scope: 'scope.userInfo',
     })
+    wx.setStorage({
+      key: 'roomid',
+      data: '-1',
+    })
     var that = this
     // 获取用户信息
     wx.getSetting({
@@ -47,7 +51,7 @@ App({
                           },
                           method: "POST",
                           success: res => {
-                            console.log(res.data)
+                            //console.log(res.data)
                             wx.setStorage({
                               key: 'openid',
                               data: that.globalData.userInfo2.openid

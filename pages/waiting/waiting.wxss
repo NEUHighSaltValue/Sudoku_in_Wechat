@@ -65,6 +65,11 @@ page{
   box-shadow: 4rpx 4rpx gray;
 }  
 
+.crown_style {
+  height: 60rpx;
+  width: 120rpx;
+}
+
 .button_style{
   margin-top: 50rpx;
   line-height: 80rpx;   

@@ -341,6 +341,7 @@ let sudokuGameData8 = require('../../utils/data8.js')
 let sudokuGameData9 = require('../../utils/data9.js')
 let sudokuGameData10 = require('../../utils/data10.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
+let socket = require('../../pages/pk_sudoku/socket.js')
 
 let phoneHeight = wx.getSystemInfoSync().screenHeight;
 let canvasWidth = phoneWidth * 0.667;
@@ -397,7 +398,8 @@ Page({
                 "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
                 "percentage": "80%"
             }
-        ]
+        ],
+        myInfo: {}
     },
     changePKHiden(){
         let tempHiden = !this.data.PKHiden
@@ -406,6 +408,10 @@ Page({
         })
     },
     onLoad(option) {
+      wx.setStorage({
+        key: 'roomid',
+        data: '-1',
+      })
         sc = option.scence;
         gameID = 2;
         level = 1;
@@ -442,7 +448,63 @@ Page({
             success: res => {
                 newGameObject = res.data;
                 newGameData = newGameObject.data;
-                newGameAns = newGameObject.ans;
+                newGameAns = newGameObject.ans; 
+                if (newGameAns == undefined) {
+                  this.gameID = Math.floor(Math.random() * 200) + level * 1000;
+                  switch (level) {
+                    case 0:
+                      newGameObject = sudokuGameData1.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      //console.log(gameID)
+                      break;
+                    case 1:
+                      newGameObject = sudokuGameData2.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                    case 2:
+                      newGameObject = sudokuGameData3.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                    case 3:
+                      newGameObject = sudokuGameData4.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                    case 4:
+                      newGameObject = sudokuGameData5.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                    case 5:
+                      newGameObject = sudokuGameData6.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                    case 6:
+                      newGameObject = sudokuGameData7.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                    case 7:
+                      newGameObject = sudokuGameData8.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                    case 8:
+                      newGameObject = sudokuGameData9.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                    case 9:
+                      newGameObject = sudokuGameData10.searchSData(this.gameID);
+                      newGameData = newGameObject.data;
+                      newGameAns = newGameObject.ans;
+                      break;
+                  }
+                }
             },
             fail: () => {
                 wx.showToast({
@@ -609,6 +671,11 @@ Page({
     },
 
     freshUI() {
+        socket.send_data()
+        this.setData({
+          pkUserList: socket.grasp_data()
+        })
+        //console.log(this.data.pkUserList)
         let board = wx.createCanvasContext('boardData');
         board.setFontSize(cellWidth * 0.9 / ratio);
         var i, j, axis, baseLine;
