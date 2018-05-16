@@ -127,10 +127,16 @@ page{
   display: inline
 }
 
-.function_button .note{
+.function_button .note0{
   float: right;
   /* Zixuan note 按钮的背景色*/
   background-color: #CEF0B9
+}
+
+.function_button .note1{
+  float: right;
+  /* Zixuan note 按钮的背景色*/
+  background-color: #64A36F
 }
 
 .boardContainer{

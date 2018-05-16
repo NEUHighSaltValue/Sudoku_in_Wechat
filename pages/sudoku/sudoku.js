@@ -158,6 +158,7 @@ class Sudoku {
         }
     }
     judgeError(){
+        console.log("in error")
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
                 if (this.row[i][j].size > 1) {
@@ -376,7 +377,8 @@ Page({
         generateOk: false,
         timeText: '00:00',
         timeShowOrNOt: true,
-        completed: false
+        completed: false,
+        note: false
     },
 
     onLoad(option) {
@@ -578,7 +580,7 @@ Page({
         for (var i = 1; i < 10; i++) {
             if (i == num) {
                 //Zixuan，table 选中数字的颜色
-                table.setFillStyle("#6495ED");
+                table.setFillStyle("#64A36F");
             }
             table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
             //Zixuan table 里非选择数字的颜色
@@ -654,8 +656,11 @@ Page({
         this.drawTable(selectNum);
         if (sameNumHighlight) {
             sudoku.highlightNum(selectNum);
-            this.freshUI();
+        } 
+        if (errorShow){
+            sudoku.judgeError();
         }
+        this.freshUI();
     },
 
     toLevelSelect() {
@@ -690,6 +695,9 @@ Page({
 
     changeNote() {
         currentNote = !currentNote;
+        this.setData({
+            note: currentNote
+        })
     },
 
     freshUI() {

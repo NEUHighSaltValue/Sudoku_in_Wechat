@@ -35,7 +35,7 @@
 				{
 					"id": 0,
 					"name": "ui",
-					"pathName": "pages/pk_sudoku/pk_sudoku",
+					"pathName": "pages/result/result",
 					"query": ""
 				},
 				{
