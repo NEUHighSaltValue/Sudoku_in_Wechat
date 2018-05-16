@@ -1,7 +1,29 @@
 /* pages/waiting/waiting.wxss */
+.header{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 60rpx;
+    align-items: center;
+}
+.headerText{
+    font-size: 48rpx;
+    text-align: center;
+}
+#room{
+    font-size: 40rpx;
+    border: 2rpx solid black;
+    display: inline;
+    padding-left: 40rpx;
+    padding-right: 40rpx;
+    background: #D2E0FB;
+    margin-bottom: 30rpx;
+}
+
+
 .userinfo-wrapper{
   margin-left: 75rpx;
   display: flex; 
+  height: 676rpx;
   flex-wrap: wrap;
   align-content: flex-start; 
   flex-direction: row;
@@ -24,20 +46,26 @@
 }  
 
 .button_style{
-  text-align: center;
-  margin: 40rpx;
-  top: 150rpx;
-  height: 20rpx;
-  position: relative;
+  margin: 75rpx;
+  line-height: 80rpx;   
+  font-size: 40rpx;
+  display: flex;
 }
-
-.button_style .start{
-  float: left
+.ready{
+    background: #F8F8F8;
+    width: 200rpx;
+    height: 80rpx;
+    text-align: center;
+    border: 1rpx solid black;
+    border-radius: 20rpx;
 }
-.button_style .ready{
-  float: left
-}
-.button_style .request{
-  float: right
+.request{
+    border: 1rpx solid black;
+    background: #F8F8F8;
+    width: 200rpx;
+    height: 80rpx;
+    text-align: center;
+    margin-left: 200rpx;
+    border-radius: 20rpx;
 }
   

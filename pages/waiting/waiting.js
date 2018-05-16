@@ -1,10 +1,15 @@
 // pages/waiting/waiting.js
+var levelName="",sudokuName="";
+let levelTable=["入门级","初级","中级","高级","骨灰级"]
 Page({
 
   /**
    * 页面的初始数据
    */
-  data: {
+    data: {
+        sudokuName: "",
+        levelName: "",
+        roomId:"",
     userInfoList: [
       {
         key: 0,
@@ -27,11 +32,27 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
+      console.log(options)
+      console.log(options.level)
+    let level = options.level;
+    let roomid = options.roomid
+    var tempSudokuName=""
+    if(level<5){
+        sudokuName = "数独"; 
+        tempSudokuName = "普通数独";
+    } else {
+        sudokuName = "对角线数独";
+        tempSudokuName = "对角线数独";
+    }
+    levelName = levelTable[level%5]
     var that = this
     try {
       var value = wx.getStorageSync('openid')
       if(value) {
-        this.setData({
+      this.setData({
+          roomId: roomid,
+          sudokuName: tempSudokuName,
+          levelName: levelName,
           myInfo: {
             key: 1,
             info: {
@@ -55,22 +76,18 @@ Page({
       wx.sendSocketMessage({
         data: JSON.stringify(that.data.myInfo)
       })
+      that.readMessage()
     })
-    wx.onSocketMessage(function (res) {
-      var infos = JSON.parse(res.data)
-      console.log(infos)
-    })
-    //that.readMessage()
     console.log(JSON.stringify(that.data.myInfo))
   },
 
   OnShow() {
-    // wx.onSocketOpen(function(res) {
-    //   console.log('grasp')
-    //   wx.onSocketMessage(function(res){
-    //     console.log(res.data)
-    //   })
-    // })
+    wx.onSocketOpen(function(res) {
+      console.log('grasp')
+      wx.onSocketMessage(function(res){
+        console.log(res.data)
+      })
+    })
   },
 
   readyChange() {
@@ -123,23 +140,26 @@ Page({
   readMessage() {
     var infos
     var infolist = []
+    var that = this
     wx.onSocketMessage(function(res){
       infos = JSON.parse(res.data).info
-      console.log(infos)
-    })
-    if(infos.Master) {
-      infolist[0] = {
-        key: 1,
-        url: infos.Master.url,
-        isReady: infos.Master.isStart
+      if(infos){
+        console.log(infos)
+        if (infos.Master) {
+          infolist[0] = {
+            key: 1,
+            url: infos.Master.url,
+            isReady: infos.Master.isStart
+          }
+        }
+        for (var i = 0; i < infos.members.length; i++) {
+          infolist[i + 1] = infos.members[i]
+          infolist[i + 1].key = i + 1
+        }
+        that.setData({
+          userInfoList: infolist
+        })
       }
-    }
-    for(var i = 0; i < infos.Members.length; i++) {
-      infolist[i+1] = infos.Members[i]
-      infolist[i+1].key = i+1
-    }
-    this.setData({
-      userInfoList: infolist
     })
   },
 
@@ -174,7 +194,19 @@ Page({
   /**
    * 用户点击右上角分享
    */
-  onShareAppMessage: function () {
-  
+  onShareAppMessage: function (res) {
+      return {
+          title: '敢来和我一起挑战'+levelName+sudokuName+"吗",
+          path: '/page/user?id=123',
+          success: function (res) {
+              // 转发成功
+          },
+          fail: function (res) {
+              // 转发失败
+          }
+      }
+  },
+  inviteFriends: function(){
+      this.onShareAppMessage({"from":"button"})
   }
 })

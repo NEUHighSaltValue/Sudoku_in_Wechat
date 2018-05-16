@@ -1,10 +1,12 @@
 // pages/level_select/level_select.js
+var pk = false;
 Page({
 
   /**
    * 页面的初始数据
    */
-  data: {
+    data: {
+        buttonClicked: true,
         levelSelectList: [
             {
                 text: "入门级",
@@ -43,9 +45,69 @@ Page({
             }          
       ]
   },
-  selectLevel(e){
-    wx.redirectTo({
-        url: '/pages/sudoku/sudoku?level=' + e.currentTarget.dataset.id,
+  onLoad(options){
+    if (options['mode']=="pk"){
+        pk = true
+    } else{
+        pk = false
+    }
+  },
+  selectLevel(e) {
+      let level = e.currentTarget.dataset.id
+      if (!this.data.buttonClicked) { return }
+      buttonClicked(this);
+      if(!pk){
+        wx.redirectTo({
+            url: '/pages/sudoku/sudoku?level=' + e.currentTarget.dataset.id,
     })
+      } else{
+          var gameID = Math.floor(Math.random() * 1000) + level * 1000 + 1;
+          if (gameID > 9868) {
+              gameID = gameID - 869;
+          }
+          wx.getStorage({
+              key: 'openid',
+              success: function(res) {
+                  console.log(res.data)
+                  let openid = res.data
+                  wx.request({
+                      url: 'https://www.tianzhipengfei.xin/sudoku',
+                      data: {
+                          event: 'newPK',
+                          gameid: gameID,
+                          userid: openid
+                      },
+                      method: "POST",
+                      success: res => {
+                          let roomid = res.data.split('(')[1].split(',')[0]
+                          console.log(roomid)
+                          wx.redirectTo({
+                              url: '/pages/waiting/waiting?level=' + level + '&roomid='+roomid,
+                          })
+                      },
+                      fail: res => {
+                          wx.showToast({
+                              title: '创建多人对战失败',
+                              icon: 'none',
+                              duration: 2000
+                          })
+                      }
+                  })
+              },
+          })
+          
+      }
   },
 })
+
+var buttonClicked = function (that) {
+    
+    that.setData({
+        buttonClicked: false
+    })
+    setTimeout(function () {
+        that.setData({
+            buttonClicked: true
+        })
+    }, 1000);
+}

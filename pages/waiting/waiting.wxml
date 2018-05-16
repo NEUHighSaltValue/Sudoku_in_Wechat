@@ -1,25 +1,25 @@
 <!--pages/waiting/waiting.wxml-->
-<view class="roomNum"> -Room 1- </view>
-<view class="roomNum"> -普通数独- </view>
-<view class="roomNum"> -骨灰级- </view>
-<view class="userinfo-wrapper">
-  <view class="userItem"  wx:for="{{userInfoList}}" wx:key="key">
-    <image class="userinfo-avatar" src="{{item.url}}" background-size="cover"></image>
-    <view wx:if="{{item.isReady}}">
-      <view class="userinfo-ready" style='color: green'> 准备 </view>
-    </view>
-    <view wx:else>
-      <view class="userinfo-ready" style='color: red'> 未准备 </view>
-    </view>
-  </view>
+<view class="header">
+    <view class="headerText" id="room"> -Room {{roomId}}- </view>
+    <view class="headerText" id="type"> -{{sudokuName}}- </view>
+    <view class="headerText" id="level"> -{{levelName}}- </view>
 </view>
+
+<scroll-view class="scrollWrapper" scroll-y>
+    <view class="userinfo-wrapper">
+    <view class="userItem"  wx:for="{{userInfoList}}" wx:key="key">
+        <image class="userinfo-avatar" src="{{item.url}}" background-size="cover"></image>
+        <view wx:if="{{item.isReady}}">
+        <view class="userinfo-ready" style='color: green'> 准备 </view>
+        </view>
+        <view wx:else>
+        <view class="userinfo-ready" style='color: red'> 未准备 </view>
+        </view>
+    </view>
+    </view>
+</scroll-view>
 <view class='button_style'>
-  <view wx:if="{{myInfo.isMaster}}">
-    <button class='start' size='mini' bindtap='readyChange'> 开始 </button>
-    <button class='request' size='mini'> 邀请 </button>
-  </view>
-  <view wx:else>
-    <button class='ready' size='mini' bindtap='readyChange'> 准备 </button>
-    <button class='request' size='mini'> 邀请 </button>
-  </view>
+    <view wx:if="{{myInfo.info.isMaster}}" class='ready' bindtap='readyChange'> 开始 </view>
+    <view wx:else class='ready' bindtap='readyChange'> 准备 </view>
+    <button class='request' bindtap='inviteFriends' open-type="share"> 邀请 </button>
 </view>
