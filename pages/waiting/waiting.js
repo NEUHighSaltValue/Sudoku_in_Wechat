@@ -1,6 +1,7 @@
 // pages/waiting/waiting.js
 var levelName="",sudokuName="";
 let levelTable=["入门级","初级","中级","高级","骨灰级"]
+var gameid;
 Page({
 
   /**
@@ -32,10 +33,9 @@ Page({
    * 生命周期函数--监听页面加载
    */
   onLoad: function (options) {
-      console.log(options)
-      console.log(options.level)
     let level = options.level;
     let roomid = options.roomid
+    gameid=options.gameid;
     var tempSudokuName=""
     if(level<5){
         sudokuName = "数独"; 
