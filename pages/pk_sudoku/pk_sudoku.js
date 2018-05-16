@@ -402,19 +402,15 @@ Page({
         myInfo: {}
     },
     changePKHiden(){
-        console.log("before tap ", this.data.PKHiden)
         let tempHiden = !this.data.PKHiden
         this.setData({
             PKHiden: tempHiden
         })
-        console.log("after tap ", this.data.PKHiden)
     },
     onLoad(option) {
         sc = option.scence;
+        gameID = option.gameid;
         level = 1;
-        sameNumHighlight = getApp().globalData.highlightOrNot;
-        errorShow = getApp().globalData.errorOrNot;
-        timeShow = getApp().globalData.timeOrNot;
         this.setData({
             timeShowOrNOt: timeShow
         });
@@ -438,11 +434,7 @@ Page({
         })
 
         var newGameObject, newGameData, newGameAns;
-        gameID = Math.floor(Math.random() * 1000) + level * 1000 + 1;
-        if (gameID > 9868) {
-            gameID = gameID - 869;
-        }
-        wx.request({
+                wx.request({
             url: 'https://www.tianzhipengfei.xin/sudoku',
             data: {
                 event: 'getGameData',
@@ -511,72 +503,13 @@ Page({
                 }
             },
             fail: () => {
-                this.gameID = Math.floor(Math.random() * 200) + level * 1000;
-                switch (level) {
-                    case 0:
-                        newGameObject = sudokuGameData1.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 1:
-                        newGameObject = sudokuGameData2.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 2:
-                        newGameObject = sudokuGameData3.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 3:
-                        newGameObject = sudokuGameData4.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 4:
-                        newGameObject = sudokuGameData5.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 5:
-                        newGameObject = sudokuGameData6.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 6:
-                        newGameObject = sudokuGameData7.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 7:
-                        newGameObject = sudokuGameData8.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 8:
-                        newGameObject = sudokuGameData9.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 9:
-                        newGameObject = sudokuGameData10.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                }
+                wx.showToast({
+                    title: '获取游戏数据失败',
+                    icon: 'none',
+                    duration: 2000
+                })
             },
             complete: () => {
-                wx.request({
-                    url: 'https://www.tianzhipengfei.xin/sudoku',
-                    data: {
-                        event: 'newGame',
-                        gameid: gameID,
-                        userid: "123"
-                    },
-                    method: "POST",
-                    success: res => {
-                    }
-                })
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({

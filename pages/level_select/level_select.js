@@ -68,7 +68,6 @@ Page({
           wx.getStorage({
               key: 'openid',
               success: function(res) {
-                  console.log(res.data)
                   let openid = res.data
                   wx.request({
                       url: 'https://www.tianzhipengfei.xin/sudoku',
@@ -80,9 +79,8 @@ Page({
                       method: "POST",
                       success: res => {
                           let roomid = res.data.split('(')[1].split(',')[0]
-                          console.log(roomid)
                           wx.redirectTo({
-                              url: '/pages/waiting/waiting?level=' + level + '&roomid='+roomid,
+                              url: '/pages/waiting/waiting?level=' + level + '&roomid='+roomid + '&gameid='+gameID,
                           })
                       },
                       fail: res => {
