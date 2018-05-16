@@ -8,18 +8,18 @@ Page({
     userInfoList: [
       {
         key: 0,
-        isReady: false,
-        userInfo: {} 
+        url: "",
+        isReady: 0
       },
     ],
     myInfo: {
       key: 1,
       info: {
-        isMaster: false,
+        isMaster: 0,
         url: "",
         openid: "",
         roomId: 1,
-        isReady: false
+        isReady: 0
       }
     }
   },
@@ -32,18 +32,15 @@ Page({
       var value = wx.getStorageSync('openid')
       if(value) {
         this.setData({
-          userInfoList: [
-            { key: 1, isReady: false, userInfo: getApp().globalData.userInfo },
-            { key: 2, isReady: false, userInfo: getApp().globalData.userInfo },
-            { key: 3, isReady: false, userInfo: getApp().globalData.userInfo },
-            { key: 4, isReady: true, userInfo: getApp().globalData.userInfo },
-            { key: 5, isReady: true, userInfo: getApp().globalData.userInfo },
-            { key: 6, isReady: false, userInfo: getApp().globalData.userInfo },
-            { key: 7, isReady: false, userInfo: getApp().globalData.userInfo }
-          ],
           myInfo: {
-            isMaster: true,
-            url: getApp().globalData.userInfo.avatarUrl,
+            key: 1,
+            info: {
+              isMaster: 1,
+              url: getApp().globalData.userInfo.avatarUrl,
+              openid: value,
+              roomId: 1,
+              isReady: 0
+            }
           }
         })
       }
@@ -54,15 +51,66 @@ Page({
       url: 'wss://www.tianzhipengfei.xin/pk',
     })
     wx.onSocketOpen(function (res) {
+      console.log('send')
       wx.sendSocketMessage({
         data: JSON.stringify(that.data.myInfo)
       })
     })
+    wx.onSocketMessage(function (res) {
+      var infos = JSON.parse(res.data)
+      console.log(infos)
+    })
+    //that.readMessage()
     console.log(JSON.stringify(that.data.myInfo))
   },
 
-  readChange() {
-    this.setData
+  OnShow() {
+    // wx.onSocketOpen(function(res) {
+    //   console.log('grasp')
+    //   wx.onSocketMessage(function(res){
+    //     console.log(res.data)
+    //   })
+    // })
+  },
+
+  readyChange() {
+    console.log('ready')
+    var that = this
+    try {
+      var value = wx.getStorageSync('openid')
+      if (value) {
+        this.setData({
+          myInfo: {
+            key: 1,
+            info: {
+              isMaster: true,
+              url: getApp().globalData.userInfo.avatarUrl,
+              openid: value,
+              roomId: 1,
+              isReady: !that.data.isReady
+            }
+          }
+        })
+        console.log(this.data.myInfo)
+      }
+    } catch (e) {
+      // Do something when catch error
+    }
+    //console.log(JSON.stringify(this.data.myInfo))
+    
+    wx.onSocketOpen(function (res) {
+      console.log('send')
+      wx.sendSocketMessage({
+        data: JSON.stringify(this.data.myInfo)
+      })
+      wx.onSocketMessage(function(res){
+        console.log('grasp')
+        console.log(res.data)
+      })
+    })
+    wx.onSocketError(function(res) {
+      console.log('error')
+    })
   },
 
   /**
@@ -72,11 +120,27 @@ Page({
   
   },
 
-  /**
-   * 生命周期函数--监听页面显示
-   */
-  onShow: function () {
-
+  readMessage() {
+    var infos
+    var infolist = []
+    wx.onSocketMessage(function(res){
+      infos = JSON.parse(res.data).info
+      console.log(infos)
+    })
+    if(infos.Master) {
+      infolist[0] = {
+        key: 1,
+        url: infos.Master.url,
+        isReady: infos.Master.isStart
+      }
+    }
+    for(var i = 0; i < infos.Members.length; i++) {
+      infolist[i+1] = infos.Members[i]
+      infolist[i+1].key = i+1
+    }
+    this.setData({
+      userInfoList: infolist
+    })
   },
 
   /**

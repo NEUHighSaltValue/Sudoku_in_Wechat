@@ -47,7 +47,7 @@ App({
                           },
                           method: "POST",
                           success: res => {
-                            console.log(res.data)
+                            //console.log(res.data)
                             wx.setStorage({
                               key: 'openid',
                               data: that.globalData.userInfo2.openid

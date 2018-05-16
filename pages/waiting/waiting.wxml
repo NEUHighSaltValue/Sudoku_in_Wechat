@@ -4,7 +4,7 @@
 <view class="roomNum"> -骨灰级- </view>
 <view class="userinfo-wrapper">
   <view class="userItem"  wx:for="{{userInfoList}}" wx:key="key">
-    <image class="userinfo-avatar" src="{{item.userInfo.avatarUrl}}" background-size="cover"></image>
+    <image class="userinfo-avatar" src="{{item.url}}" background-size="cover"></image>
     <view wx:if="{{item.isReady}}">
       <view class="userinfo-ready" style='color: green'> 准备 </view>
     </view>
