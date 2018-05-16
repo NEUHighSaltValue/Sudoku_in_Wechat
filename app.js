@@ -4,6 +4,10 @@ App({
     wx.authorize({
       scope: 'scope.userInfo',
     })
+    wx.setStorage({
+      key: 'roomid',
+      data: '-1',
+    })
     var that = this
     // 获取用户信息
     wx.getSetting({

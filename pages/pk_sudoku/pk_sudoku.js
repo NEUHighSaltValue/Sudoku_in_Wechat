@@ -408,6 +408,10 @@ Page({
         })
     },
     onLoad(option) {
+      wx.setStorage({
+        key: 'roomid',
+        data: '-1',
+      })
         sc = option.scence;
         gameID = option.gameid;
         level = 1;

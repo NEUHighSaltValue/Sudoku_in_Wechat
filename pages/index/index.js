@@ -141,6 +141,11 @@ Page({
     })
   },
   onLoad: function (options) {
+    var isPK=false;
+    console.log(options)
+    if (options.type == "pk"){
+      isPK = true;
+    }
     scene = decodeURIComponent(options.scene)
     var that = this
     var item = level_js.level_ratio()
@@ -158,8 +163,63 @@ Page({
         })
       }
     })
+    if(isPK){
+      let level=options.level;
+      let roomid=options.roomid;
+      let gameid=options.gameid
+      wx.navigateTo({
+        url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=' + 0
+      })
+    }
   },
-  onShow: function() {
+  onShow: function () {
+      wx.closeSocket({
+        
+      })
+    console.log(123)
+    wx.getStorage({
+      key: 'roomid',
+      success: function(res) {
+        let tempRoomid=res.data
+        console.log(tempRoomid)
+        if(parseInt(tempRoomid) != -1) {
+
+          console.log("in require openid")
+          wx.getStorage({
+            key: 'openid',
+            success: function (res) {
+              let value=res.data
+              console.log(value)
+              wx.connectSocket({
+                url: 'wss://www.tianzhipengfei.xin/pk',
+              })
+              wx.onSocketOpen(function (res) {
+                console.log(123213)
+                var myInfo = {
+                  key: 5,
+                  info: {
+                    openid: value,
+                    roomId: tempRoomid
+                  }
+                }
+                let myInfoJson = JSON.stringify(myInfo)
+                console.log(myInfoJson)
+                wx.sendSocketMessage({
+                  data: myInfoJson
+                })
+              })
+              wx.setStorage({
+                key: 'roomid',
+                data: '-1',
+              })
+              wx.closeSocket({
+                
+              })
+             },
+          })
+        }
+      },
+    })
     var item = level_js.level_ratio()
     var that = this
     wx.getUserInfo({
