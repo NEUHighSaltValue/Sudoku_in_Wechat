@@ -94,13 +94,16 @@ Page({
                 isReady: 0
             }
         }
+        console.log("send in show")
         wx.onSocketOpen(function () {
+            console.log("send in load")
             wx.sendSocketMessage({
                 data: JSON.stringify(that.data.myInfo)
             })
         })
         let temp=false
         this.readMessage()
+        console.log("add queue in show")
     },
     // !onShow
     onUnload: function(){
@@ -117,11 +120,14 @@ Page({
         wx.sendSocketMessage({
             data: JSON.stringify(myInfo),
             success: function(){
+                console.log("leave suc")
                 let temp = true
             },
             fail: function(){
+                console.log("leave fail")
             },
             complete: function(){
+                console.log("leave comp")
                 wx.onSocketMessage(function (res) {
                     let data = JSON.parse(res.data)
                     if (data.msg == "delete mem") {
@@ -223,8 +229,7 @@ Page({
             return {
                 title: '敢来和我一起挑战' + this.data.levelName + this.data.sudokuName + "吗",
                 path: '/pages/index/index?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid
-                + '&isMaster=0', 
-                imageUrl: 'https://www.tianzhipengfei.xin/static/share' + num + '.jpg',
+                + '&isMaster=0',
                 success: function (res) {
                     //console.log('success')
                 },

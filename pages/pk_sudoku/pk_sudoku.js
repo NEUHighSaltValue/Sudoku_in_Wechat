@@ -344,6 +344,7 @@ let sudokuGameData8 = require('../../utils/data8.js')
 let sudokuGameData9 = require('../../utils/data9.js')
 let sudokuGameData10 = require('../../utils/data10.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
+let socket = require('../../pages/pk_sudoku/socket.js')
 
 let phoneHeight = wx.getSystemInfoSync().screenHeight;
 let canvasWidth = phoneWidth * 0.667;
@@ -361,8 +362,6 @@ var usedTime = "00:55";
 var rank = 1;
 var imagePath = '/images/level0.png';
 var shareImg;
-var connectSocket = false;
-var socketMsgQueue = []
 
 var selectX = -1;
 var selectY = -1;
@@ -377,72 +376,7 @@ var level = 0;
 var remainNum = 81;
 var NowTime;
 
-function send_data(percent, time) {
-    var myInfo = {}
-    try {
-        var value = wx.getStorageSync('openid')
-        if (value) {
-            myInfo = {
-                key: 3,
-                info: {
-                    url: getApp().globalData.userInfo.avatarUrl,
-                    openid: value,
-                    roomId: 1,
-                    rank: 0,
-                    percent: 1 - percent,
-                    comTime: time
-                }
-            }
-        }
-    } catch (e) {
-        // Do something when catch error
-    }
-    wx.connectSocket({
-        url: 'wss://www.tianzhipengfei.xin/pk',
-        header: {
-            'content-type': 'application/json'
-        },
-        method: "GET"
-    });
-    if (connectSocket == false) {
-        socketMsgQueue.push(JSON.stringify(myInfo))
-    }
-    wx.onSocketOpen(function () {
-        if (!connectSocket) {
-            connectSocket = true
-            for (var i = 0; i < socketMsgQueue.length; i++) {
-                wx.sendSocketMessage({
-                    data: socketMsgQueue[i]
-                })
-            }
-            socketMsgQueue = []
-        } else {
-            wx.sendSocketMessage({
-                data: JSON.stringify(myInfo)
-            })
-        }
-    })
-}
 
-function grasp_data() {
-    var data = []
-    wx.onSocketOpen(function (res) {
-        wx.onSocketMessage(function (res) {
-            res = JSON.parse(res.data)
-            console.log(res)
-            data = res.info
-        })
-    })
-    var pkUserInfo = []
-    for (var i = 0; i < data.length; i++) {
-        pkUserInfo[i] = {
-            "avatar": data[i].url,
-            "percentage": data[i].percent > 1 ? "完" : data[i].percent,
-            "finished": data[i].percent > 1 ? 1 : undefined
-        }
-    }
-    return pkUserInfo
-}
 
 Page({
     data: {
@@ -708,15 +642,15 @@ Page({
             }
         }
         board.draw();
-        send_data(remainNum / constantRemainNum, MAXtime)
+        socket.send_data(remainNum / constantRemainNum, MAXtime)
         this.setData({
-            pkUserList: grasp_data()
+            pkUserList: socket.grasp_data()
         })
         if (remainNum == 0) {
             if (sudoku.judgeCorrect()) {
-                send_data(1, num)
+                socket.send_data(1, num)
                 this.setData({
-                    pkUserList: grasp_data()
+                    pkUserList: socket.grasp_data()
                 })
                 this.timeStop();
                 sudoku.freeze();
