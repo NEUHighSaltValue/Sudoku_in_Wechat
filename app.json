@@ -6,10 +6,8 @@
         "pages/setting/setting",
         "pages/about/about",
         "pages/level_select/level_select",
-        "pages/fight/fight",
         "pages/result/result",
-        "pages/sudoku/sudoku",
-        "pages/fight/create/create"
+        "pages/sudoku/sudoku"
     ],
     "window": {
         "backgroundTextStyle": "light",
