@@ -4,6 +4,10 @@ var scene
 const app = getApp()
 var storage
 let level_js = require('../../pages/index/level.js')
+var isPK
+let level
+let roomid
+let gameid
 
 Page({
   data: {
@@ -137,11 +141,23 @@ Page({
                 key: 'avatar',
                 data: tempAvatarURL
             })
+            if(isPK) {
+              wx.showModal({
+                title: '提示',
+                content: '授权成功，是否进入pk房',
+                success: function(res) {
+                  if(res.confirm) {
+                    wx.redirectTo({
+                      url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0',
+                    })
+                  }
+                }
+              })
+            }
         }        
     })
   },
   onLoad: function (options) {
-    var isPK=false;
     console.log(options)
     if (options.type == "pk"){
       isPK = true;
@@ -151,11 +167,22 @@ Page({
     var item = level_js.level_ratio()
     
     if(isPK){
-      let level=options.level;
-      let roomid=options.roomid;
-      let gameid=options.gameid
-      wx.navigateTo({
-        url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0'
+      level=options.level;
+      roomid=options.roomid;
+      gameid=options.gameid
+      wx.getUserInfo({
+        success: function() {
+          wx.navigateTo({
+            url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0'
+          })
+        },
+        fail: function() {
+          wx.showModal({
+            title: '提示',
+            content: '小程序需要用户授权身份信息才能进行对战功能',
+            showCancel: false
+          })
+        }
       })
     }
   },
