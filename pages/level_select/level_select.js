@@ -54,7 +54,7 @@ Page({
   },
   selectLevel(e) {
       let level = e.currentTarget.dataset.id
-      //console.log(level)
+      console.log(level)
       if (!this.data.buttonClicked) { return }
       buttonClicked(this);
       if(!pk){
@@ -62,7 +62,6 @@ Page({
             url: '/pages/sudoku/sudoku?level=' + e.currentTarget.dataset.id,
     })
       } else{
-          console.log('pk', level)
           var gameID = Math.floor(Math.random() * 1000) + level * 1000 + 1;
           if (gameID > 9868) {
               gameID = gameID - 869;
@@ -70,9 +69,7 @@ Page({
           wx.getStorage({
               key: 'openid',
               success: function(res) {
-                console.log('storage')
-                  let openid = res.data
-                  //console.log(openid)
+                  let openid = res.data + "s"
                   wx.request({
                       url: 'https://www.tianzhipengfei.xin/sudoku',
                       data: {
@@ -82,7 +79,6 @@ Page({
                       },
                       method: "POST",
                       success: res => {
-                        console.log('success')
                           let roomid = res.data.split('(')[1].split(',')[0]
                           wx.redirectTo({
                               url: '/pages/waiting/waiting?level=' + level + '&roomid='+roomid + '&gameid='+gameID
@@ -90,7 +86,6 @@ Page({
                           })
                       },
                       fail: res => {
-                        //console.log('fail')
                           wx.showToast({
                               title: '创建多人对战失败',
                               icon: 'none',

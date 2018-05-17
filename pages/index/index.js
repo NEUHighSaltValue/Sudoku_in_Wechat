@@ -4,6 +4,10 @@ var scene
 const app = getApp()
 var storage
 let level_js = require('../../pages/index/level.js')
+var isPK
+let level
+let roomid
+let gameid
 
 Page({
   data: {
@@ -137,11 +141,23 @@ Page({
                 key: 'avatar',
                 data: tempAvatarURL
             })
+            if(isPK) {
+              wx.showModal({
+                title: '提示',
+                content: '授权成功，是否进入pk房',
+                success: function(res) {
+                  if(res.confirm) {
+                    wx.redirectTo({
+                      url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0',
+                    })
+                  }
+                }
+              })
+            }
         }        
     })
   },
   onLoad: function (options) {
-    var isPK=false;
     console.log(options)
     if (options.type == "pk"){
       isPK = true;
@@ -149,88 +165,44 @@ Page({
     scene = decodeURIComponent(options.scene)
     var that = this
     var item = level_js.level_ratio()
-    wx.getUserInfo({
-      success: res=> {
-        that.setData({
-          userInformation: true,
-          level_item: item
-        })
-      },
-      fail: res => {
-        that.setData({
-          userInformation: false,
-          level_item: item
-        })
-      }
-    })
+    
     if(isPK){
-      let level=options.level;
-      let roomid=options.roomid;
-      let gameid=options.gameid
-      wx.navigateTo({
-        url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=' + 0
+      level=options.level;
+      roomid=options.roomid;
+      gameid=options.gameid
+      wx.getUserInfo({
+        success: function() {
+          wx.navigateTo({
+            url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0'
+          })
+        },
+        fail: function() {
+          wx.showModal({
+            title: '提示',
+            content: '小程序需要用户授权身份信息才能进行对战功能',
+            showCancel: false
+          })
+        }
       })
     }
   },
   onShow: function () {
-      wx.closeSocket({
-        
-      })
-    console.log(123)
-    wx.getStorage({
-      key: 'roomid',
-      success: function(res) {
-        let tempRoomid=res.data
-        console.log(tempRoomid)
-        if(parseInt(tempRoomid) != -1) {
-
-          console.log("in require openid")
-          wx.getStorage({
-            key: 'openid',
-            success: function (res) {
-              let value=res.data
-              console.log(value)
-              wx.connectSocket({
-                url: 'wss://www.tianzhipengfei.xin/pk',
-              })
-              wx.onSocketOpen(function (res) {
-                console.log(123213)
-                var myInfo = {
-                  key: 5,
-                  info: {
-                    openid: value,
-                    roomId: tempRoomid
-                  }
-                }
-                let myInfoJson = JSON.stringify(myInfo)
-                console.log(myInfoJson)
-                wx.sendSocketMessage({
-                  data: myInfoJson
-                })
-              })
-              wx.setStorage({
-                key: 'roomid',
-                data: '-1',
-              })
-              wx.closeSocket({
-                
-              })
-             },
-          })
-        }
-      },
-    })
     var item = level_js.level_ratio()
     var that = this
     wx.getUserInfo({
-      complete: res => {
-        that.setData({
-          level_item: item
-        })
-      }
+        success: res => {
+            that.setData({
+                userInformation: true,
+                level_item: item
+            })
+        },
+        fail: res => {
+            that.setData({
+                userInformation: false,
+                level_item: item
+            })
+        }
     })
-    //console.log(this.data.level_item)
-    //console.log('item', item)
   },
   showInfo: function(){
       wx.showModal({
