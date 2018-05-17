@@ -2,33 +2,33 @@
 <view class="header">
     <view class="headerText" id="room"> - Room {{roomId}} - </view>
     <view class="headerText" id="type"> - {{sudokuName}} - </view>
-    <view class="headerText" id="level"> - {{levelName}}  - </view>
+    <view class="headerText" id="level"> - {{levelName}} - </view>
 </view>
 
 <scroll-view class="scrollWrapper" scroll-y>
     <view class="userinfo-wrapper">
-      <view class="userItem"  wx:for="{{userInfoList}}" wx:key="key">
-          <image class="userinfo-avatar" src="{{item.userInfo.avatarUrl}}" background-size="cover"></image>
-          <image wx:if="{{item.isReady}}" class="userinfo-ready" src="/images/greenReady.png">  </image>
-          <image wx:else class="userinfo-ready" src="/images/grayReady.png"> </image>
-      </view>
+        <view class="userItem" wx:for="{{userInfoList}}" wx:key="key">
+            <image class="userinfo-avatar" src="{{item.url}}" background-size="cover"></image>
+            <image wx:if="{{item.isReady}}" class="userinfo-ready" src="/images/greenReady.png"> </image>
+            <image wx:else class="userinfo-ready" src="/images/grayReady.png"> </image>
+        </view>
     </view>
 </scroll-view>
 
 <view class='button_style'>
-     <button class="readyButton" plain="true" wx:if="{{myInfo.info.isMaster}}==1" bindtap='readyChange'> 
-      <image  wx:if="{{isReady}}" class="inviteIcon" src="/images/unstartable.png "/>
-       <image wx:else class="inviteIcon"  src="/images/startable.png"/> 
-     </button>
+    <button class="readyButton" plain="true" wx:if="{{myInfo.info.isMaster==1}}" bindtap='readyChange'>
+        <image wx:if="{{startable}}" class="inviteIcon" src="/images/startable.png"/>
+        <image wx:else class="inviteIcon" src="/images/unstartable.png"/>
+    </button>
 
-    <button wx:else plain="true" class="inviteButton" bindtap='readyChange'> 
-      <image wx:if="{{isReady}}" class="readyIcon" src="/images/ready.png"/> 
-      <image wx:else class="inviteIcon" src="/images/unready.png"/> 
-    </button> 
+    <button wx:else plain="true" class="inviteButton" bindtap='readyChange'>
+        <image wx:if="{{myInfo.info.isReady}}" class="readyIcon" src="/images/unready.png" />
+        <image wx:else class="inviteIcon" src="/images/ready.png" />
+    </button>
 
-    <button class="inviteButton" plain='true' bindtap='inviteFriends' open-type="share"> 
-    <image class="inviteIcon" src="/images/inviteIcon.png"/>
-     </button>
+    <button class="inviteButton" plain='true' bindtap='inviteFriends' open-type="share">
+        <image class="inviteIcon" src="/images/inviteIcon.png" />
+    </button>
 </view>
 
-<image src="/images/crown.png" class="crownIcon"/>
+<image src="/images/crown.png" class="crownIcon" />

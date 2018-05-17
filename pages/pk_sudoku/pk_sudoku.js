@@ -149,7 +149,6 @@ class Sudoku {
                 } else {
                     if (this.boardData[i][j].note == true) {
                         this.boardData[i][j].color = 5;
-                        console.log("note: ", i, j)
                     } else {
                         this.boardData[i][j].color = 0;
                     }
@@ -315,7 +314,11 @@ var sameNumHighlight = false;
 var errorShow = false;
 var timeShow = true;
 var gameID = 0;
+var constantRemainNum=0;
+var value;
+var avatarUrl;
 
+let MAXtime = 10000000;
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
 let ratio = 750 / phoneWidth;
 let boardWidthInPrx = 675;
@@ -373,6 +376,8 @@ var level = 0;
 var remainNum = 81;
 var NowTime;
 
+
+
 Page({
     data: {
         generateOk: false,
@@ -380,25 +385,7 @@ Page({
         timeShowOrNOt: true,
         completed: false,
         PKHiden: true,
-        pkUserList:[
-            {
-                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
-                "percentage": "完",
-                "finished": 1
-            },
-            {
-                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
-                "percentage": "100%"
-            },
-            {
-                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
-                "percentage": "80%"
-            },
-            {
-                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
-                "percentage": "80%"
-            }
-        ],
+        pkUserList:[],
         myInfo: {}
     },
     changePKHiden(){
@@ -407,14 +394,11 @@ Page({
             PKHiden: tempHiden
         })
     },
-    onLoad(option) {
-      wx.setStorage({
-        key: 'roomid',
-        data: '-1',
-      })
-        sc = option.scence;
-        gameID = 2;
-        level = 1;
+    onLoad(options) {
+        sc = options.scence;
+        gameID = options.gameid;
+        value = wx.getStorageSync('openid');
+        avatarUrl = wx.getStorageSync('avatar');
         this.setData({
             timeShowOrNOt: timeShow
         });
@@ -425,7 +409,6 @@ Page({
         this.setData({
             generateOk: false
         })
-        sudoku.reset();
         sudoku.reset();
         this.timeStop();
         timer = '0';
@@ -448,63 +431,12 @@ Page({
             success: res => {
                 newGameObject = res.data;
                 newGameData = newGameObject.data;
-                newGameAns = newGameObject.ans; 
-                if (newGameAns == undefined) {
-                  this.gameID = Math.floor(Math.random() * 200) + level * 1000;
-                  switch (level) {
-                    case 0:
-                      newGameObject = sudokuGameData1.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      //console.log(gameID)
-                      break;
-                    case 1:
-                      newGameObject = sudokuGameData2.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                    case 2:
-                      newGameObject = sudokuGameData3.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                    case 3:
-                      newGameObject = sudokuGameData4.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                    case 4:
-                      newGameObject = sudokuGameData5.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                    case 5:
-                      newGameObject = sudokuGameData6.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                    case 6:
-                      newGameObject = sudokuGameData7.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                    case 7:
-                      newGameObject = sudokuGameData8.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                    case 8:
-                      newGameObject = sudokuGameData9.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                    case 9:
-                      newGameObject = sudokuGameData10.searchSData(this.gameID);
-                      newGameData = newGameObject.data;
-                      newGameAns = newGameObject.ans;
-                      break;
-                  }
+                for(var i=0;i<81;i++){
+                    if(newGameData[i]==0){
+                        constantRemainNum++;
+                    }
                 }
+                newGameAns = newGameObject.ans; 
             },
             fail: () => {
                 wx.showToast({
@@ -512,6 +444,7 @@ Page({
                     icon: 'none',
                     duration: 2000
                 })
+                wx.redirectTo("pages/index/index")
             },
             complete: () => {
                 sudoku.setGame(newGameData, newGameAns);
@@ -607,8 +540,24 @@ Page({
 
         //!Board
     },
-
+    readMessage(quitFlag) {
+        var infos
+        var infolist = []
+        let that = this
+        wx.onSocketMessage(function (res) {
+            console.log("receive message from server")
+            res = JSON.parse(res.data)
+            infos = res.info
+            console.log('message data is', res)
+            let key = res.key
+            console.log("key is ", key)
+            
+        })
+        console.log("finish read message")
+    },
     cellSelect(event) {
+        console.log(constantRemainNum)
+        
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
 
@@ -634,12 +583,6 @@ Page({
             sudoku.highlightNum(selectNum);
             this.freshUI();
         }
-    },
-
-    toLevelSelect() {
-        wx.redirectTo({
-            url: '/pages/level_select/level_select',
-        })
     },
 
     timeStart() {
@@ -671,11 +614,6 @@ Page({
     },
 
     freshUI() {
-        socket.send_data()
-        this.setData({
-          pkUserList: socket.grasp_data()
-        })
-        //console.log(this.data.pkUserList)
         let board = wx.createCanvasContext('boardData');
         board.setFontSize(cellWidth * 0.9 / ratio);
         var i, j, axis, baseLine;
@@ -683,7 +621,6 @@ Page({
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
-                // console.log(i, j, sudoku.getData(i, j).color)
                 if (parseInt(sudoku.getData(i, j).content) != 0) {
                     if (sudoku.getData(i, j).note == false) {
                         remainNum--;
@@ -705,8 +642,16 @@ Page({
             }
         }
         board.draw();
+        socket.send_data(remainNum / constantRemainNum, MAXtime)
+        this.setData({
+            pkUserList: socket.grasp_data()
+        })
         if (remainNum == 0) {
             if (sudoku.judgeCorrect()) {
+                socket.send_data(1, num)
+                this.setData({
+                    pkUserList: socket.grasp_data()
+                })
                 this.timeStop();
                 sudoku.freeze();
                 sc = decodeURIComponent(sc)
@@ -860,7 +805,7 @@ function getQrCodeAndAvatar() {
             avatarPath = res.data;
         },
         fail: function () {
-            avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
+            avatarPath = "/images/oula.png";
         },
         complete: function () {
             wx.request({
