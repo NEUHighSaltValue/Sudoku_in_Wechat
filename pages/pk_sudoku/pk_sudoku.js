@@ -317,6 +317,8 @@ var gameID = 0;
 var constantRemainNum=0;
 var value;
 var avatarUrl;
+var connectSocket = false;
+var socketMessageQueue = []
 
 let MAXtime = 10000000;
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
@@ -344,7 +346,6 @@ let sudokuGameData8 = require('../../utils/data8.js')
 let sudokuGameData9 = require('../../utils/data9.js')
 let sudokuGameData10 = require('../../utils/data10.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
-let socket = require('../../pages/pk_sudoku/socket.js')
 
 let phoneHeight = wx.getSystemInfoSync().screenHeight;
 let canvasWidth = phoneWidth * 0.667;
@@ -375,8 +376,81 @@ var timer = '';
 var level = 0;
 var remainNum = 81;
 var NowTime;
+var roomid = 1;
 
-
+function send_data(percent, time, roomid) {
+  console.log('enter')
+  var myInfo = {}
+  try {
+    var value = wx.getStorageSync('openid')
+    if (value) {
+      myInfo = {
+        key: 3,
+        info: {
+          url: getApp().globalData.userInfo.avatarUrl,
+          openid: value,
+          roomId: roomid,
+          rank: 0,
+          percent: 1 - percent,
+          comTime: time
+        }
+      }
+    }
+  } catch (e) {
+    // Do something when catch error
+  }
+  //console.log('out', myInfo)
+  wx.onSocketOpen(function () {
+    connectSocket = true
+    for (var i = 0; i, socketMessageQueue.length; i++) {
+      wx.sendSocketMessage({
+        data: socketMessageQueue[i],
+        complete: function () {
+          var data = []
+          wx.onSocketMessage(function (res) {
+            res = JSON.parse(res.data)
+            console.log(res)
+            data = res.info
+          })
+          var pkUserInfo = []
+          for (var i = 0; i < data.length; i++) {
+            pkUserInfo[i] = {
+              "avatar": data[i].url,
+              "percentage": data[i].percent > 1 ? "完" : data[i].percent,
+              "finished": data[i].percent > 1 ? 1 : undefined
+            }
+          }
+        }
+      })
+    }
+    console.log('true')
+  })
+  if (connectSocket) {
+    console.log('send', JSON.stringify(myInfo))
+    wx.sendSocketMessage({
+      data: JSON.stringify(myInfo),
+      complete: function () {
+        var data = []
+        wx.onSocketMessage(function (res) {
+          res = JSON.parse(res.data)
+          console.log(res)
+          data = res.info
+        })
+        var pkUserInfo = []
+        for (var i = 0; i < data.length; i++) {
+          pkUserInfo[i] = {
+            "avatar": data[i].url,
+            "percentage": data[i].percent > 1 ? "完" : data[i].percent,
+            "finished": data[i].percent > 1 ? 1 : undefined
+          }
+        }
+      }
+    })
+  }
+  else {
+    socketMessageQueue.push(JSON.stringify(myInfo))
+  }
+}
 
 Page({
     data: {
@@ -397,8 +471,34 @@ Page({
     onLoad(options) {
         sc = options.scence;
         gameID = options.gameid;
+        roomid = options.roomid;
         value = wx.getStorageSync('openid');
         avatarUrl = wx.getStorageSync('avatar');
+
+        setTimeout(function(){
+        
+          wx.connectSocket({
+            url: 'wss://www.tianzhipengfei.xin/pk',
+            header: {
+              'content-type': 'application/json'
+            },
+            method: "GET",
+            success() {
+              console.log('success')
+            },
+            fail() {
+              console.log('fail')
+            }
+          });
+        },2000)
+        
+        //console.log('pk_sudoku load')
+        // wx.onSocketOpen(function() {
+        //   console.log('connect success')
+        // })
+        // wx.onSocketError(function() {
+        //   console.log('connect fail')
+        // })
         this.setData({
             timeShowOrNOt: timeShow
         });
@@ -642,13 +742,13 @@ Page({
             }
         }
         board.draw();
-        socket.send_data(remainNum / constantRemainNum, MAXtime)
-        this.setData({
-            pkUserList: socket.grasp_data()
-        })
+        send_data(remainNum / constantRemainNum, MAXtime, roomid)
+        // this.setData({
+        //     pkUserList: socket.grasp_data()
+        // })
         if (remainNum == 0) {
             if (sudoku.judgeCorrect()) {
-                socket.send_data(1, num)
+                send_data(1, num, roomid)
                 this.setData({
                     pkUserList: socket.grasp_data()
                 })

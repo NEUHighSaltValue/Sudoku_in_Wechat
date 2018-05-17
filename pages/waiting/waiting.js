@@ -32,6 +32,7 @@ Page({
         }
     },
     onLoad: function(options){
+      //console.log('op', options)
         level = options.level;
         roomid = options.roomid
         gameid = options.gameid;
@@ -157,7 +158,8 @@ Page({
                 }
                 if (parseInt(infos.Master.isStart) == 1) {
                     wx.redirectTo({
-                        url: '/pages/pk_sudoku/pk_sudoku?gameid=' + gameid,
+                        url: '/pages/pk_sudoku/pk_sudoku?gameid=' + gameid
+                        + '&roomid=' + roomid,
                     })
                 }
                 if (infos.members.length>0){
@@ -192,9 +194,9 @@ Page({
     },
     // !readMesage
     readyChange() {
-        if (isMaster && !this.data.startable){
-            return
-        }
+        // if (isMaster && !this.data.startable){
+        //     return
+        // }
         let that = this
         try {
             if (value) {
