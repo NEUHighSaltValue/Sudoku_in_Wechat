@@ -176,6 +176,24 @@ Page({
             })
         }
     })
+  }, 
+  onShareAppMessage: function () {
+    var num = Math.random() * 10 + 1;
+    num = parseInt(num, 10);
+    let temp = 'http://www.tianzhipengfei.xin/static/share' + num + '.jpg'
+    // let temp= ""
+    console.log(temp)
+    return {
+        title: '敢来和我一起挑战' + this.data.levelName + this.data.sudokuName + "吗",
+        path: '/pages/index/index',
+        imageUrl: temp,
+        success: function (res) {
+            //console.log('success')
+        },
+        fail: function (res) {
+            //console.log('fail')
+        }
+    }
   },
   showInfo: function(){
       wx.showModal({
