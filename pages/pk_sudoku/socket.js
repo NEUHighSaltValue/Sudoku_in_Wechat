@@ -1,6 +1,4 @@
 // send_data.js
-var connectSocket=false;
-var socketMessageQueue = []
 function send_data(percent, time) {
     var myInfo = {}
     try {

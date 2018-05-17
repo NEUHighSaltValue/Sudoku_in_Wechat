@@ -317,6 +317,7 @@ var gameID = 0;
 var constantRemainNum=0;
 var value;
 var avatarUrl;
+var roomid;
 
 let MAXtime = 10000000;
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
@@ -363,6 +364,9 @@ var rank = 1;
 var imagePath = '/images/level0.png';
 var shareImg;
 
+var connectSocket = false;
+var socketMsgQueue = []
+
 var selectX = -1;
 var selectY = -1;
 var selectNum = -1;
@@ -395,6 +399,7 @@ Page({
         })
     },
     onLoad(options) {
+        roomid = options.roomid
         sc = options.scence;
         gameID = options.gameid;
         value = wx.getStorageSync('openid');
@@ -403,6 +408,19 @@ Page({
             timeShowOrNOt: timeShow
         });
         this.newGame();
+        setTimeout(function(){
+            wx.connectSocket({
+                url: 'wss://www.tianzhipengfei.xin/pk',
+                header: {
+                    'content-type': 'application/json'
+                },
+                method: "GET"
+            });
+        }, 1000)
+        
+        wx.onSocketOpen(function(){
+            console.log("open websocket in pk_sudoku")
+        })
     },
 
     newGame() {
@@ -489,7 +507,7 @@ Page({
         for (var i = 1; i < 10; i++) {
             if (i == num) {
                 //Zixuan，table 选中数字的颜色
-                table.setFillStyle("#6495ED");
+                table.setFillStyle("#64A36F");
             }
             table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
             //Zixuan table 里非选择数字的颜色
@@ -555,9 +573,7 @@ Page({
         })
         console.log("finish read message")
     },
-    cellSelect(event) {
-        console.log(constantRemainNum)
-        
+    cellSelect(event) {        
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
 
@@ -570,10 +586,11 @@ Page({
                     sudoku.freshDiagonal()
                 }
             }
-            this.freshUI();
         }
+        this.freshUI();
         selectNum = -1;
         this.drawTable();
+        this.send_data(remainNum/constantRemainNum, MAXtime)
     },
 
     tableSelect(event) {
@@ -611,6 +628,9 @@ Page({
 
     changeNote() {
         currentNote = !currentNote;
+        this.setData({
+            note: currentNote
+        })
     },
 
     freshUI() {
@@ -642,16 +662,12 @@ Page({
             }
         }
         board.draw();
-        socket.send_data(remainNum / constantRemainNum, MAXtime)
-        this.setData({
-            pkUserList: socket.grasp_data()
-        })
+        this.send_data(remainNum / constantRemainNum, MAXtime)
+        this.grasp_data()
         if (remainNum == 0) {
             if (sudoku.judgeCorrect()) {
-                socket.send_data(1, num)
-                this.setData({
-                    pkUserList: socket.grasp_data()
-                })
+                this.send_data(0, num)
+                this.grasp_data()
                 this.timeStop();
                 sudoku.freeze();
                 sc = decodeURIComponent(sc)
@@ -740,8 +756,80 @@ Page({
         wx.navigateBack({
             delta: 5
         })
+    },
+    send_data(percent, time) {
+        console.log("in send data, and percent is ",percent)
+        var myInfo = {}
+        let that = this
+        try {
+            myInfo = {
+                key: 3,
+                info: {
+                    url: avatarUrl,
+                    openid: value,
+                    roomId: roomid,
+                    rank: 0,
+                    percent: 1 - percent,
+                    comTime: time
+                }
+            }
+            console.log(JSON.stringify(myInfo))
+            wx.sendSocketMessage({
+                data: JSON.stringify(myInfo),
+                success:function(){
+                    console.log(1)
+                    that.grasp_data()
+                    console.log(2)
+                },
+                fail: function () {
+                    console.log("23")
+                },
+                complete: function () {
+                    console.log("3")
+                }
+            })
+        } catch (e) {
+            // Do something when catch error
+        }
+    },
+    onUnload: function(){
+        wx.closeSocket({
+        })
+        wx.onSocketClose(function (res) {
+            console.log('WebSocket 已关闭(pk)！')
+        })
+    },
+    grasp_data() {
+        let that = this
+        console.log("in grasp")
+        var data = []
+        wx.onSocketMessage(function (res) {
+            console.log("receive message from server and res is ",res)
+            res = JSON.parse(res.data)
+            console.log(res)
+            data = res.info
+            console.log(data)
+            console.log(typeof(data))
+            console.log(data.length)
+            var pkUserinfo = []
+            console.log("lala")
+            for (var i = 0; i < data.length; i++) {
+                console.log("haha")
+                console.log(i, "'s url is ", data[i].url, " percentage is ", data[i].percent)
+                pkUserinfo[i] = {
+                    "avatar": data[i].url,
+                    "percentage": data[i].percent > 100 ? "完" : data[i].percent,
+                    "finished": data[i].percent > 100 ? 1 : undefined
+                }
+            }
+            that.setData({
+                pkUserList: pkUserinfo
+            })
+        })
+        
     }
 })
+
 
 
 function zeroFill(str, n) {

@@ -1,52 +1,53 @@
 <!--pages/pk_sudoku.wxml-->
 <view class='loading' hidden="true">
-  <view class="loading" style="position: absolute; top:0; right: 0; bottom: 0; left: 0;  background: white ; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 99999">
-    <view class="sk-cube-grid">
-        <view class="sk-cube sk-cube1"></view>
-        <view class="sk-cube sk-cube2"></view>
-        <view class="sk-cube sk-cube3"></view>
-        <view class="sk-cube sk-cube4"></view>
-        <view class="sk-cube sk-cube5"></view>
-        <view class="sk-cube sk-cube6"></view>
-        <view class="sk-cube sk-cube7"></view>
-        <view class="sk-cube sk-cube8"></view>
-        <view class="sk-cube sk-cube9"></view>
+    <view class="loading" style="position: absolute; top:0; right: 0; bottom: 0; left: 0;  background: white ; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; z-index: 99999">
+        <view class="sk-cube-grid">
+            <view class="sk-cube sk-cube1"></view>
+            <view class="sk-cube sk-cube2"></view>
+            <view class="sk-cube sk-cube3"></view>
+            <view class="sk-cube sk-cube4"></view>
+            <view class="sk-cube sk-cube5"></view>
+            <view class="sk-cube sk-cube6"></view>
+            <view class="sk-cube sk-cube7"></view>
+            <view class="sk-cube sk-cube8"></view>
+            <view class="sk-cube sk-cube9"></view>
+        </view>
     </view>
-  </view>
 </view>
 
 
-<view class = "page_container" hidden='{{completed}}'>
+<view class="page_container" hidden='{{completed}}'>
     <view class="rank_container">
         <image class="{{PKHiden ? 'drag_icon_hiden' : 'drag_icon'}}" bindtap='changePKHiden' src="/images/drag_down.png"></image>
-        <scroll-view  scroll-x="true">
+        <scroll-view scroll-x="true" style='background:white'>
             <view class="pk_users" hidden="{{PKHiden}}">
                 <view class="user_item" wx:for="{{pkUserList}}">
-                    <image class= 'user_avatar' src='{{item.avatar}}'></image>
+                    <image class='user_avatar' src='{{item.avatar}}'></image>
                     <view class="{{item.finished ? 'user_percentage_done' : 'user_percentage'}}">{{item.percentage}}</view>
                 </view>
             </view>
         </scroll-view>
     </view>
     <view class="function_button">
-    <view wx:if="{{!timeShowOrNot}}" class="time"> {{timeText}} </view> 
-    <view wx:else class="time"> 干巴爹 </view>
+        <image class="new" src='/images/pkIcon.png'></image>
+        <view class="time"> {{timeText}} </view>
+        <button class="note{{note? 1 : 0}}" size="mini" bindtap='changeNote'> note </button>
     </view>
 
 
     <view class="boardContainer">
-    <canvas canvas-id='board' id='board' class='canvasBoard' disable-scroll="true"></canvas>
-    <canvas canvas-id='diagonal' id='diagonal' class='canvasDiagonal' bindtiychstart="cellSelecr" disable-scroll="true"></canvas>
-    <canvas canvas-id='boardData' id='boardData' class='boardData' bindtouchstart="cellSelect" disable-scroll="true"></canvas>
-    <canvas canvas-id='table' id='table' class='canvasTable' bindtouchstart="tableSelect" disable-scroll="true"></canvas>
-    </view> 
+        <canvas canvas-id='board' id='board' class='canvasBoard' disable-scroll="true"></canvas>
+        <canvas canvas-id='diagonal' id='diagonal' class='canvasDiagonal' bindtiychstart="cellSelecr" disable-scroll="true"></canvas>
+        <canvas canvas-id='boardData' id='boardData' class='boardData' bindtouchstart="cellSelect" disable-scroll="true"></canvas>
+        <canvas canvas-id='table' id='table' class='canvasTable' bindtouchstart="tableSelect" disable-scroll="true"></canvas>
+    </view>
 
 </view>
 
-<view class='shareCard' hidden='{{!completed}}' >
-    <canvas class="my_canvas" canvas-id='cardCanvas' >
+<view class='shareCard' hidden='{{!completed}}'>
+    <canvas class="my_canvas" canvas-id='cardCanvas'>
         <icon class='closeButton' type="cancel" bindtap='close' color="black" size="34"></icon>
-  </canvas>
-   
-   <button class='saveButton' bindtap='save'>保存分享到朋友圈</button>
+    </canvas>
+
+    <button class='saveButton' bindtap='save'>保存分享到朋友圈</button>
 </view>

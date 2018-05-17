@@ -107,32 +107,46 @@ page{
 
 .function_button{
   text-align: center;
-  top: 0rpx;
+  top: 20rpx;
   height: 20rpx;
   position: relative;
 }
 
+
 .function_button .new{
-  float: left;
-   /* Zixuan  new 按钮的背景色 */
-  background-color: #E6E6FA
+position: absolute;
+left: 95rpx;
+top: -15rpx;
+  width:100rpx;
+  height: 100rpx;
 }
 
 .function_button .time{
-  display: inline
+  display: inline;
+  position: relative;
 }
 
-.function_button .note{
-  float: right;
+.function_button .note0{
+  position: absolute;
+  top: 4rpx;
+  left: 550rpx;
   /* Zixuan note 按钮的背景色*/
-  background-color: #FFF0F5
+  background-color: #CEF0B9
+}
+
+.function_button .note1{
+  position: absolute;
+  top: 4rpx;
+  left: 550rpx;
+  /* Zixuan note 按钮的背景色*/
+  background-color: #64A36F
 }
 
 .boardContainer{
   width: 675rpx;
   height: 675rpx;
   position: absolute;
-  margin-top: 44rpx;
+  margin-top: 84rpx;
 }
 
 .canvasBoard{ 
@@ -164,7 +178,7 @@ page{
   /* Zixuan  table 的背景色*/
   background-color: white;
   margin-left: 111.5rpx;
-  margin-top: 60rpx;
+  margin-top: 40rpx;
   width: 527rpx;
   height: 213.5rpx;
   position: relative;
