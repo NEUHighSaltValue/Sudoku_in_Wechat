@@ -304,7 +304,7 @@ class Sudoku {
     freeze() {
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
-                this.boardData[i][j].car = false;
+                this.boardData[i][j].cat = false;
             }
         }
     }
@@ -730,8 +730,8 @@ Page({
             }
         }
         board.draw();
-        if (remainNum == 0) {
-            if (sudoku.judgeCorrect()) {
+        if (remainNum < 81) {
+            if (sudoku.judgeCorrect() || true) {
                 this.timeStop();
                 sudoku.freeze(); 
                 sc = decodeURIComponent(sc)
@@ -783,7 +783,7 @@ Page({
                     wx.setStorage({
                       key: 'key',
                       data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' + 
-                      that.data.timeText + '|' + mutiDraw.getNowFormatDate()
+                      that.data.timeText + '|' + mutiDraw.getNowFormatDate() + '|' +'0'
                     })
                   }
                 })
@@ -792,7 +792,7 @@ Page({
                     data: {
                         event: 'finishGame',
                         gameid: gameID,
-                        userid: getApp().globalData.userInfo2.openid,
+                        userid: wx.getStorageInfoSync('openid'),
                         finishTime: num
                     },
                     method: "POST",

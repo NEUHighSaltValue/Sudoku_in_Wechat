@@ -180,6 +180,17 @@ Page({
                 })
                 console.log("in the end of read message, infolist is", infolist)
                 infolist = []
+            } else if(key == 6) {
+              wx.showModal({
+                title: '通知',
+                content: '房主跟着他的小姨子跑了，现在这个房间不可用，大家各回各家，各找各妈',
+                showCancel: false,
+                success: function() {
+                  wx.redirectTo({
+                    url: 'pages/index/index',
+                  })
+                }
+              })
             }
         })
         console.log("finish read message")

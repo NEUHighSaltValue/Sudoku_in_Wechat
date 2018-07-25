@@ -317,6 +317,7 @@ var gameID = 0;
 var constantRemainNum=0;
 var value;
 var avatarUrl;
+var roomid;
 
 let MAXtime = 10000000;
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
@@ -344,6 +345,7 @@ let sudokuGameData8 = require('../../utils/data8.js')
 let sudokuGameData9 = require('../../utils/data9.js')
 let sudokuGameData10 = require('../../utils/data10.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
+let socket = require('../../pages/pk_sudoku/socket.js')
 
 let phoneHeight = wx.getSystemInfoSync().screenHeight;
 let canvasWidth = phoneWidth * 0.667;
@@ -361,6 +363,7 @@ var usedTime = "00:55";
 var rank = 1;
 var imagePath = '/images/level0.png';
 var shareImg;
+
 var connectSocket = false;
 var socketMsgQueue = []
 
@@ -377,72 +380,7 @@ var level = 0;
 var remainNum = 81;
 var NowTime;
 
-function send_data(percent, time) {
-    var myInfo = {}
-    try {
-        var value = wx.getStorageSync('openid')
-        if (value) {
-            myInfo = {
-                key: 3,
-                info: {
-                    url: getApp().globalData.userInfo.avatarUrl,
-                    openid: value,
-                    roomId: 1,
-                    rank: 0,
-                    percent: 1 - percent,
-                    comTime: time
-                }
-            }
-        }
-    } catch (e) {
-        // Do something when catch error
-    }
-    wx.connectSocket({
-        url: 'wss://www.tianzhipengfei.xin/pk',
-        header: {
-            'content-type': 'application/json'
-        },
-        method: "GET"
-    });
-    if (connectSocket == false) {
-        socketMsgQueue.push(JSON.stringify(myInfo))
-    }
-    wx.onSocketOpen(function () {
-        if (!connectSocket) {
-            connectSocket = true
-            for (var i = 0; i < socketMsgQueue.length; i++) {
-                wx.sendSocketMessage({
-                    data: socketMsgQueue[i]
-                })
-            }
-            socketMsgQueue = []
-        } else {
-            wx.sendSocketMessage({
-                data: JSON.stringify(myInfo)
-            })
-        }
-    })
-}
 
-function grasp_data() {
-    var data = []
-    wx.onSocketOpen(function (res) {
-        wx.onSocketMessage(function (res) {
-            res = JSON.parse(res.data)
-            console.log(res)
-            data = res.info
-        })
-    })
-    var pkUserInfo = []
-    for (var i = 0; i < data.length; i++) {
-        pkUserInfo[i] = {
-            "avatar": data[i].url,
-            "percentage": data[i].percent > 1 ? "完" : data[i].percent,
-            "finished": data[i].percent > 1 ? 1 : undefined
-        }
-    }
-    return pkUserInfo
-}
 
 Page({
     data: {
@@ -461,14 +399,29 @@ Page({
         })
     },
     onLoad(options) {
+        roomid = options.roomid
         sc = options.scence;
         gameID = options.gameid;
+        level = parseInt((gameID-1)/1000) + 1
         value = wx.getStorageSync('openid');
         avatarUrl = wx.getStorageSync('avatar');
         this.setData({
             timeShowOrNOt: timeShow
         });
         this.newGame();
+        setTimeout(function(){
+            wx.connectSocket({
+                url: 'wss://www.tianzhipengfei.xin/pk',
+                header: {
+                    'content-type': 'application/json'
+                },
+                method: "GET"
+            });
+        }, 1000)
+        
+        wx.onSocketOpen(function(){
+            console.log("open websocket in pk_sudoku")
+        })
     },
 
     newGame() {
@@ -555,7 +508,7 @@ Page({
         for (var i = 1; i < 10; i++) {
             if (i == num) {
                 //Zixuan，table 选中数字的颜色
-                table.setFillStyle("#6495ED");
+                table.setFillStyle("#64A36F");
             }
             table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
             //Zixuan table 里非选择数字的颜色
@@ -621,9 +574,7 @@ Page({
         })
         console.log("finish read message")
     },
-    cellSelect(event) {
-        console.log(constantRemainNum)
-        
+    cellSelect(event) {        
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
 
@@ -636,10 +587,11 @@ Page({
                     sudoku.freshDiagonal()
                 }
             }
-            this.freshUI();
         }
+        this.freshUI();
         selectNum = -1;
         this.drawTable();
+        this.send_data(remainNum/constantRemainNum, MAXtime)
     },
 
     tableSelect(event) {
@@ -677,6 +629,9 @@ Page({
 
     changeNote() {
         currentNote = !currentNote;
+        this.setData({
+            note: currentNote
+        })
     },
 
     freshUI() {
@@ -708,16 +663,12 @@ Page({
             }
         }
         board.draw();
-        send_data(remainNum / constantRemainNum, MAXtime)
-        this.setData({
-            pkUserList: grasp_data()
-        })
-        if (remainNum == 0) {
-            if (sudoku.judgeCorrect()) {
-                send_data(1, num)
-                this.setData({
-                    pkUserList: grasp_data()
-                })
+        this.send_data(remainNum / constantRemainNum, MAXtime)
+        this.grasp_data()
+        if (remainNum < 81) {
+            if (sudoku.judgeCorrect() || true) {
+                this.send_data(0, num)
+                this.grasp_data()
                 this.timeStop();
                 sudoku.freeze();
                 sc = decodeURIComponent(sc)
@@ -727,6 +678,33 @@ Page({
                 let that = this;
                 //Shuyuan
                 var storage = ""
+                var exprNow = 0
+                this.data.pkUserList.length
+                wx.getUserInfo({
+                  success: function (res) {
+                    wx.getStorage({
+                      key: 'expr',
+                      success: function (res) {
+                        if (res.data) {
+                          exprNow = parseInt(res.data) + mutiDraw.getExperience(level)
+                        } else {
+                          console.log("no expr")
+                        }
+                      },
+                      fail: function (res) {
+                        exprNow = mutiDraw.getExperience(level)
+                      },
+                      complete: function () {
+                        wx.setStorage({
+                          key: 'expr',
+                          data: exprNow
+                        })
+                        //console.log(exprNow)
+                      }
+                    })
+                  }
+                })
+
                 wx.getStorage({
                     key: 'key',
                     success: function (res) {
@@ -743,7 +721,7 @@ Page({
                         wx.setStorage({
                             key: 'key',
                             data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' +
-                            that.data.timeText + '|' + mutiDraw.getNowFormatDate()
+                            that.data.timeText + '|' + mutiDraw.getNowFormatDate() + '|' + '1'
                         })
                     }
                 })
@@ -806,8 +784,80 @@ Page({
         wx.navigateBack({
             delta: 5
         })
+    },
+    send_data(percent, time) {
+        console.log("in send data, and percent is ",percent)
+        var myInfo = {}
+        let that = this
+        try {
+            myInfo = {
+                key: 3,
+                info: {
+                    url: avatarUrl,
+                    openid: value,
+                    roomId: roomid,
+                    rank: 0,
+                    percent: 1 - percent,
+                    comTime: time
+                }
+            }
+            console.log(JSON.stringify(myInfo))
+            wx.sendSocketMessage({
+                data: JSON.stringify(myInfo),
+                success:function(){
+                    console.log(1)
+                    that.grasp_data()
+                    console.log(2)
+                },
+                fail: function () {
+                    console.log("23")
+                },
+                complete: function () {
+                    console.log("3")
+                }
+            })
+        } catch (e) {
+            // Do something when catch error
+        }
+    },
+    onUnload: function(){
+        wx.closeSocket({
+        })
+        wx.onSocketClose(function (res) {
+            console.log('WebSocket 已关闭(pk)！')
+        })
+    },
+    grasp_data() {
+        let that = this
+        console.log("in grasp")
+        var data = []
+        wx.onSocketMessage(function (res) {
+            console.log("receive message from server and res is ",res)
+            res = JSON.parse(res.data)
+            console.log(res)
+            data = res.info
+            console.log(data)
+            console.log(typeof(data))
+            console.log(data.length)
+            var pkUserinfo = []
+            console.log("lala")
+            for (var i = 0; i < data.length; i++) {
+                console.log("haha")
+                console.log(i, "'s url is ", data[i].url, " percentage is ", data[i].percent)
+                pkUserinfo[i] = {
+                    "avatar": data[i].url,
+                    "percentage": data[i].percent > 100 ? "完" : data[i].percent,
+                    "finished": data[i].percent > 100 ? 1 : undefined
+                }
+            }
+            that.setData({
+                pkUserList: pkUserinfo
+            })
+        })
+        
     }
 })
+
 
 
 function zeroFill(str, n) {

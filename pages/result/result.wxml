@@ -10,7 +10,7 @@
                 <view class= 'result_date'> {{item.item_date}} </view>
                 <view class= 'result_time'> {{item.item_time}} </view>
               </view>
-              <image wx:if="{{item.item_isPK}}==1" src="/images/pkIcon.png" class="pkIcon"/>
+              <image wx:if="{{item.item_isPK==1}}" src="/images/pkIcon.png" class="pkIcon"/>
           </view>
         </view>
     </scroll-view>

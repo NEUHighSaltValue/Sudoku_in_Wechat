@@ -7,7 +7,8 @@ Page({
           item_imgPath: "",
           item_type: "",
           item_time: "",
-          item_date: ""
+          item_date: "",
+          item_isPK: 0
         }
       ]
   },
@@ -44,8 +45,10 @@ function splitData(data) {
       item_imgPath: words[i][0],
       item_type: words[i][1],
       item_time: words[i][2],
-      item_date: words[i][3]
+      item_date: words[i][3],
+      item_isPK: parseInt(words[i][4])
     }
+    console.log('item', item)
     result.push(item)
   }
   return result
