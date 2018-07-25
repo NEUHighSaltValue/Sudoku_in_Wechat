@@ -101,7 +101,7 @@ class Sudoku {
             if (this.boardData[x][y].content == "0") {
                 this.boardData[x][y].content = num.toString();
             } else if (note == true) {
-                if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1) {
+                if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1){
                     //曲悦测试出的 bug, note 模式下按空的 table 后 board 内显示0
                     if (tempNum == 0) {
                         this.boardData[x][y].content = "0";
@@ -110,6 +110,9 @@ class Sudoku {
                     }
                 } else {
                     this.boardData[x][y].content = this.boardData[x][y].content.split(tempNum.toString()).join("");
+                    if (this.boardData[x][y].content == ""){
+                        this.boardData[x][y].content = "0";
+                    }
                 }
             } else {
                 if (this.boardData[x][y].content == num.toString()) {
@@ -647,6 +650,7 @@ Page({
             }
             this.freshUI();
         }
+        console.log(selectX, selectY, sudoku.getData(selectX, selectY))
         selectNum = -1;
         this.drawTable();
     },
