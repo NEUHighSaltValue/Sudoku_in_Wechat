@@ -319,6 +319,7 @@ var sameNumHighlight = false;
 var errorShow = false;
 var timeShow = true;
 var gameID = 0;
+var filltype = false;
 
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
 let ratio = 750 / phoneWidth;
@@ -390,6 +391,9 @@ Page({
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
+        filltype = getApp().globalData.typeOrNot;
+        console.log(filltype)
+        
         this.setData({
             timeShowOrNOt: timeShow
         });
@@ -408,6 +412,9 @@ Page({
         strM = '0';
         strS = '0';
         num = 0;
+        selectX = -1;
+        selectY = -1;
+        selectNum = -1;
         this.setData({
             timeText: '00:00'
         })
@@ -635,13 +642,28 @@ Page({
         //!Board
     },
 
+    clickThenfill() {
+      if(!filltype && selectNum == -1)
+        return true
+    },
+
+    fillTenclick() {
+
+    },
+
     cellSelect(event) {
+        if(this.clickThenfill())
+          return
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-
+        if (filltype) {
+          this.freshUI()
+          return
+        }
         if (selectNum != -1) {
-            console.log(selectX, selectY, selectNum, currentNote)
+            //console.log(selectX, selectY, selectNum, currentNote)
             sudoku.setData(selectX, selectY, selectNum, currentNote);
+            //console.log(selectX, selectY, selectNum, currentNote)
             if (errorShow) {
                 sudoku.judgeError()
                 if (level >= 5){
@@ -651,18 +673,23 @@ Page({
             this.freshUI();
         }
         console.log(selectX, selectY, sudoku.getData(selectX, selectY))
-        selectNum = -1;
-        this.drawTable();
+        //selectNum = -1;
+        //this.drawTable();
     },
 
     tableSelect(event) {
+        // 选择数字
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
         this.drawTable(selectNum);
+        // 高亮提醒
         if (sameNumHighlight) {
             sudoku.highlightNum(selectNum);
         } 
         if (errorShow){
             sudoku.judgeError();
+        }
+        if (filltype && selectX != -1 && selectY != -1) {
+          sudoku.setData(selectX, selectY, selectNum, currentNote);
         }
         this.freshUI();
     },
@@ -709,6 +736,9 @@ Page({
         board.setFontSize(cellWidth * 0.9 / ratio);
         var i, j, axis, baseLine;
         remainNum = 81;
+        if(filltype) {
+          this.fillColor(selectX, selectY)
+        }
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
@@ -810,6 +840,10 @@ Page({
                 })
             }
         }
+    },
+
+    fillColor(x, y) {
+      console.log(x, y)
     },
 
     canvasIdErrorCallback(e) {

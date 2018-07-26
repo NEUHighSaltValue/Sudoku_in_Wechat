@@ -15,4 +15,10 @@
         <view class = "setting_text"> 时间显示 </view>
         <switch class="setting_switch" checked="{{timeChange}}" bindchange="timeChangeFunc"/>
     </view>
+
+    <view class='setting_cell'>
+      <view class='setting_text'> 填写模式 </view>
+      <switch class='setting_switch' checked='{{typeChange}}'
+      bindchange='typeChangeFunc'></switch>
+    </view>
 </view>
