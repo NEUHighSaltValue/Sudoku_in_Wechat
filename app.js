@@ -1,10 +1,30 @@
 //app.js
 App({
   onLaunch: function () {
-    wx.authorize({
-      scope: 'scope.userInfo',
+    wx.setStorage({
+      key: 'roomid',
+      data: '-1',
+    })
+    wx.setStorage({
+        key: 'avatar',
+        data: '/images/oula.png',
     })
     var that = this
+    try {
+      var value = wx.getStorageSync('setting')
+      if(value) {
+        var lst = value.split('|')
+        that.globalData.highlightOrNot = lst[0] == 'true'
+        that.globalData.errorOrNot = lst[1] == 'true'
+        that.globalData.timeOrNot = lst[2] == 'true'
+        that.globalData.typeOrNot = lst[3] == 'true'
+        //console.log(that.globalData.errorOrNot, that.globalData.timeOrNot,
+        //  that.globalData.highlightOrNot, that.globalData.typeOrNot)
+      }
+    } catch(e) {
+      console.fail('null')
+    }
+    that = this
     // 获取用户信息
     wx.getSetting({
       success: res => {
@@ -47,6 +67,7 @@ App({
                           },
                           method: "POST",
                           success: res => {
+                            //console.log(res.data)
                             wx.setStorage({
                               key: 'openid',
                               data: that.globalData.userInfo2.openid
@@ -125,7 +146,6 @@ App({
 
   },
 
-
   getUserInfo: function (cb) {
     var that = this;
     if (this.globalData.userInfo) {
@@ -148,9 +168,9 @@ App({
   globalData: {
     userInfo: null,
     userInfo2: null,
+    highlightOrNot: false,
     errorOrNot: false,
     timeOrNot: true,
-    highlightOrNot: false
+    typeOrNot: false
   }
-
 })

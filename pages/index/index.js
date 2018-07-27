@@ -3,13 +3,23 @@
 var scene
 const app = getApp()
 var storage
+let level_js = require('../../pages/index/level.js')
+var isPK
+let level
+let roomid
+let gameid
 
 Page({
   data: {
     buttonClicked: true,
     imgurl: '',
     nickname: "",
-    userInformation: true
+    userInformation: false,
+    level_item: {
+      name: "",
+      ratio: 0.0,
+      str: ""
+    }
   },
   onReady() {
     wx.getSetting({
@@ -21,7 +31,7 @@ Page({
               // 可以将 res 发送给后台解码出 unionId
               let nickName = res.rawData.split('\"nickName\":\"')[1].split('\"')[0]
               let imgurl = res.rawData.split('\"avatarUrl\":\"')[1].split('\"')[0]
-              console.log(imgurl)
+              //console.log(imgurl)
               this.setData({
                 imgurl: imgurl,
                 nickName: nickName
@@ -82,7 +92,7 @@ Page({
           wx.getUserInfo({
             success: function(res) {
               wx.navigateTo({
-                url: '/pages/fight/fight',
+                  url: '/pages/level_select/level_select?mode=pk',
               })
             },
             fail: function(res) {
@@ -131,23 +141,78 @@ Page({
                 key: 'avatar',
                 data: tempAvatarURL
             })
+            if(isPK) {
+              wx.showModal({
+                title: '提示',
+                content: '授权成功，是否进入pk房',
+                success: function(res) {
+                  if(res.confirm) {
+                    wx.redirectTo({
+                      url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0',
+                    })
+                  }
+                }
+              })
+            }
         }        
     })
   },
   onLoad: function (options) {
+    //console.log(options)
+    if (options.type == "pk"){
+      isPK = true;
+    }
     scene = decodeURIComponent(options.scene)
+    var that = this
+    var item = level_js.level_ratio()
+    
+    if(isPK){
+      level=options.level;
+      roomid=options.roomid;
+      gameid=options.gameid
+      wx.getUserInfo({
+        success: function() {
+          wx.navigateTo({
+            url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0'
+          })
+        },
+        fail: function() {
+          wx.showModal({
+            title: '提示',
+            content: '小程序需要用户授权身份信息才能进行对战功能',
+            showCancel: false
+          })
+        }
+      })
+    }
+  },
+  onShow: function () {
+    var item = level_js.level_ratio()
+    var that = this
     wx.getUserInfo({
-      success: res=> {
-        this.setData({
-          userInformation: true
-        })
-      },
-      fail: res => {
-        this.setData({
-          userInformation: false
-        })
-      }
+        success: res => {
+            that.setData({
+                userInformation: true,
+                level_item: item
+            })
+        },
+        fail: res => {
+            that.setData({
+                userInformation: false,
+                level_item: item
+            })
+        }
     })
+  },
+  showInfo: function(){
+      wx.showModal({
+          title: '关于我们',
+          content: '我们是来自东北大学最高颜值程序组，因为热爱，我们做了这样一个数独小程序，希望能给你带来快乐。任何建议电邮869909541@qq.com',
+          cancelText: "自强不息",
+          cancelColor: "black",
+          confirmText: "知行合一",
+          confirmColor: "black"
+      })
   }
 })
 

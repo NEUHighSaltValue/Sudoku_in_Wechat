@@ -1,9 +1,3 @@
-//HPY: -1.note模式下出现双击填0的情况   -2.selectNum颜色不明显
-//LJL: -1. sameNumHighlight(need to talk more)
-
-// importScripts('../../sudokuModel.js');
-import sudokuFile from '../../sudokuModel'
-
 /*
 For each cell
 cat true means can fill the call, false not
@@ -107,7 +101,7 @@ class Sudoku {
             if (this.boardData[x][y].content == "0") {
                 this.boardData[x][y].content = num.toString();
             } else if (note == true) {
-                if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1) {
+                if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1){
                     //曲悦测试出的 bug, note 模式下按空的 table 后 board 内显示0
                     if (tempNum == 0) {
                         this.boardData[x][y].content = "0";
@@ -116,6 +110,9 @@ class Sudoku {
                     }
                 } else {
                     this.boardData[x][y].content = this.boardData[x][y].content.split(tempNum.toString()).join("");
+                    if (this.boardData[x][y].content == ""){
+                        this.boardData[x][y].content = "0";
+                    }
                 }
             } else {
                 if (this.boardData[x][y].content == num.toString()) {
@@ -164,6 +161,7 @@ class Sudoku {
         }
     }
     judgeError(){
+        console.log("in error")
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
                 if (this.row[i][j].size > 1) {
@@ -321,6 +319,8 @@ var sameNumHighlight = false;
 var errorShow = false;
 var timeShow = true;
 var gameID = 0;
+var filltype = false;
+var fillOrNot = false;
 
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
 let ratio = 750 / phoneWidth;
@@ -357,12 +357,11 @@ var QrPath;
 var avaImage;//avatar
 var isPk = false;
 var isgetQr = false;
-var userName = "G!NTOKI";
 var avatarPath;
-var gameLevel = "骨灰级";
-var usedTime = "00:55";
+var gameLevel;
+var usedTime;
 var rank = 1;
-var imagePath = '/images/level0.png';
+var imagePath;
 var shareImg;
 
 var selectX = -1;
@@ -383,7 +382,8 @@ Page({
         generateOk: false,
         timeText: '00:00',
         timeShowOrNOt: true,
-        completed: false
+        completed: false,
+        note: false
     },
 
     onLoad(option) {
@@ -392,6 +392,9 @@ Page({
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
+        filltype = getApp().globalData.typeOrNot;
+        //console.log(filltype)
+        
         this.setData({
             timeShowOrNOt: timeShow
         });
@@ -410,6 +413,9 @@ Page({
         strM = '0';
         strS = '0';
         num = 0;
+        selectX = -1;
+        selectY = -1;
+        selectNum = -1;
         this.setData({
             timeText: '00:00'
         })
@@ -427,60 +433,116 @@ Page({
             },
             method: "POST",
             success: res => {
-                newGameObject = res.data;
-                newGameData = newGameObject.data;
-                newGameAns = newGameObject.ans;
+              newGameObject = res.data;
+              newGameData = newGameObject.data;
+              newGameAns = newGameObject.ans;
+              if(newGameAns == undefined) {
+                this.gameID = Math.floor(Math.random() * 200) + level * 1000;
+                switch (level) {
+                  case 0:
+                    newGameObject = sudokuGameData1.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    //console.log(gameID)
+                    break;
+                  case 1:
+                    newGameObject = sudokuGameData2.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 2:
+                    newGameObject = sudokuGameData3.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 3:
+                    newGameObject = sudokuGameData4.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 4:
+                    newGameObject = sudokuGameData5.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 5:
+                    newGameObject = sudokuGameData6.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 6:
+                    newGameObject = sudokuGameData7.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 7:
+                    newGameObject = sudokuGameData8.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 8:
+                    newGameObject = sudokuGameData9.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                  case 9:
+                    newGameObject = sudokuGameData10.searchSData(this.gameID);
+                    newGameData = newGameObject.data;
+                    newGameAns = newGameObject.ans;
+                    break;
+                }
+              }
             },
             fail: () =>{
                 this.gameID = Math.floor(Math.random() * 200) + level * 1000;
                 switch (level) {
                     case 0:
-                        newGameObject = sudokuGameData1.searchSData(gameID);
+                        newGameObject = sudokuGameData1.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 1:
-                        newGameObject = sudokuGameData2.searchSData(gameID);
+                        newGameObject = sudokuGameData2.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 2:
-                        newGameObject = sudokuGameData3.searchSData(gameID);
+                        newGameObject = sudokuGameData3.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 3:
-                        newGameObject = sudokuGameData4.searchSData(gameID);
+                        newGameObject = sudokuGameData4.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 4:
-                        newGameObject = sudokuGameData5.searchSData(gameID);
+                        newGameObject = sudokuGameData5.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 5:
-                        newGameObject = sudokuGameData6.searchSData(gameID);
+                        newGameObject = sudokuGameData6.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 6:
-                        newGameObject = sudokuGameData7.searchSData(gameID);
+                        newGameObject = sudokuGameData7.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 7:
-                        newGameObject = sudokuGameData8.searchSData(gameID);
+                        newGameObject = sudokuGameData8.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 8:
-                        newGameObject = sudokuGameData9.searchSData(gameID);
+                        newGameObject = sudokuGameData9.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
                     case 9:
-                        newGameObject = sudokuGameData10.searchSData(gameID);
+                        newGameObject = sudokuGameData10.searchSData(this.gameID);
                         newGameData = newGameObject.data;
                         newGameAns = newGameObject.ans;
                         break;
@@ -529,7 +591,7 @@ Page({
         for (var i = 1; i < 10; i++) {
             if (i == num) {
                 //Zixuan，table 选中数字的颜色
-                table.setFillStyle("#6495ED");
+                table.setFillStyle("#64A36F");
             }
             table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
             //Zixuan table 里非选择数字的颜色
@@ -581,13 +643,28 @@ Page({
         //!Board
     },
 
+    clickThenfill() {
+      if(!filltype && selectNum == -1)
+        return true
+    },
+
+    fillTenclick() {
+
+    },
+
     cellSelect(event) {
+        if(this.clickThenfill())
+          return
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-
+        if (filltype) {
+          this.freshUI()
+          return
+        }
         if (selectNum != -1) {
-            console.log(selectX, selectY, selectNum, currentNote)
+            //console.log(selectX, selectY, selectNum, currentNote)
             sudoku.setData(selectX, selectY, selectNum, currentNote);
+            //console.log(selectX, selectY, selectNum, currentNote)
             if (errorShow) {
                 sudoku.judgeError()
                 if (level >= 5){
@@ -596,17 +673,28 @@ Page({
             }
             this.freshUI();
         }
-        selectNum = -1;
-        this.drawTable();
+        //console.log(selectX, selectY, sudoku.getData(selectX, selectY))
+        //selectNum = -1;
+        //this.drawTable();
     },
 
     tableSelect(event) {
+        // 选择数字
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
-        this.drawTable(selectNum);
+        if (!filltype)
+          this.drawTable(selectNum);
+        // 高亮提醒
         if (sameNumHighlight) {
             sudoku.highlightNum(selectNum);
-            this.freshUI();
+        } 
+        if (errorShow){
+            sudoku.judgeError();
         }
+        if (filltype && selectX != -1 && selectY != -1) {
+          sudoku.setData(selectX, selectY, selectNum, currentNote);
+          fillOrNot = true
+        }
+        this.freshUI();
     },
 
     toLevelSelect() {
@@ -641,6 +729,9 @@ Page({
 
     changeNote() {
         currentNote = !currentNote;
+        this.setData({
+            note: currentNote
+        })
     },
 
     freshUI() {
@@ -656,6 +747,7 @@ Page({
                     if (sudoku.getData(i, j).note == false) {
                         remainNum--;
                         baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2;
+                        //console.log(axis/ratio, baseLine/ratio)
                         board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
                         board.fillText(String(sudoku.getData(i, j).content), axis / ratio, baseLine / ratio);
                     } else {
@@ -672,9 +764,12 @@ Page({
                 }
             }
         }
+        if (filltype) {
+          this.fillColor(board, selectX, selectY)
+        }
         board.draw();
-        if (remainNum < 81) {
-            if (sudoku.judgeCorrect() || true) {
+        if (remainNum == 0) {
+            if (sudoku.judgeCorrect()) {
                 this.timeStop();
                 sudoku.freeze(); 
                 sc = decodeURIComponent(sc)
@@ -684,6 +779,32 @@ Page({
                 let that = this;
                 //Shuyuan
                 var storage = ""
+                var exprNow = 0
+                wx.getUserInfo({
+                  success: function(res) {
+                    wx.getStorage({
+                      key: 'expr',
+                      success: function (res) {
+                        if (res.data) {
+                          exprNow = parseInt(res.data) + mutiDraw.getExperience(level)
+                        } else {
+                          console.log("no expr")
+                        }
+                      },
+                      fail: function (res) {
+                        exprNow = mutiDraw.getExperience(level)
+                      },
+                      complete: function () {
+                        wx.setStorage({
+                          key: 'expr',
+                          data: exprNow
+                        })
+                        //console.log(exprNow)
+                      }
+                    })
+                  }
+                })
+                
                 wx.getStorage({
                   key: 'key',
                   success: function(res) {
@@ -723,6 +844,23 @@ Page({
                 })
             }
         }
+    },
+
+    fillColor(board, x, y) {
+      if(x == -1)
+        return
+      if(sudoku.getData(x,y).cat == false)
+        return
+      if(fillOrNot) {
+        fillOrNot = false
+        return
+      }
+      let pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3))) / ratio;
+      let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + selectX * lineWidth2) / ratio;
+      console.log(pointX, pointY)
+      board.fillStyle = '#7FFFAA'
+      //board.fillText('0', (boardWidthInPrx - lineWidth1 * 1.5) / ratio, (boardWidthInPrx - lineWidth1 * 1.5) / ratio)
+      board.fillRect(pointX, pointY, cellWidth/ratio, cellWidth/ratio)
     },
 
     canvasIdErrorCallback(e) {
@@ -787,14 +925,15 @@ function paint() {
   
   //写文字
   ctx.setFontSize(28)
-  ctx.setFillStyle('#EE0000')
+  ctx.setFillStyle('#CC3300')
   //ctx.fillText(字符串，x,y)
-  ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
+  ctx.fillText('完成!', (182) / ratio, phoneHeight * 0.368)
 
-  ctx.setFontSize(18)
+  ctx.setFontSize(16)
   ctx.setFillStyle('#000000')
-  ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
-  ctx.fillText('解决 ' + gameLevel, (120) / ratio, phoneHeight * 0.16)
+  ctx.fillText('用时:' + usedTime, (164) / ratio, (phoneHeight * 0.41))
+
+  ctx.fillText('解决:' + gameLevel, (106) / ratio, phoneHeight * 0.445)
   
   //非PK版shareCard
   // if (!isPk) {

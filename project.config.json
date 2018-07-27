@@ -10,7 +10,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "1.9.91",
 	"appid": "wxc362409c6d373bb0",
-	"projectname": "WeChat_sudoku",
+	"projectname": "Sudoku",
 	"isGameTourist": false,
 	"condition": {
 		"search": {
@@ -31,7 +31,20 @@
 		},
 		"miniprogram": {
 			"current": -1,
-			"list": []
+			"list": [
+				{
+					"id": 0,
+					"name": "ui",
+					"pathName": "pages/result/result",
+					"query": ""
+				},
+				{
+					"id": -1,
+					"name": "pk",
+					"pathName": "pages/pk_sudoku/pk_sudoku",
+					"query": ""
+				}
+			]
 		}
 	}
 }

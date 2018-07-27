@@ -1,0 +1,109 @@
+/* pages/waiting/waiting.wxss */
+page{
+  background: #DBEDF3;
+}
+.header{
+    position: relative;
+    top:40rpx;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 60rpx;
+    align-items: center;
+}
+.headerText{
+    font-size: 30rpx;
+    text-align: center;
+}
+#room{
+    font-size: 40rpx;
+    border: 2rpx solid black;
+    display: inline;
+    padding-left: 40rpx;
+    padding-right: 40rpx;
+    background: #D2E0FB;
+    margin-bottom: 30rpx;
+}
+
+.userinfo-ready{
+  position: relative;
+  top:10rpx;
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 20rpx;
+}
+
+.scrollWrapper{
+  background: white;
+  border-radius: 20rpx;
+  margin-left: 60rpx;
+  width: 630rpx;
+}
+
+.userinfo-wrapper{
+  display: flex; 
+  height: 720rpx;
+  flex-wrap: wrap;
+  align-content: flex-start; 
+  flex-direction: row;
+}
+
+.userItem { 
+  padding-top: 20rpx; 
+  padding-left: 15rpx;
+  padding-right: 15rpx;
+  width: 180rpx;
+  height: 220rpx;
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+}  
+  
+.userinfo-avatar {  
+  height: 160rpx;
+  width: 160rpx;
+  border-radius: 80rpx;
+  box-shadow: 4rpx 4rpx gray;
+}  
+
+.crown_style {
+  height: 60rpx;
+  width: 120rpx;
+}
+
+.button_style{
+  margin-top: 50rpx;
+  line-height: 80rpx;   
+  font-size: 40rpx;
+  display: flex;
+}
+  
+  .inviteIcon{
+    width: 200rpx;
+    height: 42rpx;
+    margin-top: 30rpx;
+  }
+
+  .inviteButton{
+    border: 1rpx #DBEDF3 solid;
+    box-shadow: 2rpx 2rpx gray;
+  }
+
+  .readyIcon{
+    width: 200rpx;
+    height: 42rpx;
+    margin-top: 30rpx;
+  }
+
+.readyButton{
+  border: 1rpx #DBEDF3 solid;
+    box-shadow: 2rpx 2rpx gray;
+}
+
+.crownIcon{
+  position: absolute;
+  top: 180rpx;
+  left: 40rpx;
+  transform:rotate(-32deg);
+  height: 150rpx;
+  width: 150rpx;
+}

@@ -101,7 +101,7 @@ class Sudoku {
             if (this.boardData[x][y].content == "0") {
                 this.boardData[x][y].content = num.toString();
             } else if (note == true) {
-                if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1) {
+                if (this.boardData[x][y].content.indexOf(tempNum.toString()) == -1){
                     //曲悦测试出的 bug, note 模式下按空的 table 后 board 内显示0
                     if (tempNum == 0) {
                         this.boardData[x][y].content = "0";
@@ -110,6 +110,9 @@ class Sudoku {
                     }
                 } else {
                     this.boardData[x][y].content = this.boardData[x][y].content.split(tempNum.toString()).join("");
+                    if (this.boardData[x][y].content == "") {
+                        this.boardData[x][y].content = "0";
+                    }
                 }
             } else {
                 if (this.boardData[x][y].content == num.toString()) {
@@ -149,7 +152,6 @@ class Sudoku {
                 } else {
                     if (this.boardData[i][j].note == true) {
                         this.boardData[i][j].color = 5;
-                        console.log("note: ", i, j)
                     } else {
                         this.boardData[i][j].color = 0;
                     }
@@ -315,7 +317,14 @@ var sameNumHighlight = false;
 var errorShow = false;
 var timeShow = true;
 var gameID = 0;
+var constantRemainNum=0;
+var value;
+var avatarUrl;
+var roomid;
+var filltype = false;
+var fillOrNot = false;
 
+let MAXtime = 10000000;
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
 let ratio = 750 / phoneWidth;
 let boardWidthInPrx = 675;
@@ -341,6 +350,7 @@ let sudokuGameData8 = require('../../utils/data8.js')
 let sudokuGameData9 = require('../../utils/data9.js')
 let sudokuGameData10 = require('../../utils/data10.js')
 let mutiDraw = require('../../pages/sudoku/draw.js')
+let socket = require('../../pages/pk_sudoku/socket.js')
 
 let phoneHeight = wx.getSystemInfoSync().screenHeight;
 let canvasWidth = phoneWidth * 0.667;
@@ -359,6 +369,9 @@ var rank = 1;
 var imagePath = '/images/level0.png';
 var shareImg;
 
+var connectSocket = false;
+var socketMsgQueue = []
+
 var selectX = -1;
 var selectY = -1;
 var selectNum = -1;
@@ -372,6 +385,8 @@ var level = 0;
 var remainNum = 81;
 var NowTime;
 
+
+
 Page({
     data: {
         generateOk: false,
@@ -379,44 +394,42 @@ Page({
         timeShowOrNOt: true,
         completed: false,
         PKHiden: true,
-        pkUserList:[
-            {
-                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
-                "percentage": "完",
-                "finished": 1
-            },
-            {
-                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
-                "percentage": "100%"
-            },
-            {
-                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
-                "percentage": "80%"
-            },
-            {
-                "avatar": "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132",
-                "percentage": "80%"
-            }
-        ]
+        pkUserList:[],
+        myInfo: {}
     },
     changePKHiden(){
-        console.log("before tap ", this.data.PKHiden)
         let tempHiden = !this.data.PKHiden
         this.setData({
             PKHiden: tempHiden
         })
-        console.log("after tap ", this.data.PKHiden)
     },
-    onLoad(option) {
-        sc = option.scence;
-        level = 1;
+    onLoad(options) {
+        roomid = options.roomid
+        sc = options.scence;
+        gameID = options.gameid;
+        value = wx.getStorageSync('openid');
+        avatarUrl = wx.getStorageSync('avatar');
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
+        filltype = getApp().globalData.typeOrNot;
         this.setData({
             timeShowOrNOt: timeShow
         });
         this.newGame();
+        setTimeout(function(){
+            wx.connectSocket({
+                url: 'wss://www.tianzhipengfei.xin/pk',
+                header: {
+                    'content-type': 'application/json'
+                },
+                method: "GET"
+            });
+        }, 1000)
+        
+        wx.onSocketOpen(function(){
+            console.log("open websocket in pk_sudoku")
+        })
     },
 
     newGame() {
@@ -424,23 +437,21 @@ Page({
             generateOk: false
         })
         sudoku.reset();
-        sudoku.reset();
         this.timeStop();
         timer = '0';
         strH = '0';
         strM = '0';
         strS = '0';
         num = 0;
+        selectNum = -1;
+        selectX = -1;
+        selectY = -1;
         this.setData({
             timeText: '00:00'
         })
 
         var newGameObject, newGameData, newGameAns;
-        gameID = Math.floor(Math.random() * 1000) + level * 1000 + 1;
-        if (gameID > 9868) {
-            gameID = gameID - 869;
-        }
-        wx.request({
+                wx.request({
             url: 'https://www.tianzhipengfei.xin/sudoku',
             data: {
                 event: 'getGameData',
@@ -450,75 +461,22 @@ Page({
             success: res => {
                 newGameObject = res.data;
                 newGameData = newGameObject.data;
-                newGameAns = newGameObject.ans;
+                for(var i=0;i<81;i++){
+                    if(newGameData[i]==0){
+                        constantRemainNum++;
+                    }
+                }
+                newGameAns = newGameObject.ans; 
             },
             fail: () => {
-                this.gameID = Math.floor(Math.random() * 200) + level * 1000;
-                switch (level) {
-                    case 0:
-                        newGameObject = sudokuGameData1.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 1:
-                        newGameObject = sudokuGameData2.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 2:
-                        newGameObject = sudokuGameData3.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 3:
-                        newGameObject = sudokuGameData4.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 4:
-                        newGameObject = sudokuGameData5.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 5:
-                        newGameObject = sudokuGameData6.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 6:
-                        newGameObject = sudokuGameData7.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 7:
-                        newGameObject = sudokuGameData8.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 8:
-                        newGameObject = sudokuGameData9.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                    case 9:
-                        newGameObject = sudokuGameData10.searchSData(gameID);
-                        newGameData = newGameObject.data;
-                        newGameAns = newGameObject.ans;
-                        break;
-                }
+                wx.showToast({
+                    title: '获取游戏数据失败',
+                    icon: 'none',
+                    duration: 2000
+                })
+                wx.redirectTo("pages/index/index")
             },
             complete: () => {
-                wx.request({
-                    url: 'https://www.tianzhipengfei.xin/sudoku',
-                    data: {
-                        event: 'newGame',
-                        gameid: gameID,
-                        userid: "123"
-                    },
-                    method: "POST",
-                    success: res => {
-                    }
-                })
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({
@@ -561,7 +519,7 @@ Page({
         for (var i = 1; i < 10; i++) {
             if (i == num) {
                 //Zixuan，table 选中数字的颜色
-                table.setFillStyle("#6495ED");
+                table.setFillStyle("#64A36F");
             }
             table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
             //Zixuan table 里非选择数字的颜色
@@ -612,13 +570,38 @@ Page({
 
         //!Board
     },
+    readMessage(quitFlag) {
+        var infos
+        var infolist = []
+        let that = this
+        wx.onSocketMessage(function (res) {
+            console.log("receive message from server")
+            res = JSON.parse(res.data)
+            infos = res.info
+            console.log('message data is', res)
+            let key = res.key
+            console.log("key is ", key)
+            
+        })
+        console.log("finish read message")
+    },
+
+    clickThenfill() {
+      if(!filltype && selectNum == -1)
+        return true
+    },
 
     cellSelect(event) {
+        if(this.clickThenfill())
+          return        
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-
+        if(filltype) {
+          this.freshUI()
+          return
+        }
         if (selectNum != -1) {
-            console.log(selectX, selectY, selectNum, currentNote)
+            //console.log(selectX, selectY, selectNum, currentNote)
             sudoku.setData(selectX, selectY, selectNum, currentNote);
             if (errorShow) {
                 sudoku.judgeError()
@@ -626,25 +609,26 @@ Page({
                     sudoku.freshDiagonal()
                 }
             }
-            this.freshUI();
         }
-        selectNum = -1;
-        this.drawTable();
+        this.freshUI();
+        //selectNum = -1;
+        //this.drawTable();
+        this.send_data(remainNum/constantRemainNum, MAXtime)
     },
 
     tableSelect(event) {
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
-        this.drawTable(selectNum);
+        if(!filltype)
+          this.drawTable(selectNum)
         if (sameNumHighlight) {
             sudoku.highlightNum(selectNum);
             this.freshUI();
         }
-    },
-
-    toLevelSelect() {
-        wx.redirectTo({
-            url: '/pages/level_select/level_select',
-        })
+        if(filltype && selectX != -1 && selectY != -1) {
+          sudoku.setData(selectX, selectY, selectNum, currentNote)
+          fillOrNot = true
+        }
+        this.freshUI()
     },
 
     timeStart() {
@@ -673,6 +657,9 @@ Page({
 
     changeNote() {
         currentNote = !currentNote;
+        this.setData({
+            note: currentNote
+        })
     },
 
     freshUI() {
@@ -683,7 +670,6 @@ Page({
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
-                // console.log(i, j, sudoku.getData(i, j).color)
                 if (parseInt(sudoku.getData(i, j).content) != 0) {
                     if (sudoku.getData(i, j).note == false) {
                         remainNum--;
@@ -704,9 +690,16 @@ Page({
                 }
             }
         }
+        if(filltype) {
+          this.fillColor(board, selectX, selectY)
+        }
         board.draw();
+        this.send_data(remainNum / constantRemainNum, MAXtime)
+        this.grasp_data()
         if (remainNum == 0) {
             if (sudoku.judgeCorrect()) {
+                this.send_data(0, num)
+                this.grasp_data()
                 this.timeStop();
                 sudoku.freeze();
                 sc = decodeURIComponent(sc)
@@ -748,13 +741,28 @@ Page({
                     success: res => {
                     }
                 })
-
-                wx.showToast();
                 this.setData({
                     completed: true
                 })
             }
         }
+    },
+
+    fillColor(board, x, y) {
+      if (x == -1)
+        return
+      if (sudoku.getData(x, y).cat == false)
+        return
+      if (fillOrNot) {
+        fillOrNot = false
+        return
+      }
+      let pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3))) / ratio;
+      let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + selectX * lineWidth2) / ratio;
+      console.log(pointX, pointY)
+      board.fillStyle = '#7FFFAA'
+      //board.fillText('0', (boardWidthInPrx - lineWidth1 * 1.5) / ratio, (boardWidthInPrx - lineWidth1 * 1.5) / ratio)
+      board.fillRect(pointX, pointY, cellWidth / ratio, cellWidth / ratio)
     },
 
     canvasIdErrorCallback(e) {
@@ -797,8 +805,80 @@ Page({
         wx.navigateBack({
             delta: 5
         })
+    },
+    send_data(percent, time) {
+        console.log("in send data, and percent is ",percent)
+        var myInfo = {}
+        let that = this
+        try {
+            myInfo = {
+                key: 3,
+                info: {
+                    url: avatarUrl,
+                    openid: value,
+                    roomId: roomid,
+                    rank: 0,
+                    percent: 1 - percent,
+                    comTime: time
+                }
+            }
+            console.log(JSON.stringify(myInfo))
+            wx.sendSocketMessage({
+                data: JSON.stringify(myInfo),
+                success:function(){
+                    console.log(1)
+                    that.grasp_data()
+                    console.log(2)
+                },
+                fail: function () {
+                    console.log("23")
+                },
+                complete: function () {
+                    console.log("3")
+                }
+            })
+        } catch (e) {
+            // Do something when catch error
+        }
+    },
+    onUnload: function(){
+        wx.closeSocket({
+        })
+        wx.onSocketClose(function (res) {
+            console.log('WebSocket 已关闭(pk)！')
+        })
+    },
+    grasp_data() {
+        let that = this
+        console.log("in grasp")
+        var data = []
+        wx.onSocketMessage(function (res) {
+            console.log("receive message from server and res is ",res)
+            res = JSON.parse(res.data)
+            console.log(res)
+            data = res.info
+            console.log(data)
+            console.log(typeof(data))
+            console.log(data.length)
+            var pkUserinfo = []
+            console.log("lala")
+            for (var i = 0; i < data.length; i++) {
+                console.log("haha")
+                console.log(i, "'s url is ", data[i].url, " percentage is ", data[i].percent)
+                pkUserinfo[i] = {
+                    "avatar": data[i].url,
+                    "percentage": data[i].percent > 100 ? "完" : data[i].percent,
+                    "finished": data[i].percent > 100 ? 1 : undefined
+                }
+            }
+            that.setData({
+                pkUserList: pkUserinfo
+            })
+        })
+        
     }
 })
+
 
 
 function zeroFill(str, n) {
@@ -862,7 +942,7 @@ function getQrCodeAndAvatar() {
             avatarPath = res.data;
         },
         fail: function () {
-            avatarPath = "https://www.tianzhipengfei.xin/wechat_image/mmopen/vi_32/s6Lod0Ycic00Fxkt2an1DibesvMuderXrnESMXDmYY4z1jcAaFCoAZG1HzKvaHcBUFdv4UmZq0aA587FNeDvdOUQ/132";
+            avatarPath = "/images/oula.png";
         },
         complete: function () {
             wx.request({

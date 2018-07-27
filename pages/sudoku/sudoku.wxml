@@ -22,13 +22,12 @@
     <button class ="new" type="default" size="mini" bindtap='toLevelSelect'> new </button>
     <view wx:if="{{!timeShowOrNot}}" class="time"> {{timeText}} </view> 
     <view wx:else class="time"> 干巴爹 </view>
-    <button class="note" size="mini" bindtap='changeNote'> note </button>
+    <button class="note{{note? 1 : 0}}" size="mini" bindtap='changeNote' > note </button>
     </view>
 
 
     <view class="boardContainer">
     <canvas canvas-id='board' id='board' class='canvasBoard' disable-scroll="true"></canvas>
-    <canvas canvas-id='diagonal' id='diagonal' class='canvasDiagonal' bindtiychstart="cellSelecr" disable-scroll="true"></canvas>
     <canvas canvas-id='boardData' id='boardData' class='boardData' bindtouchstart="cellSelect" disable-scroll="true"></canvas>
     <canvas canvas-id='table' id='table' class='canvasTable' bindtouchstart="tableSelect" disable-scroll="true"></canvas>
     </view> 
