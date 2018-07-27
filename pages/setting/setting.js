@@ -7,8 +7,8 @@ Page({
         typeChange: false
     },
     onLoad() {
-      console.log(getApp().globalData.highlightOrNot, getApp().globalData.errorOrNot,
-        getApp().globalData.timeOrNot, getApp().globalData.typeOrNot)
+      //console.log(getApp().globalData.highlightOrNot, getApp().globalData.errorOrNot,
+      //  getApp().globalData.timeOrNot, getApp().globalData.typeOrNot)
         this.setData({
             highlightChange: getApp().globalData.highlightOrNot,
             errorChange: getApp().globalData.errorOrNot,

@@ -320,6 +320,7 @@ var errorShow = false;
 var timeShow = true;
 var gameID = 0;
 var filltype = false;
+var fillOrNot = false;
 
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
 let ratio = 750 / phoneWidth;
@@ -680,7 +681,8 @@ Page({
     tableSelect(event) {
         // 选择数字
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
-        this.drawTable(selectNum);
+        if (!filltype)
+          this.drawTable(selectNum);
         // 高亮提醒
         if (sameNumHighlight) {
             sudoku.highlightNum(selectNum);
@@ -690,6 +692,7 @@ Page({
         }
         if (filltype && selectX != -1 && selectY != -1) {
           sudoku.setData(selectX, selectY, selectNum, currentNote);
+          fillOrNot = true
         }
         this.freshUI();
     },
@@ -736,9 +739,6 @@ Page({
         board.setFontSize(cellWidth * 0.9 / ratio);
         var i, j, axis, baseLine;
         remainNum = 81;
-        if(filltype) {
-          this.fillColor(selectX, selectY)
-        }
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
@@ -747,6 +747,7 @@ Page({
                     if (sudoku.getData(i, j).note == false) {
                         remainNum--;
                         baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2;
+                        //console.log(axis/ratio, baseLine/ratio)
                         board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
                         board.fillText(String(sudoku.getData(i, j).content), axis / ratio, baseLine / ratio);
                     } else {
@@ -762,6 +763,9 @@ Page({
                     board.beginPath()
                 }
             }
+        }
+        if (filltype) {
+          this.fillColor(board, selectX, selectY)
         }
         board.draw();
         if (remainNum == 0) {
@@ -842,8 +846,21 @@ Page({
         }
     },
 
-    fillColor(x, y) {
-      console.log(x, y)
+    fillColor(board, x, y) {
+      if(x == -1)
+        return
+      if(sudoku.getData(x,y).cat == false)
+        return
+      if(fillOrNot) {
+        fillOrNot = false
+        return
+      }
+      let pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3))) / ratio;
+      let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + selectX * lineWidth2) / ratio;
+      console.log(pointX, pointY)
+      board.fillStyle = '#7FFFAA'
+      //board.fillText('0', (boardWidthInPrx - lineWidth1 * 1.5) / ratio, (boardWidthInPrx - lineWidth1 * 1.5) / ratio)
+      board.fillRect(pointX, pointY, cellWidth/ratio, cellWidth/ratio)
     },
 
     canvasIdErrorCallback(e) {

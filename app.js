@@ -18,8 +18,8 @@ App({
         that.globalData.errorOrNot = lst[1] == 'true'
         that.globalData.timeOrNot = lst[2] == 'true'
         that.globalData.typeOrNot = lst[3] == 'true'
-        console.log(that.globalData.errorOrNot, that.globalData.timeOrNot,
-          that.globalData.highlightOrNot, that.globalData.typeOrNot)
+        //console.log(that.globalData.errorOrNot, that.globalData.timeOrNot,
+        //  that.globalData.highlightOrNot, that.globalData.typeOrNot)
       }
     } catch(e) {
       console.fail('null')
