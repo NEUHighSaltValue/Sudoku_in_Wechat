@@ -166,13 +166,6 @@ top: -15rpx;
   position: relative;
 }
 
-.canvasDiagonal{ 
-  margin-left: 37.5rpx;
-  width: 675rpx;
-  height: 675rpx;
-  position: absolute;
-}
-
 .canvasTable{
   /* For UI designer, you can change board color here! */
   /* Zixuan  table 的背景色*/

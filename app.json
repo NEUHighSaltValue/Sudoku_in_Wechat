@@ -1,7 +1,7 @@
 {
     "pages": [
-        "pages/level_select/level_select",
         "pages/index/index",
+        "pages/level_select/level_select",
         "pages/waiting/waiting",
         "pages/pk_sudoku/pk_sudoku",
         "pages/setting/setting",

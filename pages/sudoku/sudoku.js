@@ -393,7 +393,7 @@ Page({
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
         filltype = getApp().globalData.typeOrNot;
-        console.log(filltype)
+        //console.log(filltype)
         
         this.setData({
             timeShowOrNOt: timeShow
@@ -673,7 +673,7 @@ Page({
             }
             this.freshUI();
         }
-        console.log(selectX, selectY, sudoku.getData(selectX, selectY))
+        //console.log(selectX, selectY, sudoku.getData(selectX, selectY))
         //selectNum = -1;
         //this.drawTable();
     },

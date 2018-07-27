@@ -321,6 +321,8 @@ var constantRemainNum=0;
 var value;
 var avatarUrl;
 var roomid;
+var filltype = false;
+var fillOrNot = false;
 
 let MAXtime = 10000000;
 let phoneWidth = wx.getSystemInfoSync().screenWidth;
@@ -407,6 +409,10 @@ Page({
         gameID = options.gameid;
         value = wx.getStorageSync('openid');
         avatarUrl = wx.getStorageSync('avatar');
+        sameNumHighlight = getApp().globalData.highlightOrNot;
+        errorShow = getApp().globalData.errorOrNot;
+        timeShow = getApp().globalData.timeOrNot;
+        filltype = getApp().globalData.typeOrNot;
         this.setData({
             timeShowOrNOt: timeShow
         });
@@ -437,6 +443,9 @@ Page({
         strM = '0';
         strS = '0';
         num = 0;
+        selectNum = -1;
+        selectX = -1;
+        selectY = -1;
         this.setData({
             timeText: '00:00'
         })
@@ -576,12 +585,23 @@ Page({
         })
         console.log("finish read message")
     },
-    cellSelect(event) {        
+
+    clickThenfill() {
+      if(!filltype && selectNum == -1)
+        return true
+    },
+
+    cellSelect(event) {
+        if(this.clickThenfill())
+          return        
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-
+        if(filltype) {
+          this.freshUI()
+          return
+        }
         if (selectNum != -1) {
-            console.log(selectX, selectY, selectNum, currentNote)
+            //console.log(selectX, selectY, selectNum, currentNote)
             sudoku.setData(selectX, selectY, selectNum, currentNote);
             if (errorShow) {
                 sudoku.judgeError()
@@ -591,18 +611,24 @@ Page({
             }
         }
         this.freshUI();
-        selectNum = -1;
-        this.drawTable();
+        //selectNum = -1;
+        //this.drawTable();
         this.send_data(remainNum/constantRemainNum, MAXtime)
     },
 
     tableSelect(event) {
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
-        this.drawTable(selectNum);
+        if(!filltype)
+          this.drawTable(selectNum)
         if (sameNumHighlight) {
             sudoku.highlightNum(selectNum);
             this.freshUI();
         }
+        if(filltype && selectX != -1 && selectY != -1) {
+          sudoku.setData(selectX, selectY, selectNum, currentNote)
+          fillOrNot = true
+        }
+        this.freshUI()
     },
 
     timeStart() {
@@ -664,6 +690,9 @@ Page({
                 }
             }
         }
+        if(filltype) {
+          this.fillColor(board, selectX, selectY)
+        }
         board.draw();
         this.send_data(remainNum / constantRemainNum, MAXtime)
         this.grasp_data()
@@ -717,6 +746,23 @@ Page({
                 })
             }
         }
+    },
+
+    fillColor(board, x, y) {
+      if (x == -1)
+        return
+      if (sudoku.getData(x, y).cat == false)
+        return
+      if (fillOrNot) {
+        fillOrNot = false
+        return
+      }
+      let pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3))) / ratio;
+      let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + selectX * lineWidth2) / ratio;
+      console.log(pointX, pointY)
+      board.fillStyle = '#7FFFAA'
+      //board.fillText('0', (boardWidthInPrx - lineWidth1 * 1.5) / ratio, (boardWidthInPrx - lineWidth1 * 1.5) / ratio)
+      board.fillRect(pointX, pointY, cellWidth / ratio, cellWidth / ratio)
     },
 
     canvasIdErrorCallback(e) {
