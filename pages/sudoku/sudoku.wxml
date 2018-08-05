@@ -19,10 +19,10 @@
 <view class = "page_container" hidden='{{completed}}'>
 
     <view class="function_button">
-    <button class ="new" type="default" size="mini" bindtap='toLevelSelect'> new </button>
-    <view wx:if="{{!timeShowOrNot}}" class="time"> {{timeText}} </view> 
+    <button class ="new" type="default" size="mini" bindtap='toLevelSelect'> 新建游戏 </button>
+    <view wx:if="{{timeShowOrNot}}" class="time"> {{timeText}} </view> 
     <view wx:else class="time"> 干巴爹 </view>
-    <button class="note{{note? 1 : 0}}" size="mini" bindtap='changeNote' > note </button>
+    <button class="note{{note? 1 : 0}}" size="mini" bindtap='changeNote' > 候选模式 </button>
     </view>
 
 

@@ -31,7 +31,7 @@
     <view class="function_button">
         <image class="new" src='/images/pkIcon.png'></image>
         <view class="time"> {{timeText}} </view>
-        <button class="note{{note? 1 : 0}}" size="mini" bindtap='changeNote'> note </button>
+        <button class="note{{note? 1 : 0}}" size="mini" bindtap='changeNote'> 候选模式 </button>
     </view>
 
 

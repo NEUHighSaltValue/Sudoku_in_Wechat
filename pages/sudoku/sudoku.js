@@ -381,7 +381,7 @@ Page({
     data: {
         generateOk: false,
         timeText: '00:00',
-        timeShowOrNOt: true,
+        timeShowOrNot: true,
         completed: false,
         note: false
     },
@@ -393,10 +393,10 @@ Page({
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
         filltype = getApp().globalData.typeOrNot;
-        //console.log(filltype)
+        console.log(timeShow)
         
         this.setData({
-            timeShowOrNOt: timeShow
+            timeShowOrNot: timeShow
         });
         this.newGame();
     },
@@ -692,6 +692,12 @@ Page({
         }
         if (filltype && selectX != -1 && selectY != -1) {
           sudoku.setData(selectX, selectY, selectNum, currentNote);
+            if (errorShow) {
+                sudoku.judgeError()
+                if (level >= 5) {
+                    sudoku.freshDiagonal()
+                }
+            }
           fillOrNot = true
         }
         this.freshUI();
@@ -739,6 +745,9 @@ Page({
         board.setFontSize(cellWidth * 0.9 / ratio);
         var i, j, axis, baseLine;
         remainNum = 81;
+        if (filltype) {
+            this.fillColor(board, selectX, selectY)
+        }
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
@@ -763,9 +772,6 @@ Page({
                     board.beginPath()
                 }
             }
-        }
-        if (filltype) {
-          this.fillColor(board, selectX, selectY)
         }
         board.draw();
         if (remainNum == 0) {
@@ -851,14 +857,22 @@ Page({
         return
       if(sudoku.getData(x,y).cat == false)
         return
-      if(fillOrNot) {
-        fillOrNot = false
-        return
-      }
-      let pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3))) / ratio;
-      let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + selectX * lineWidth2) / ratio;
-      console.log(pointX, pointY)
-      board.fillStyle = '#7FFFAA'
+    //   if(fillOrNot) {
+    //     fillOrNot = false
+    //     return
+    //   }
+        var pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3) * lineWidth2)) 
+        if (selectY == 8)
+            pointX = pointX + 2
+        if (selectY == 7)
+            pointX = pointX + 2.5
+        if (selectY == 6)
+            pointX = pointX + 3
+        pointX = pointX / ratio
+        let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + (selectX - parseInt(selectX / 3)  ) * lineWidth2) / ratio;
+        // console.log(selectX, selectY)
+        // console.log(pointX, pointY)
+        board.fillStyle = '#8EE0FB'
       //board.fillText('0', (boardWidthInPrx - lineWidth1 * 1.5) / ratio, (boardWidthInPrx - lineWidth1 * 1.5) / ratio)
       board.fillRect(pointX, pointY, cellWidth/ratio, cellWidth/ratio)
     },

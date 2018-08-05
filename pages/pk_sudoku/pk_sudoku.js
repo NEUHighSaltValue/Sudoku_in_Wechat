@@ -753,15 +753,20 @@ Page({
         return
       if (sudoku.getData(x, y).cat == false)
         return
-      if (fillOrNot) {
-        fillOrNot = false
-        return
-      }
-      let pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3))) / ratio;
-      let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + selectX * lineWidth2) / ratio;
-      console.log(pointX, pointY)
-      board.fillStyle = '#7FFFAA'
-      //board.fillText('0', (boardWidthInPrx - lineWidth1 * 1.5) / ratio, (boardWidthInPrx - lineWidth1 * 1.5) / ratio)
+    //   if (fillOrNot) {
+    //     fillOrNot = false
+    //     return
+    //   }
+        var pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3) * lineWidth2))
+        if (selectY == 8)
+            pointX = pointX + 2
+        if (selectY == 7)
+            pointX = pointX + 2.5
+        if (selectY == 6)
+            pointX = pointX + 3
+        pointX = pointX / ratio
+        let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + (selectX - parseInt(selectX / 3)) * lineWidth2) / ratio;
+        board.fillStyle = '#8EE0FB'
       board.fillRect(pointX, pointY, cellWidth / ratio, cellWidth / ratio)
     },
 
