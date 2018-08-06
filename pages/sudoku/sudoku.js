@@ -685,6 +685,7 @@ Page({
           this.drawTable(selectNum);
         // 高亮提醒
         if (sameNumHighlight) {
+                console.log("higihlight")
             sudoku.highlightNum(selectNum);
         } 
         if (errorShow){
@@ -692,6 +693,10 @@ Page({
         }
         if (filltype && selectX != -1 && selectY != -1) {
           sudoku.setData(selectX, selectY, selectNum, currentNote);
+            if (sameNumHighlight) {
+                console.log("higihlight")
+                sudoku.highlightNum(selectNum);
+            } 
             if (errorShow) {
                 sudoku.judgeError()
                 if (level >= 5) {

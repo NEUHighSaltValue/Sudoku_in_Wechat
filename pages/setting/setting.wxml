@@ -2,7 +2,7 @@
 <view class="setting_list">
   <view class="title"> 设置 </view>
     <view class = "setting_cell">
-        <view class = "setting_text"> 高亮提醒 </view>
+        <view class = "setting_text"> 相同数字高亮提醒 </view>
         <switch class="setting_switch" checked="{{highlightChange}}" bindchange="highlightChangeFunc"/>
     </view>
 
@@ -11,13 +11,13 @@
         <switch class="setting_switch" checked="{{errorChange}}" bindchange="errorChangeFunc"/>
     </view>
 
-    <view class = "setting_cell">
+    <view class = "setting_cell" id="mid_setting_cell2">
         <view class = "setting_text"> 时间显示 </view>
         <switch class="setting_switch" checked="{{timeChange}}" bindchange="timeChangeFunc"/>
     </view>
 
     <view class='setting_cell'>
-      <view class='setting_text'> 填写模式 </view>
+      <view class='setting_text'> 输入顺序(开为先选格子后选数) </view>
       <switch class='setting_switch' checked='{{typeChange}}'
       bindchange='typeChangeFunc'></switch>
     </view>
