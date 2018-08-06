@@ -684,9 +684,6 @@ Page({
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
         if (filltype) {
-          var note = (currentNote == true ? '+' : '-')
-          cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
-          restoreData = ''
           this.freshUI()
           //console.log(cacheData)
           return
@@ -719,13 +716,15 @@ Page({
           this.drawTable(selectNum);
         // 高亮提醒
         if (sameNumHighlight) {
-                console.log("higihlight")
             sudoku.highlightNum(selectNum);
         } 
         if (errorShow){
             sudoku.judgeError();
         }
         if (filltype && selectX != -1 && selectY != -1) {
+          var note = (currentNote == true ? '+' : '-')
+          cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
+          restoreData = ''
           sudoku.setData(selectX, selectY, selectNum, currentNote);
             if (sameNumHighlight) {
                 console.log("higihlight")
