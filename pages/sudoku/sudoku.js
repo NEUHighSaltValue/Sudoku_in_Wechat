@@ -573,6 +573,8 @@ Page({
             complete:() => {
                 if(cacheData == '')
                   cacheData = gameID.toString()
+                while(cacheData.length < 4)
+                  cacheData = '0' + cacheData
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({
