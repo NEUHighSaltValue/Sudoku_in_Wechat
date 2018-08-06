@@ -1,11 +1,11 @@
 {
     "pages": [
         "pages/index/index",
+        "pages/about/about",
         "pages/level_select/level_select",
         "pages/waiting/waiting",
         "pages/pk_sudoku/pk_sudoku",
         "pages/setting/setting",
-        "pages/about/about",
         "pages/fight/fight",
         "pages/result/result",
         "pages/sudoku/sudoku",
