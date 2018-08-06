@@ -152,7 +152,7 @@ class Sudoku {
                 } else {
                     if (this.boardData[i][j].note == true) {
                         this.boardData[i][j].color = 5;
-                        console.log("note: ",i, j)
+                        //console.log("note: ",i, j)
                     } else {
                         this.boardData[i][j].color = 0;
                     }
@@ -376,6 +376,9 @@ var timer = '';
 var level = 0;
 var remainNum = 81;
 var NowTime;
+// '-'开头为正常模式，'+'开头为note模式
+var cacheData = '';
+var restoreData = '';
 
 Page({
     data: {
@@ -549,6 +552,7 @@ Page({
                 }
             },
             complete:() => {
+                cacheData = gameID.toString()
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({
@@ -658,7 +662,11 @@ Page({
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
         if (filltype) {
+          var note = (currentNote == true ? '+' : '-')
+          cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
+          restoreData = ''
           this.freshUI()
+          //console.log(cacheData)
           return
         }
         if (selectNum != -1) {
@@ -671,6 +679,10 @@ Page({
                     sudoku.freshDiagonal()
                 }
             }
+            var note = (currentNote == true ? '+' : '-')
+            cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
+            restoreData = ''
+            //console.log(cacheData)
             this.freshUI();
         }
         //console.log(selectX, selectY, sudoku.getData(selectX, selectY))
@@ -706,6 +718,44 @@ Page({
           fillOrNot = true
         }
         this.freshUI();
+    },
+
+    undo() {
+      var undoData = cacheData.substring(cacheData.length-4, cacheData.length)
+      restoreData += undoData
+      cacheData = cacheData.substring(0, cacheData.length-4)
+      console.log(undoData)
+      var nowNote = (undoData[0] == '-' ? false : true)
+      sudoku.setData(parseInt(undoData[1]), parseInt(undoData[2]),
+        parseInt(undoData[3]), currentNote)
+      /*
+      for(var i = 4; i < cacheData.length; i += 4) {
+        currentNote = (cacheData[i] == '-' ? false : true)
+        sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+          parseInt(cacheData[i + 3]), currentNote)
+      }
+      */
+      this.freshUI()
+    },
+
+    redo() {
+      if(restoreData.length < 4)
+        return
+      var redoData = restoreData.substring(restoreData.length - 4, restoreData.length)
+      cacheData += redoData
+      restoreData = restoreData.substring(0, restoreData.length-4)
+      var nowNote = (redoData[0] == '-' ? false : true)
+      sudoku.setData(parseInt(redoData[1]), parseInt(redoData[2]),
+        parseInt(redoData[3]), currentNote)
+      /*
+      for (var i = 0; i < restoreData.length; i += 4) {
+        currentNote = (restoreData[i] == '-' ? false : true)
+        sudoku.setData(parseInt(restoreData[i + 1]), parseInt(restoreData[i + 2]),
+          parseInt(restoreData[i + 3]), currentNote)
+      }
+      */
+      this.freshUI()
+      currentNote = nowNote
     },
 
     toLevelSelect() {
