@@ -184,6 +184,7 @@ Page({
                 key: 'avatar',
                 data: tempAvatarURL
             })
+            wx.setStorageSync('avatar', tempAvatarURL)
             if(isPK) {
               wx.showModal({
                 title: '提示',
