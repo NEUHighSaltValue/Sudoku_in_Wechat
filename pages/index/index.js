@@ -43,6 +43,12 @@ Page({
     })
   },
   toNewGame() {
+    try {
+      var data = wx.getStorageSync('cache')
+      console.log(data)
+    } catch(e) {
+
+    }
     if (!this.data.buttonClicked) { return }
     buttonClicked(this);
     wx.getNetworkType({

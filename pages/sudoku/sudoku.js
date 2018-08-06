@@ -721,6 +721,8 @@ Page({
     },
 
     undo() {
+      if(cacheData.length <= 4)
+        return
       var undoData = cacheData.substring(cacheData.length-4, cacheData.length)
       restoreData += undoData
       cacheData = cacheData.substring(0, cacheData.length-4)
@@ -904,6 +906,11 @@ Page({
                     completed: true
                 })
             }
+        }
+        try {
+          wx.setStorageSync('cache', cacheData)
+        } catch(e) {
+          
         }
     },
 
