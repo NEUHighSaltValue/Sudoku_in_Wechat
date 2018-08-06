@@ -43,36 +43,79 @@ Page({
     })
   },
   toNewGame() {
-    if (!this.data.buttonClicked) { return }
-    buttonClicked(this);
-    wx.getNetworkType({
-      success: function (res) {
-        var NetworkType = res.networkType
-        if (NetworkType == "none") {
-          wx.showModal({
-            title: '提示',
-            content: '网络异常，战绩无法正常记录\n是否确定开始游戏',
-            success: function (res) {
-              if (res.confirm) {
-                wx.navigateTo({
-                  url: '/pages/level_select/level_select',
-                })
-              }
+    try {
+      var data = wx.getStorageSync('cache')
+      if(data != '' && data != NaN) {
+        console.log(data)
+        wx.showModal({
+          title: '提示',
+          content: '你有未完成的游戏，是否继续游戏',
+          cancelText: '继续游戏',
+          confirmText: '新建游戏',
+          success: function(res) {
+            if(res.confirm) {
+              wx.getNetworkType({
+                success: function (res) {
+                  var NetworkType = res.networkType
+                  if (NetworkType == "none") {
+                    wx.showModal({
+                      title: '提示',
+                      content: '网络异常，战绩无法正常记录\n是否确定开始游戏',
+                      success: function (res) {
+                        if (res.confirm) {
+                          wx.navigateTo({
+                            url: '/pages/level_select/level_select',
+                          })
+                        }
+                      }
+                    })
+                  } else {
+                    wx.navigateTo({
+                      url: '/pages/level_select/level_select',
+                    })
+                  }
+                },
+              })
+            } else if(res.cancel) {
+              wx.navigateTo({
+                url: '/pages/sudoku/sudoku?cache=' + data,
+              })
             }
-          })
-        } else {
-          wx.navigateTo({
-            url: '/pages/level_select/level_select',
-          })
-        }
-      },
-    })
+          }
+        })
+      } else {
+        wx.getNetworkType({
+          success: function (res) {
+            var NetworkType = res.networkType
+            if (NetworkType == "none") {
+              wx.showModal({
+                title: '提示',
+                content: '网络异常，战绩无法正常记录\n是否确定开始游戏',
+                success: function (res) {
+                  if (res.confirm) {
+                    wx.navigateTo({
+                      url: '/pages/level_select/level_select',
+                    })
+                  }
+                }
+              })
+            } else {
+              wx.navigateTo({
+                url: '/pages/level_select/level_select',
+              })
+            }
+          },
+        })
+      }
+    } catch(e) {
+
+    }
   },
   toResult() {
     if (!this.data.buttonClicked) { return }
     buttonClicked(this);
     wx.navigateTo({
-      url: '/pages/result/result',
+      url: '/pages/result/result?cache=',
     })
   },
   toFight() {

@@ -384,7 +384,8 @@ var timer = '';
 var level = 0;
 var remainNum = 81;
 var NowTime;
-
+var cacheData = '';
+var restoreData = '';
 
 
 Page({
@@ -477,6 +478,7 @@ Page({
                 wx.redirectTo("pages/index/index")
             },
             complete: () => {
+                cacheData = gameID.toString()
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({
@@ -598,6 +600,9 @@ Page({
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
         if(filltype) {
           this.freshUI()
+          cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
+          restoreData = ''
+          this.freshUI()
           return
         }
         if (selectNum != -1) {
@@ -609,6 +614,9 @@ Page({
                     sudoku.freshDiagonal()
                 }
             }
+            var note = (currentNote == true ? '+' : '-')
+            cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
+            restoreData = ''
         }
         this.freshUI();
         //selectNum = -1;
@@ -629,6 +637,26 @@ Page({
           fillOrNot = true
         }
         this.freshUI()
+    },
+
+    undo() {
+      if (cacheData.length <= 4)
+        return
+      var undoData = cacheData.substring(cacheData.length - 4, cacheData.length)
+      restoreData += undoData
+      cacheData = cacheData.substring(0, cacheData.length - 4)
+      console.log(undoData)
+      var nowNote = (undoData[0] == '-' ? false : true)
+      sudoku.setData(parseInt(undoData[1]), parseInt(undoData[2]),
+        parseInt(undoData[3]), currentNote)
+      /*
+      for(var i = 4; i < cacheData.length; i += 4) {
+        currentNote = (cacheData[i] == '-' ? false : true)
+        sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+          parseInt(cacheData[i + 3]), currentNote)
+      }
+      */
+      this.freshUI()
     },
 
     timeStart() {
@@ -679,7 +707,12 @@ Page({
                     } else {
                         baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2
                         board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
-                        board.setFontSize(cellWidth * 0.9 / Math.sqrt(sudoku.getData(i, j).content.length) / ratio)
+                        var len = sudoku.getData(i, j).content.length
+                        if (len > 1) {
+                          board.setFontSize(cellWidth * 0.9 / Math.sqrt(len) / ratio)
+                        } else if (len == 1) {
+                          board.setFontSize(cellWidth * 0.9 / 1.21 / ratio)
+                        }
                         mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
                         board.setFontSize(cellWidth * 0.9 / ratio)
                     }
