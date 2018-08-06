@@ -1,10 +1,10 @@
 function drawMultipleNumbers(board, content, x, y) {
   switch(content.length) {
     case 1:
-      board.fillText(content, x, y)
+      board.fillText(content, x+3, y-3)
       break
     case 2:
-      board.fillText(content, x-4, y-3)
+      board.fillText(content, x-3.5, y-3)
       break
     case 3:
       board.fillText(content[0], x-5, y-11)

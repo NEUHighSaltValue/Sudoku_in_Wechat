@@ -152,7 +152,7 @@ class Sudoku {
                 } else {
                     if (this.boardData[i][j].note == true) {
                         this.boardData[i][j].color = 5;
-                        console.log("note: ",i, j)
+                        //console.log("note: ",i, j)
                     } else {
                         this.boardData[i][j].color = 0;
                     }
@@ -376,29 +376,52 @@ var timer = '';
 var level = 0;
 var remainNum = 81;
 var NowTime;
+// '-'开头为正常模式，'+'开头为note模式
+var cacheData = '';
+var restoreData = '';
 
 Page({
     data: {
         generateOk: false,
         timeText: '00:00',
-        timeShowOrNOt: true,
+        timeShowOrNot: true,
         completed: false,
         note: false
     },
 
     onLoad(option) {
-        sc = option.scence;
-        level = parseInt(option.level);
+        cacheData = option.cache
+        if(cacheData != undefined) {
+          gameID = parseInt(cacheData.substring(0, 4))
+          currentNote = false
+        }
+        else {
+          cacheData = ''
+          sc = option.scence;
+          level = parseInt(option.level);
+          gameID = Math.floor(Math.random() * 1000) + level * 1000 + 1;
+        }
         sameNumHighlight = getApp().globalData.highlightOrNot;
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
         filltype = getApp().globalData.typeOrNot;
-        //console.log(filltype)
         
         this.setData({
-            timeShowOrNOt: timeShow
+            timeShowOrNot: timeShow
         });
         this.newGame();
+        if(cacheData != undefined) {
+          var nowNote = currentNote
+          for (var i = 4; i < cacheData.length; i += 4) {
+            currentNote = (cacheData[i] == '-' ? false : true)
+            sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+              parseInt(cacheData[i + 3]), currentNote)
+            console.log(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+              parseInt(cacheData[i + 3]), currentNote)
+          }
+          this.freshUI()
+          currentNote = nowNote
+        }
     },
 
     newGame() {
@@ -421,7 +444,6 @@ Page({
         })
 
         var newGameObject, newGameData, newGameAns;
-        gameID = Math.floor(Math.random() * 1000) + level * 1000+1;
         if(gameID>9868){
             gameID=gameID-869;
         }
@@ -549,6 +571,10 @@ Page({
                 }
             },
             complete:() => {
+                if(cacheData == '')
+                  cacheData = gameID.toString()
+                while(cacheData.length < 4)
+                  cacheData = '0' + cacheData
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({
@@ -659,6 +685,7 @@ Page({
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
         if (filltype) {
           this.freshUI()
+          //console.log(cacheData)
           return
         }
         if (selectNum != -1) {
@@ -671,6 +698,10 @@ Page({
                     sudoku.freshDiagonal()
                 }
             }
+            var note = (currentNote == true ? '+' : '-')
+            cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
+            restoreData = ''
+            //console.log(cacheData)
             this.freshUI();
         }
         //console.log(selectX, selectY, sudoku.getData(selectX, selectY))
@@ -691,10 +722,63 @@ Page({
             sudoku.judgeError();
         }
         if (filltype && selectX != -1 && selectY != -1) {
+          var note = (currentNote == true ? '+' : '-')
+          cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
+          restoreData = ''
           sudoku.setData(selectX, selectY, selectNum, currentNote);
+            if (sameNumHighlight) {
+                console.log("higihlight")
+                sudoku.highlightNum(selectNum);
+            } 
+            if (errorShow) {
+                sudoku.judgeError()
+                if (level >= 5) {
+                    sudoku.freshDiagonal()
+                }
+            }
           fillOrNot = true
         }
         this.freshUI();
+    },
+
+    undo() {
+      if(cacheData.length <= 4)
+        return
+      var undoData = cacheData.substring(cacheData.length-4, cacheData.length)
+      restoreData += undoData
+      cacheData = cacheData.substring(0, cacheData.length-4)
+      console.log(undoData)
+      var nowNote = (undoData[0] == '-' ? false : true)
+      sudoku.setData(parseInt(undoData[1]), parseInt(undoData[2]),
+        parseInt(undoData[3]), currentNote)
+      /*
+      for(var i = 4; i < cacheData.length; i += 4) {
+        currentNote = (cacheData[i] == '-' ? false : true)
+        sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+          parseInt(cacheData[i + 3]), currentNote)
+      }
+      */
+      this.freshUI()
+    },
+
+    redo() {
+      if(restoreData.length < 4)
+        return
+      var redoData = restoreData.substring(restoreData.length - 4, restoreData.length)
+      cacheData += redoData
+      restoreData = restoreData.substring(0, restoreData.length-4)
+      var nowNote = (redoData[0] == '-' ? false : true)
+      sudoku.setData(parseInt(redoData[1]), parseInt(redoData[2]),
+        parseInt(redoData[3]), currentNote)
+      /*
+      for (var i = 0; i < restoreData.length; i += 4) {
+        currentNote = (restoreData[i] == '-' ? false : true)
+        sudoku.setData(parseInt(restoreData[i + 1]), parseInt(restoreData[i + 2]),
+          parseInt(restoreData[i + 3]), currentNote)
+      }
+      */
+      this.freshUI()
+      currentNote = nowNote
     },
 
     toLevelSelect() {
@@ -739,6 +823,9 @@ Page({
         board.setFontSize(cellWidth * 0.9 / ratio);
         var i, j, axis, baseLine;
         remainNum = 81;
+        if (filltype) {
+            this.fillColor(board, selectX, selectY)
+        }
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
@@ -753,7 +840,12 @@ Page({
                     } else {
                         baseLine = (i + 0.85) * cellWidth + (1 + parseInt(i / 3)) * lineWidth1 + i * lineWidth2
                         board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
-                        board.setFontSize(cellWidth * 0.9 / Math.sqrt(sudoku.getData(i, j).content.length) / ratio)
+                        var len = sudoku.getData(i, j).content.length
+                        if(len > 1) {
+                          board.setFontSize(cellWidth * 0.9 / Math.sqrt(len) / ratio)
+                        } else if(len == 1) {
+                          board.setFontSize(cellWidth * 0.9 / 1.21 / ratio)
+                        }
                         mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
                         board.setFontSize(cellWidth * 0.9 / ratio)
                     }
@@ -763,9 +855,6 @@ Page({
                     board.beginPath()
                 }
             }
-        }
-        if (filltype) {
-          this.fillColor(board, selectX, selectY)
         }
         board.draw();
         if (remainNum == 0) {
@@ -837,12 +926,25 @@ Page({
                     success: res => {
                     }
                 })
-
+              
                 wx.showToast();
                 this.setData({
                     completed: true
                 })
+                try {
+                  wx.setStorageSync('cache', '')
+                  console.log('finish')
+                } catch (e) {
+
+                }
             }
+        } else {
+          try {
+            wx.setStorageSync('cache', cacheData)
+            console.log(cacheData)
+          } catch(e) {
+            
+          }
         }
     },
 
@@ -851,14 +953,22 @@ Page({
         return
       if(sudoku.getData(x,y).cat == false)
         return
-      if(fillOrNot) {
-        fillOrNot = false
-        return
-      }
-      let pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3))) / ratio;
-      let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + selectX * lineWidth2) / ratio;
-      console.log(pointX, pointY)
-      board.fillStyle = '#7FFFAA'
+    //   if(fillOrNot) {
+    //     fillOrNot = false
+    //     return
+    //   }
+        var pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3) * lineWidth2)) 
+        if (selectY == 8)
+            pointX = pointX + 2
+        if (selectY == 7)
+            pointX = pointX + 2.5
+        if (selectY == 6)
+            pointX = pointX + 3
+        pointX = pointX / ratio
+        let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + (selectX - parseInt(selectX / 3)  ) * lineWidth2) / ratio;
+        // console.log(selectX, selectY)
+        // console.log(pointX, pointY)
+        board.fillStyle = '#8EE0FB'
       //board.fillText('0', (boardWidthInPrx - lineWidth1 * 1.5) / ratio, (boardWidthInPrx - lineWidth1 * 1.5) / ratio)
       board.fillRect(pointX, pointY, cellWidth/ratio, cellWidth/ratio)
     },

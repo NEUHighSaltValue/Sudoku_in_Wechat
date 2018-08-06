@@ -1,15 +1,20 @@
 .wrapper {
-    top: 10%;
-    margin: 5%;
-    width: 90%;
     height: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
+    background-color: #DCEDF3;
+    padding-bottom: 50rpx;
+}
+
+#first_title{
+    margin-top: 80rpx;
 }
 
 .normal_text {
     font-size: 36rpx;
+    padding-left: 30rpx;
+    padding-right: 30rpx;
     line-height: 50.4rpx;
     text-align: left;
     margin-left: 40rpx;
@@ -20,22 +25,35 @@
     margin-top: 20rpx;
 }
 
+.normal_text_point{
+    font-size: 36rpx;
+    padding-left: 30rpx;
+    padding-right: 30rpx;
+    line-height: 50.4rpx;
+    margin-left: 40rpx;
+    margin-right: 40rpx;
+    display: block;
+    align-self: left;
+    text-align: center;
+}
+
 .title_text {
     font-size: 44rpx;
     line-height: 61.6rpx;
     font-style: bold;
+    padding-left: 10rpx;
+    padding-right: 30rpx;
     text-align: left;
-    margin-left: 20rpx;
-    margin-right: 40rpx;
     display: block;
     align-self: left;
-    margin-bottom: 20rpx;
     margin-top: 20rpx;
 }
+
 
 #image0 {
     width: 600rpx;
     height: 600rpx;
+    opacity:0.8;
 }
 
 #image1 {

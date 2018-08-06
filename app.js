@@ -9,6 +9,7 @@ App({
         key: 'avatar',
         data: '/images/oula.png',
     })
+      wx.setStorageSync('avatar', '/images/oula.png')
     var that = this
     try {
       var value = wx.getStorageSync('setting')
@@ -77,6 +78,7 @@ App({
                               key: 'avatar',
                               data: tempAvatarURL,
                             })
+                              wx.setStorageSync('avatar', tempAvatarURL)
                           }
                         })
                       }
@@ -171,6 +173,6 @@ App({
     highlightOrNot: false,
     errorOrNot: false,
     timeOrNot: true,
-    typeOrNot: false
+    typeOrNot: true
   }
 })
