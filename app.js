@@ -171,6 +171,6 @@ App({
     highlightOrNot: false,
     errorOrNot: false,
     timeOrNot: true,
-    typeOrNot: false
+    typeOrNot: true
   }
 })
