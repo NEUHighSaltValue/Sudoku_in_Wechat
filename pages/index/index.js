@@ -4,7 +4,7 @@ var scene
 const app = getApp()
 var storage
 let level_js = require('../../pages/index/level.js')
-var isPK
+var isPK 
 let level
 let roomid
 let gameid
@@ -202,7 +202,7 @@ Page({
     })
   },
   onLoad: function (options) {
-    //console.log(options)
+    console.log(options)
     if (options.type == "pk"){
       isPK = true;
     }
@@ -211,23 +211,59 @@ Page({
     var item = level_js.level_ratio()
     
     if(isPK){
+      isPK = false
       level=options.level;
       roomid=options.roomid;
       gameid=options.gameid
-      wx.getUserInfo({
-        success: function() {
-          wx.navigateTo({
-            url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0'
-          })
+      wx.request({
+        url: 'https://www.tianzhipengfei.xin/sudoku', 
+        data: {
+          event: 'searchPK',
+          searchRoom: roomid
         },
-        fail: function() {
-          wx.showModal({
-            title: '提示',
-            content: '小程序需要用户授权身份信息才能进行对战功能',
-            showCancel: false
+        method: "POST",
+        success: function (res) {
+          //console.log(res.data)
+          
+          wx.getUserInfo({
+            success: function () {
+              console.log(res)
+              if(res.data == "True"){
+                wx.navigateTo({
+                  url: '/pages/waiting/waiting?type=pk&level=' + level + '&roomid=' + roomid + '&gameid=' + gameid + '&isMaster=0'
+                })
+              }
+              else{
+                isPK = false               
+                wx.showModal({
+                  title: '糟糕',
+                  content: '游戏已经开始，不能再加入啦！到主页再来一局吧~',
+                  showCancel: false,
+                  success: function (res) {
+                    if (res.confirm) {
+                      wx.redirectTo({
+                        url: '/pages/index/index',
+                      })
+                    } else if (res.cancel) {
+                      wx.redirectTo({
+                        url: '/pages/index/index',
+                      })
+                    }
+                  }
+                })
+              }
+            },
+            fail: function () {
+              wx.showModal({
+                title: '提示',
+                content: '小程序需要用户授权身份信息才能进行对战功能',
+                showCancel: false
+              })
+            }
           })
         }
       })
+      
     }
   },
   onShow: function () {
