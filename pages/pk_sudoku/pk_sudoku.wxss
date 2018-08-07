@@ -105,39 +105,40 @@ page{
 
 /* !loading */
 
+
 .function_button{
   text-align: center;
-  top: 20rpx;
+  margin: 48rpx;
+  top: 0rpx;
   height: 20rpx;
   position: relative;
+  display: flex;
 }
 
-
 .function_button .new{
-position: absolute;
-left: 95rpx;
-top: -15rpx;
-  width:100rpx;
-  height: 100rpx;
+  float: left;
+  height: 60rpx;
+  width: 190rpx;
+   /* Zixuan  new 按钮的背景色 */
+  background-color: #CEF0B9
 }
 
 .function_button .time{
-  display: inline;
-  position: relative;
+  width: 200rpx;
 }
 
 .function_button .note0{
-  position: absolute;
-  top: 4rpx;
-  left: 550rpx;
+  float: right;
+  height: 60rpx;
+  width: 190rpx;
   /* Zixuan note 按钮的背景色*/
   background-color: #CEF0B9
 }
 
 .function_button .note1{
-  position: absolute;
-  top: 4rpx;
-  left: 550rpx;
+  float: right;
+  height: 60rpx;
+  width: 190rpx;
   /* Zixuan note 按钮的背景色*/
   background-color: #64A36F
 }
@@ -146,7 +147,7 @@ top: -15rpx;
   width: 675rpx;
   height: 675rpx;
   position: absolute;
-  margin-top: 84rpx;
+  margin-top: 40rpx;
 }
 
 .canvasBoard{ 
@@ -225,13 +226,13 @@ top: -15rpx;
 }
 
 .pk_users{
-    height: 140rpx;
+    height: 120rpx;
     width: 750rpx;
     display: flex;
 }
 
 .pk_users_hide{
-    height: 140rpx;
+    height: 120rpx;
     width: 750rpx;
     display: flex;
 }
@@ -245,9 +246,9 @@ top: -15rpx;
 }
 
 .user_avatar{
-    width: 90rpx;
-    height: 90rpx;
-    border-radius: 45rpx;
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: 40rpx;
     margin-left: 20rpx;
 }
 

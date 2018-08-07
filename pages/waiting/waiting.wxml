@@ -15,6 +15,8 @@
     </view>
 </scroll-view>
 
+<view class="tips">温馨提示：若房主离开，房间将销毁</view>
+
 <view class='button_style'>
     <button class="readyButton" plain="true" wx:if="{{myInfo.info.isMaster==1}}" bindtap='readyChange'>
         <image wx:if="{{startable}}" class="inviteIcon" src="/images/startable.png"/>

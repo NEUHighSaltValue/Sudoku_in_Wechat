@@ -41,7 +41,7 @@ page{
 
 .userinfo-wrapper{
   display: flex; 
-  height: 720rpx;
+  height: 600rpx;
   flex-wrap: wrap;
   align-content: flex-start; 
   flex-direction: row;
@@ -77,6 +77,18 @@ page{
   display: flex;
 }
   
+.tips{
+  height: 110rpx;
+  padding-top: 60rpx;
+  margin-left: 60rpx;
+  width: 630rpx;
+  line-height: 50rpx;
+  text-align: center;
+  color: #E2AFB4;
+  /* background-color: white; */
+  /* border-radius: 0rpx 0rpx 20rpx 20rpx ; */
+} 
+
   .inviteIcon{
     width: 200rpx;
     height: 42rpx;

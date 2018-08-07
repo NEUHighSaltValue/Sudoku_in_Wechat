@@ -115,26 +115,33 @@ page{
   top: 0rpx;
   height: 20rpx;
   position: relative;
+  display: flex;
 }
 
 .function_button .new{
   float: left;
+  height: 60rpx;
+  width: 190rpx;
    /* Zixuan  new 按钮的背景色 */
   background-color: #CEF0B9
 }
 
 .function_button .time{
-  display: inline
+  width: 200rpx;
 }
 
 .function_button .note0{
   float: right;
+  height: 60rpx;
+  width: 190rpx;
   /* Zixuan note 按钮的背景色*/
   background-color: #CEF0B9
 }
 
 .function_button .note1{
   float: right;
+  height: 60rpx;
+  width: 190rpx;
   /* Zixuan note 按钮的背景色*/
   background-color: #64A36F
 }

@@ -25,7 +25,6 @@ page{
 }
 
 .avatar{
-
     height: 150rpx;
     width: 150rpx;
     position: relative;
@@ -33,7 +32,6 @@ page{
     left: 80rpx;
     border-radius: 75rpx;
     border: 5rpx #DBEDF3 solid;
-    
 }
 
 .userInfoText{

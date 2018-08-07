@@ -394,7 +394,7 @@ Page({
         timeText: '00:00',
         timeShowOrNOt: true,
         completed: false,
-        PKHiden: true,
+        PKHiden: false,
         pkUserList:[],
         myInfo: {}
     },
@@ -767,7 +767,7 @@ Page({
                     data: {
                         event: 'finishGame',
                         gameid: gameID,
-                        userid: "123",
+                        userid: value,
                         finishTime: num
                     },
                     method: "POST",
@@ -902,6 +902,9 @@ Page({
             console.log("lala")
             for (var i = 0; i < data.length; i++) {
                 console.log("haha")
+                if (data[i].url == avatarUrl) {
+            		rank = i + 1
+                }
                 console.log(i, "'s url is ", data[i].url, " percentage is ", data[i].percent)
                 pkUserinfo[i] = {
                     "avatar": data[i].url,

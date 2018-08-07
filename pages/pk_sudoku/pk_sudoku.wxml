@@ -18,7 +18,7 @@
 
 <view class="page_container" hidden='{{completed}}'>
     <view class="rank_container">
-        <image class="{{PKHiden ? 'drag_icon_hiden' : 'drag_icon'}}" bindtap='changePKHiden' src="/images/drag_down.png"></image>
+         <image class="{{PKHiden ? 'drag_icon_hiden' : 'drag_icon'}}" bindtap='changePKHiden' src="/images/drag_down.png"></image>
         <scroll-view scroll-x="true" style='background:white'>
             <view class="pk_users" hidden="{{PKHiden}}">
                 <view class="user_item" wx:for="{{pkUserList}}">
@@ -29,7 +29,7 @@
         </scroll-view>
     </view>
     <view class="function_button">
-        <image class="new" src='/images/pkIcon.png'></image>
+        <button class ="new" type="default" size="mini" bindtap='undo'> 撤销 </button>
         <view class="time"> {{timeText}} </view>
         <button class="note{{note? 1 : 0}}" size="mini" bindtap='changeNote'> 候选模式 </button>
     </view>

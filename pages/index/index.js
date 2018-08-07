@@ -14,7 +14,7 @@ Page({
     buttonClicked: true,
     imgurl: '',
     nickname: "",
-    userInformation: false,
+    userInformation: true,
     level_item: {
       name: "",
       ratio: 0.0,
@@ -38,6 +38,11 @@ Page({
               })
             }
           })
+        }
+        else{
+            wx.setData({
+                userInformation: false
+            })
         }
       }
     })
