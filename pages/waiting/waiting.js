@@ -107,7 +107,28 @@ Page({
     },
     // !onShow
     onUnload: function(){
-        console.log("in unload")
+      console.log("in unload")
+      if(isMaster == 1){
+        wx.request({//start pk
+          url: 'https://www.tianzhipengfei.xin/sudoku',
+          data: {
+            event: 'startPK',
+            roomid: roomid,
+          },
+          method: "POST",
+          success: res => {
+            console.log(res.data)//start pk suce
+          },
+          fail: res => {
+            wx.showToast({
+              title: '网络原因，开始PK失败！',
+              icon: 'none',
+              duration: 2000
+            })
+          }
+        })
+      }
+      
         let that = this
         let myInfo = {
             key: 5,
@@ -163,7 +184,7 @@ Page({
                 if (infos.members.length>0){
                     let temp = true;
                     for (var i = 0; i < infos.members.length; i++) {
-                        
+                         
                         infolist[i + 1] = infos.members[i]
                         if(!temp){
                             continue;
@@ -186,6 +207,25 @@ Page({
                 })
                 console.log("in the end of read message, infolist is", infolist)
                 infolist = []
+            }
+            else if(key == 6){//房主离开,房间失效
+              wx.showModal({
+                title: '糟糕',
+                content: '房主退出了房间，房间崩塌！现在将前往主页',
+                showCancel: false,
+                success: function (res) {
+                  if (res.confirm) {
+                    wx.navigateBack({
+                      delta: 1
+                    })
+                  } else if (res.cancel) {
+                    wx.navigateBack({
+                      delta: 1
+                    })
+                  }
+                }
+              })
+             
             }
         })
         console.log("finish read message")
