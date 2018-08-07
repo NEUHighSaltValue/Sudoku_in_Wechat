@@ -367,6 +367,7 @@ var shareImg;
 var selectX = -1;
 var selectY = -1;
 var selectNum = -1;
+var preNum = 0;
 var sudoku = new Sudoku();
 var num = 0;
 var strH = '';
@@ -379,6 +380,7 @@ var NowTime;
 // '-'开头为正常模式，'+'开头为note模式
 var cacheData = '';
 var restoreData = '';
+var newGameObject, newGameData, newGameAns;
 
 Page({
     data: {
@@ -443,7 +445,6 @@ Page({
             timeText: '00:00'
         })
 
-        var newGameObject, newGameData, newGameAns;
         if(gameID>9868){
             gameID=gameID-869;
         }
@@ -744,20 +745,23 @@ Page({
     undo() {
       if(cacheData.length <= 4)
         return
-      var undoData = cacheData.substring(cacheData.length-4, cacheData.length)
+      //var undoData = cacheData.substring(cacheData.length-4, cacheData.length)
+      sudoku.reset()
+      sudoku.setGame(newGameData, newGameAns)
+      cacheData = cacheData.substring(0, cacheData.length-4)
+      /*
       restoreData += undoData
       cacheData = cacheData.substring(0, cacheData.length-4)
       console.log(undoData)
       var nowNote = (undoData[0] == '-' ? false : true)
       sudoku.setData(parseInt(undoData[1]), parseInt(undoData[2]),
         parseInt(undoData[3]), currentNote)
-      /*
+      */
       for(var i = 4; i < cacheData.length; i += 4) {
         currentNote = (cacheData[i] == '-' ? false : true)
         sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
           parseInt(cacheData[i + 3]), currentNote)
       }
-      */
       this.freshUI()
     },
 
