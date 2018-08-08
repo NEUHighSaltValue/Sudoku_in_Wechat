@@ -389,7 +389,9 @@ Page({
         timeText: '00:00',
         timeShowOrNot: true,
         completed: false,
-        note: false
+        note: false,
+        curX: 100,
+        curY: 100
     },
 
     onLoad(option) {

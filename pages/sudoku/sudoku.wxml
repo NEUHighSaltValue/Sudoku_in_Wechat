@@ -15,9 +15,14 @@
   </view>
 </view>
 
-<image class="arror" style='position:fix; x:{{}}'>
+<view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 99999; opacity:0.2;'>
+</view>
+<view class="layer" style='position:absolute; left:480rpx; top:50rpx; height:50rpx; width:220rpx;   background-color: #CEF0B9;  z-index: 99999; opacity:0.5;'>
+</view>
 
-</image>
+<image class="arror" src='/images/arrow.png' style='position:absolute; top:40rpx; left:480rpx; z-index:999;width:100rpx; height:100rpx; transform: rotate(-40deg);'>
+    </image>
+    
 
 <view class = "page_container" hidden='{{completed}}'>
 

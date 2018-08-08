@@ -118,7 +118,7 @@ page{
 .function_button .new{
   float: left;
   height: 60rpx;
-  width: 190rpx;
+  width: 220rpx;
    /* Zixuan  new 按钮的背景色 */
   background-color: #CEF0B9
 }
@@ -130,7 +130,7 @@ page{
 .function_button .note0{
   float: right;
   height: 60rpx;
-  width: 190rpx;
+  width: 220rpx;
   /* Zixuan note 按钮的背景色*/
   background-color: #CEF0B9
 }
