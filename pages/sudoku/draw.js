@@ -86,7 +86,7 @@ function getNowFormatDate() {
 function levelTranslation(level) {
   switch(level+1) {
     case 1: 
-      return '普通数独-入门级';
+      return '普通数独-入门';
     case 2:
       return '普通数独-初级';
     case 3:
@@ -94,17 +94,17 @@ function levelTranslation(level) {
     case 4:
       return '普通数独-高级';
     case 5:
-      return '普通数独-骨灰级';
+      return '普通数独-骨灰';
     case 6:
-      return '对角线数独-入门级';
+      return '对角数独-入门';
     case 7:
-      return '对角线数独-初级';
+      return '对角数独-初级';
     case 8:
-      return '对角线数独-中级';
+      return '对角数独-中级';
     case 9:
-      return '对角线数独-高级';
+      return '对角数独-高级';
     case 10:
-      return '对角线数独-骨灰级';
+      return '对角数独-骨灰';
   }
 }
 

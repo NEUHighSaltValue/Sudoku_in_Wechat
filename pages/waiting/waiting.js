@@ -2,10 +2,11 @@
 let levelTable = ["入门级", "初级", "中级", "高级", "骨灰级"]
 let typeTable = ["普通数独", "对角线数独"]
 var gameid, level, roomid;
-var value, avatarUrl;
+var value, avatarUrl="/images/oula.png";
 var showTime = 0;
 var hideTime = 0;
 var isMaster = 0;
+var toPkFlage = false
 
 Page({
     data: {
@@ -33,45 +34,56 @@ Page({
     },
     onLoad: function(options){
         level = options.level;
+        toPkFlage = false;
         roomid = options.roomid
         gameid = options.gameid;
+        console.log("level in ls page is: ", level, ", and gameId in ls is: ", gameid)
         isMaster = parseInt(options.isMaster)
-        console.log("is Master in load", isMaster)
         let that = this
-        try {
-            value = wx.getStorageSync('openid')
-            avatarUrl = wx.getStorageSync('avatar')
-            if (value) {
-                if (isMaster==1){
-                    this.setData({
-                        isMasterForUi: false
-                    })
-                } else{
-                    this.setData({
-                        isMasterForUi: true
-                    })
-                }
-                that.setData({
-                    isReadyForUi: false,
-                    roomId: roomid,
-                    sudokuName: typeTable[parseInt(level / 5)],
-                    levelName: levelTable[level % 5],
-                    myInfo: {
-                        key: 1,
-                        info: {
-                            isMaster: isMaster,
-                            url: avatarUrl,
-                            openid: value,
-                            roomId: roomid,
-                            isReady: 0
+        // try {
+            wx.getStorage({
+                key: 'openid',
+                success: function(res) {
+                    console.log("openid: ", res.data)
+                    value = res.data
+                    wx.getStorage({
+                        key: 'avatar',
+                        success: function(res) {
+                            console.log("avatar: ",res.data)
+                            avatarUrl = res.data
+                            if (isMaster == 1) {
+                                that.setData({
+                                    isMasterForUi: false
+                                })
+                            } else {
+                                that.setData({
+                                    isMasterForUi: true
+                                })
+                            }
+                        },
+                        complete(){
+                            that.setData({
+                                isReadyForUi: false,
+                                roomId: roomid,
+                                sudokuName: typeTable[parseInt(level / 5)],
+                                levelName: levelTable[level % 5],
+                                myInfo: {
+                                    key: 1,
+                                    info: {
+                                        isMaster: isMaster,
+                                        url: avatarUrl,
+                                        openid: value,
+                                        roomId: roomid,
+                                        isReady: 0
+                                    }
+                                }
+                            })
+                            console.log('change myInfo in load: ', that.data.myInfo.info)
                         }
-                    }
-                })
-                console.log('change myInfo in load: ', that.data.myInfo.info)
-            }
-        } catch (e) {
-            console.log(e)
-        }
+                    })
+                },
+            })
+            
         wx.connectSocket({
             url: 'wss://www.tianzhipengfei.xin/pk',
             header: {
@@ -171,15 +183,28 @@ Page({
         wx.onSocketMessage(function (res) {
             res = JSON.parse(res.data)
             infos = res.info
+            console.log(infos)
             let key = res.key
             if (key == 2) {
                 if (infos.Master) {
                     infolist[0] = infos.Master
                 }
                 if (parseInt(infos.Master.isStart) == 1) {
-                    wx.redirectTo({
-                        url: '/pages/pk_sudoku/pk_sudoku?gameid=' + gameid+'&roomid='+roomid,
-                    })
+                    if(isMaster){
+                        if (infos.members.length == 0) {
+                            wx.redirectTo({
+                                url: '/pages/pk_sudoku/pk_sudoku?gameid=' + gameid + '&roomid=' + roomid,
+                            })
+                        }
+                    } else{
+                        if (toPkFlage == false) {
+                            toPkFlage = true
+                            wx.redirectTo({
+                                url: '/pages/pk_sudoku/pk_sudoku?gameid=' + gameid + '&roomid=' + roomid,
+                            })
+                        }
+                        
+                    }
                 }
                 if (infos.members.length>0){
                     let temp = true;
@@ -232,9 +257,9 @@ Page({
     },
     // !readMesage
     readyChange() {
-        // if (isMaster && !this.data.startable){
-        //     return
-        // }
+        if (isMaster && !this.data.startable){
+            return
+        }
         let that = this
         try {
             if (value) {

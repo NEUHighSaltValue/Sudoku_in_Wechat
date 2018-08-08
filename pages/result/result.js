@@ -7,7 +7,8 @@ Page({
           item_imgPath: "",
           item_type: "",
           item_time: "",
-          item_date: ""
+          item_date: "",
+          item_teim_isPK: 0
         }
       ]
   },
@@ -36,7 +37,7 @@ function splitData(data) {
   lines = data.split("?")
   for (var i = 0; i < lines.length; i++) {
     words[i] = new Array()
-    words[i] = lines[i].split("|")
+      words[i] = lines[lines.length-i-1].split("|")
   }
   for (var i = 0; i < words.length; i++) {
     var item = {
@@ -44,7 +45,8 @@ function splitData(data) {
       item_imgPath: words[i][0],
       item_type: words[i][1],
       item_time: words[i][2],
-      item_date: words[i][3]
+      item_date: words[i][3],
+        item_isPK: parseInt(words[i][4])
     }
     result.push(item)
   }

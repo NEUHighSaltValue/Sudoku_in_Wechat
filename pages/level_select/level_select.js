@@ -66,6 +66,7 @@ Page({
           if (gameID > 9868) {
               gameID = gameID - 869;
           }
+          console.log("level in ls page is: ", level, ", and gameId in ls is: ", gameID)
           wx.getStorage({
               key: 'openid',
               success: function(res) {

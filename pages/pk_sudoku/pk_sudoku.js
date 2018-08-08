@@ -313,11 +313,9 @@ class Sudoku {
 
 //全局设置变量
 var currentNote = false;
-var sameNumHighlight = false;
-var errorShow = false;
 var timeShow = true;
 var gameID = 0;
-var constantRemainNum=0;
+var constantRemainNum=81;
 var value;
 var avatarUrl;
 var roomid;
@@ -363,11 +361,13 @@ var isPk = false;
 var isgetQr = false;
 var userName = "G!NTOKI";
 var avatarPath;
-var gameLevel = "骨灰级";
+var gameLevel = "骨灰";
 var usedTime = "00:55";
 var rank = 1;
+var totalPeople = 1;
 var imagePath = '/images/level0.png';
 var shareImg;
+var testTime = 0
 
 var connectSocket = false;
 var socketMsgQueue = []
@@ -386,6 +386,7 @@ var remainNum = 81;
 var NowTime;
 var cacheData = '';
 var restoreData = '';
+var newGameObject, newGameData, newGameAns;
 
 
 Page({
@@ -396,7 +397,8 @@ Page({
         completed: false,
         PKHiden: false,
         pkUserList:[],
-        myInfo: {}
+        myInfo: {},
+        firstClock: true
     },
     changePKHiden(){
         let tempHiden = !this.data.PKHiden
@@ -405,26 +407,30 @@ Page({
         })
     },
     onLoad(options) {
+        console.log("Load PKSUDOKU")
         roomid = options.roomid
         sc = options.scence;
         gameID = options.gameid;
+        level = parseInt(gameID / 1000)
         value = wx.getStorageSync('openid');
         avatarUrl = wx.getStorageSync('avatar');
-        sameNumHighlight = getApp().globalData.highlightOrNot;
-        errorShow = getApp().globalData.errorOrNot;
-        timeShow = getApp().globalData.timeOrNot;
         filltype = getApp().globalData.typeOrNot;
         this.setData({
             timeShowOrNOt: timeShow
         });
         this.newGame();
+        let that = this
         setTimeout(function(){
             wx.connectSocket({
                 url: 'wss://www.tianzhipengfei.xin/pk',
                 header: {
                     'content-type': 'application/json'
                 },
-                method: "GET"
+                method: "GET",
+                complete(){
+                    console.log("complete and send data")
+                    that.send_data(1, MAXtime)
+                }
             });
         }, 1000)
         
@@ -451,7 +457,6 @@ Page({
             timeText: '00:00'
         })
 
-        var newGameObject, newGameData, newGameAns;
                 wx.request({
             url: 'https://www.tianzhipengfei.xin/sudoku',
             data: {
@@ -460,13 +465,15 @@ Page({
             },
             method: "POST",
             success: res => {
+                constantRemainNum = 81;
                 newGameObject = res.data;
                 newGameData = newGameObject.data;
                 for(var i=0;i<81;i++){
-                    if(newGameData[i]==0){
-                        constantRemainNum++;
+                    if(newGameData[i]!=0){
+                        constantRemainNum--;
                     }
                 }
+                remainNum = constantRemainNum
                 newGameAns = newGameObject.ans; 
             },
             fail: () => {
@@ -486,7 +493,12 @@ Page({
                     })
                     this.drawBoard();
                     this.drawTable();
-                    this.timeStart();
+                    if(this.data.firstClock){
+                        this.timeStart();
+                        this.setData({
+                            firstClock: false
+                        })
+                    }
                     this.freshUI();
                 }, 1200);
             }
@@ -572,21 +584,6 @@ Page({
 
         //!Board
     },
-    readMessage(quitFlag) {
-        var infos
-        var infolist = []
-        let that = this
-        wx.onSocketMessage(function (res) {
-            console.log("receive message from server")
-            res = JSON.parse(res.data)
-            infos = res.info
-            console.log('message data is', res)
-            let key = res.key
-            console.log("key is ", key)
-            
-        })
-        console.log("finish read message")
-    },
 
     clickThenfill() {
       if(!filltype && selectNum == -1)
@@ -594,72 +591,72 @@ Page({
     },
 
     cellSelect(event) {
-        if(this.clickThenfill())
-          return        
+        if (this.clickThenfill())
+            return
         selectY = parseInt(event.changedTouches[0].x / (boardWidthInPx / 9));
         selectX = parseInt(event.changedTouches[0].y / (boardWidthInPx / 9));
-        if(filltype) {
-          this.freshUI()
-          cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
-          restoreData = ''
-          this.freshUI()
-          return
+        if (filltype) {
+            this.freshUI()
+            return
         }
         if (selectNum != -1) {
-            //console.log(selectX, selectY, selectNum, currentNote)
             sudoku.setData(selectX, selectY, selectNum, currentNote);
-            if (errorShow) {
-                sudoku.judgeError()
-                if (level >= 5) {
-                    sudoku.freshDiagonal()
-                }
-            }
             var note = (currentNote == true ? '+' : '-')
             cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
             restoreData = ''
+            this.freshUI();
         }
-        this.freshUI();
-        //selectNum = -1;
-        //this.drawTable();
-        this.send_data(remainNum/constantRemainNum, MAXtime)
     },
 
     tableSelect(event) {
+        // 选择数字
         selectNum = parseInt(event.changedTouches[0].y / (tableHeighInPx / 2)) * 5 + parseInt(event.changedTouches[0].x / (tableWidthInPx / 5));
-        if(!filltype)
-          this.drawTable(selectNum)
-        if (sameNumHighlight) {
-            sudoku.highlightNum(selectNum);
-            this.freshUI();
+        if (!filltype)
+            this.drawTable(selectNum);
+        if (filltype && selectX != -1 && selectY != -1) {
+            var note = (currentNote == true ? '+' : '-')
+            cacheData += note + selectX.toString() + selectY.toString() + selectNum.toString()
+            restoreData = ''
+            sudoku.setData(selectX, selectY, selectNum, currentNote);
+            fillOrNot = true
         }
-        if(filltype && selectX != -1 && selectY != -1) {
-          sudoku.setData(selectX, selectY, selectNum, currentNote)
-          fillOrNot = true
-        }
-        this.freshUI()
+        this.freshUI();
+        this.send_data(remainNum / constantRemainNum, MAXtime)
     },
 
     undo() {
-      if (cacheData.length <= 4)
+      if(cacheData.length <= 4)
         return
-      var undoData = cacheData.substring(cacheData.length - 4, cacheData.length)
-      restoreData += undoData
-      cacheData = cacheData.substring(0, cacheData.length - 4)
-      console.log(undoData)
-      var nowNote = (undoData[0] == '-' ? false : true)
-      sudoku.setData(parseInt(undoData[1]), parseInt(undoData[2]),
-        parseInt(undoData[3]), currentNote)
-      /*
+      sudoku.reset()
+      sudoku.setGame(newGameData, newGameAns)
+      cacheData = cacheData.substring(0, cacheData.length-4)
       for(var i = 4; i < cacheData.length; i += 4) {
         currentNote = (cacheData[i] == '-' ? false : true)
         sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
           parseInt(cacheData[i + 3]), currentNote)
       }
-      */
       this.freshUI()
     },
 
+    undo() {
+        if (cacheData.length <= 4)
+            return
+        //var undoData = cacheData.substring(cacheData.length-4, cacheData.length)
+        sudoku.reset()
+        sudoku.setGame(newGameData, newGameAns)
+        cacheData = cacheData.substring(0, cacheData.length - 4)
+        for (var i = 4; i < cacheData.length; i += 4) {
+            currentNote = (cacheData[i] == '-' ? false : true)
+            sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+                parseInt(cacheData[i + 3]), currentNote)
+        }
+        this.freshUI()
+        this.send_data(remainNum / constantRemainNum, MAXtime)
+    },
+
     timeStart() {
+        console.log(testTime)
+        testTime = testTime+1
         timer = setInterval(this.countTime, 1000);
     },
 
@@ -695,6 +692,9 @@ Page({
         board.setFontSize(cellWidth * 0.9 / ratio);
         var i, j, axis, baseLine;
         remainNum = 81;
+        if (filltype) {
+            this.fillColor(board, selectX, selectY)
+        }
         for (j = 0; j < 9; j++) {
             axis = (j + 0.2) * cellWidth + (1 + parseInt(j / 3)) * lineWidth1 + (j - parseInt(j / 3)) * lineWidth2;
             for (i = 0; i < 9; i++) {
@@ -709,9 +709,9 @@ Page({
                         board.setFillStyle(colorTable[sudoku.getData(i, j).color]);
                         var len = sudoku.getData(i, j).content.length
                         if (len > 1) {
-                          board.setFontSize(cellWidth * 0.9 / Math.sqrt(len) / ratio)
+                            board.setFontSize(cellWidth * 0.9 / Math.sqrt(len) / ratio)
                         } else if (len == 1) {
-                          board.setFontSize(cellWidth * 0.9 / 1.21 / ratio)
+                            board.setFontSize(cellWidth * 0.9 / 1.21 / ratio)
                         }
                         mutiDraw.drawMultipleNumbers(board, sudoku.getData(i, j).content, axis / ratio, baseLine / ratio)
                         board.setFontSize(cellWidth * 0.9 / ratio)
@@ -723,16 +723,11 @@ Page({
                 }
             }
         }
-        if(filltype) {
-          this.fillColor(board, selectX, selectY)
-        }
         board.draw();
         this.send_data(remainNum / constantRemainNum, MAXtime)
         this.grasp_data()
         if (remainNum == 0) {
             if (sudoku.judgeCorrect()) {
-                this.send_data(0, num)
-                this.grasp_data()
                 this.timeStop();
                 sudoku.freeze();
                 sc = decodeURIComponent(sc)
@@ -742,6 +737,31 @@ Page({
                 let that = this;
                 //Shuyuan
                 var storage = ""
+                var exprNow = 0
+                wx.getUserInfo({
+                    success: function (res) {
+                        wx.getStorage({
+                            key: 'expr',
+                            success: function (res) {
+                                if (res.data) {
+                                    exprNow = parseInt(res.data) + mutiDraw.getExperience(level) * (totalPeople - rank + 1)
+                                } else {
+                                    console.log("no expr")
+                                }
+                            },
+                            fail: function (res) {
+                                exprNow = mutiDraw.getExperience(level)
+                            },
+                            complete: function () {
+                                wx.setStorage({
+                                    key: 'expr',
+                                    data: exprNow
+                                })
+                            }
+                        })
+                    }
+                })
+
                 wx.getStorage({
                     key: 'key',
                     success: function (res) {
@@ -758,7 +778,7 @@ Page({
                         wx.setStorage({
                             key: 'key',
                             data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' +
-                            that.data.timeText + '|' + mutiDraw.getNowFormatDate()
+                                that.data.timeText + '|' + mutiDraw.getNowFormatDate() + '|1'
                         })
                     }
                 })
@@ -767,29 +787,42 @@ Page({
                     data: {
                         event: 'finishGame',
                         gameid: gameID,
-                        userid: value,
+                        userid: getApp().globalData.userInfo2.openid,
                         finishTime: num
                     },
                     method: "POST",
                     success: res => {
                     }
                 })
+
+                wx.showToast();
                 this.setData({
                     completed: true
                 })
+                try {
+                    wx.setStorageSync('cache', '')
+                    console.log('finish')
+                } catch (e) {
+
+                }
+            }
+        } else {
+            try {
+                wx.setStorageSync('cache', cacheData)
+                console.log(cacheData)
+            } catch (e) {
+
             }
         }
     },
 
     fillColor(board, x, y) {
-      if (x == -1)
-        return
-      if (sudoku.getData(x, y).cat == false)
-        return
-    //   if (fillOrNot) {
-    //     fillOrNot = false
-    //     return
-    //   }
+        if (x == -1) {
+            return
+        }
+        if (sudoku.getData(x, y).cat == false) {
+            return
+        }
         var pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3) * lineWidth2))
         if (selectY == 8)
             pointX = pointX + 2
@@ -800,7 +833,8 @@ Page({
         pointX = pointX / ratio
         let pointY = (cellWidth * selectX + (1 + parseInt(selectX / 3)) * lineWidth1 + (selectX - parseInt(selectX / 3)) * lineWidth2) / ratio;
         board.fillStyle = '#8EE0FB'
-      board.fillRect(pointX, pointY, cellWidth / ratio, cellWidth / ratio)
+        //board.fillText('0', (boardWidthInPrx - lineWidth1 * 1.5) / ratio, (boardWidthInPrx - lineWidth1 * 1.5) / ratio)
+        board.fillRect(pointX, pointY, cellWidth / ratio, cellWidth / ratio)
     },
 
     canvasIdErrorCallback(e) {
@@ -809,7 +843,6 @@ Page({
 
     save: function (e) {
         var that = this;
-        console.log(shareImg);
         setTimeout(function () {
             wx.saveImageToPhotosAlbum({
                 filePath: shareImg,
@@ -844,6 +877,7 @@ Page({
             delta: 5
         })
     },
+
     send_data(percent, time) {
         console.log("in send data, and percent is ",percent)
         var myInfo = {}
@@ -864,15 +898,11 @@ Page({
             wx.sendSocketMessage({
                 data: JSON.stringify(myInfo),
                 success:function(){
-                    console.log(1)
                     that.grasp_data()
-                    console.log(2)
                 },
                 fail: function () {
-                    console.log("23")
                 },
                 complete: function () {
-                    console.log("3")
                 }
             })
         } catch (e) {
@@ -893,15 +923,12 @@ Page({
         wx.onSocketMessage(function (res) {
             console.log("receive message from server and res is ",res)
             res = JSON.parse(res.data)
-            console.log(res)
             data = res.info
-            console.log(data)
-            console.log(typeof(data))
-            console.log(data.length)
             var pkUserinfo = []
-            console.log("lala")
+            if (totalPeople < data.length){
+                totalPeople = data.length 
+            }
             for (var i = 0; i < data.length; i++) {
-                console.log("haha")
                 if (data[i].url == avatarUrl) {
             		rank = i + 1
                 }
@@ -932,37 +959,55 @@ function zeroFill(str, n) {
 
 //获得ACCESS_TOKEN、二维码后在画布上进行绘制
 function paint() {
+    console.log("begin paint")
     const ctx = wx.createCanvasContext('cardCanvas');
-    ctx.setFillStyle('#FFFFFF')
-    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+    //画背景图
+    //ctx.drawImage(图片路径。左上角x,左上角y,图片宽，图片高)
+    ctx.drawImage("/images/background_circle.jpg", 0, 0, canvasWidth, canvasHeight)
+
+    //写文字
     ctx.setFontSize(28)
-    ctx.setFillStyle('#EE0000')
-    ctx.fillText('Bravo!', (150) / ratio, phoneHeight * 0.07)
+    ctx.setFillStyle('#CC3300')
+    //ctx.fillText(字符串，x,y)
+    ctx.fillText('Rank ' + rank, (155) / ratio, phoneHeight * 0.368)
 
-    ctx.setFontSize(18)
+    ctx.setFontSize(16)
     ctx.setFillStyle('#000000')
-    ctx.fillText('用时 ' + usedTime, (100) / ratio, (phoneHeight * 0.12))
-    ctx.fillText('解决 ' + gameLevel, (120) / ratio, phoneHeight * 0.16)
+    ctx.fillText('用时:' + usedTime, (164) / ratio, (phoneHeight * 0.41))
 
-    ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
+    ctx.fillText('完成:' + gameLevel, (106) / ratio, phoneHeight * 0.445)
+
     ctx.stroke();
 
-    var r = 60;
-    ctx.drawImage(imagePath, 113 / ratio, phoneHeight * 0.25, 275 / ratio, 275 / ratio)
+    var QrCodeRadius = 200 / 2;//小程序码半径，275是小程序码边长
+    var avatarRadius = 45;//头像半径
+    var QrCodeYRatio = 0.12;//小程序码左上角Y位置占整个canvas的比例
+
+    ctx.save();
+    ctx.beginPath();
+    //ctx.arc(圆心x，圆心y，半径，初始弧度，要画弧度)
+    ctx.arc((250 - QrCodeRadius) / ratio + QrCodeRadius / ratio, phoneHeight * QrCodeYRatio + QrCodeRadius / ratio, QrCodeRadius / ratio, 0, 2 * Math.PI);
+    ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
+
+    ctx.beginPath();
+    ctx.drawImage(imagePath, (250 - QrCodeRadius) / ratio, phoneHeight * QrCodeYRatio, QrCodeRadius * 2 / ratio, QrCodeRadius * 2 / ratio)
+    ctx.restore();
+
     if (isgetQr) {
         ctx.save();
+        ctx.setStrokeStyle('#FFFFFF')
         ctx.beginPath();
-        ctx.arc((238 + 13) / ratio, phoneHeight * 0.25 + 137.5 / ratio, r / ratio, 0, 2 * Math.PI);
+        //头像
+        //ctx.arc((238 + 13) / ratio, phoneHeight * 0.25 + 137.5 / ratio, r / ratio, 0, 2 * Math.PI);
+        ctx.arc((238 + 13) / ratio, phoneHeight * QrCodeYRatio + QrCodeRadius / ratio, avatarRadius / ratio, 0, 2 * Math.PI);
+        ctx.stroke();
         ctx.clip();//次方法下面的部分为待剪切区域，上面的部分为剪切区域
-
         ctx.beginPath();
-        ctx.drawImage(avatarPath, (250 - r) / ratio, phoneHeight * 0.25 + 137.5 / ratio - r / ratio, 2 * r / ratio, 2 * r / ratio);
-
+        //头像
+        ctx.drawImage(avatarPath, (250 - avatarRadius) / ratio, phoneHeight * QrCodeYRatio + QrCodeRadius / ratio - avatarRadius / ratio, 2 * avatarRadius / ratio, 2 * avatarRadius / ratio);
         ctx.restore();
     }
-
     ctx.stroke();
-    //ctx.draw();
     ctx.draw(false, function () {
         setTimeout(function () {
             wx.canvasToTempFilePath({

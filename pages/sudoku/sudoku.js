@@ -147,6 +147,7 @@ class Sudoku {
     freshProperty() {
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
+                // console.log(i, j ,this.getData(i,j))
                 if (this.boardData[i][j].cat == false) {
                     this.boardData[i][j].color = 1;
                 } else {
@@ -418,19 +419,20 @@ Page({
             currentNote = (cacheData[i] == '-' ? false : true)
             sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
               parseInt(cacheData[i + 3]), currentNote)
+              sudoku.freshProperty()
+               
             console.log(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
               parseInt(cacheData[i + 3]), currentNote)
           }
           this.freshUI()
           currentNote = nowNote
-        }
+        } 
     },
 
     newGame() {
         this.setData({
             generateOk: false
         })
-        sudoku.reset();
         sudoku.reset();
         this.timeStop();
         timer = '0';
@@ -719,8 +721,11 @@ Page({
         if (sameNumHighlight) {
             sudoku.highlightNum(selectNum);
         } 
-        if (errorShow){
-            sudoku.judgeError();
+        if (errorShow) {
+            sudoku.judgeError()
+            if (level >= 5) {
+                sudoku.freshDiagonal()
+            }
         }
         if (filltype && selectX != -1 && selectY != -1) {
           var note = (currentNote == true ? '+' : '-')
@@ -914,7 +919,7 @@ Page({
                     wx.setStorage({
                       key: 'key',
                       data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' + 
-                      that.data.timeText + '|' + mutiDraw.getNowFormatDate()
+                      that.data.timeText + '|' + mutiDraw.getNowFormatDate()+ '|0'
                     })
                   }
                 })
@@ -953,14 +958,12 @@ Page({
     },
 
     fillColor(board, x, y) {
-      if(x == -1)
+      if(x == -1){
         return
-      if(sudoku.getData(x,y).cat == false)
+      }
+      if(sudoku.getData(x,y).cat == false){
         return
-    //   if(fillOrNot) {
-    //     fillOrNot = false
-    //     return
-    //   }
+      }
         var pointX = (cellWidth * selectY + (1 + parseInt(selectY / 3)) * lineWidth1 + (selectY - parseInt(selectY / 3) * lineWidth2)) 
         if (selectY == 8)
             pointX = pointX + 2
@@ -1047,12 +1050,9 @@ function paint() {
   ctx.setFillStyle('#000000')
   ctx.fillText('用时:' + usedTime, (164) / ratio, (phoneHeight * 0.41))
 
-  ctx.fillText('解决:' + gameLevel, (106) / ratio, phoneHeight * 0.445)
-  
-  //非PK版shareCard
-  // if (!isPk) {
-  //   ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
-  // }
+  ctx.fillText('完成:' + gameLevel, (106) / ratio, phoneHeight * 0.445)
+//   ctx.fillText('PK 中Rank ' + rank, (120) / ratio, (phoneHeight * 0.22))
+
   ctx.stroke();
   
   var QrCodeRadius = 200/2;//小程序码半径，275是小程序码边长

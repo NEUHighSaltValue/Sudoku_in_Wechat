@@ -15,6 +15,9 @@
   </view>
 </view>
 
+<image class="arror" style='position:fix; x:{{}}'>
+
+</image>
 
 <view class = "page_container" hidden='{{completed}}'>
 

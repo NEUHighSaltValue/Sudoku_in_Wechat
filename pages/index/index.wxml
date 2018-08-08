@@ -1,6 +1,7 @@
 <!--index.wxml-->
 <view wx:if="{{userInformation}}">
   <view id = "userInfo" class="cell">
+
       <image class = "avatar" src="{{imgurl}}"> </image>
       <view class = "userInfoText">
           <view class = "userName">{{nickName}}</view>
