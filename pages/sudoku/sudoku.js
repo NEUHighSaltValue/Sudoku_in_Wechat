@@ -382,6 +382,7 @@ var NowTime;
 var cacheData = '';
 var restoreData = '';
 var newGameObject, newGameData, newGameAns;
+var guide = true
 
 Page({
     data: {
@@ -390,8 +391,11 @@ Page({
         timeShowOrNot: true,
         completed: false,
         note: false,
-        curX: 100,
-        curY: 100
+        noteButton: false,
+        noteFill: true,
+        noteFull: true,
+        hightlg: true,
+        hightnum: true,
     },
 
     onLoad(option) {
@@ -410,9 +414,23 @@ Page({
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
         filltype = getApp().globalData.typeOrNot;
+        try{
+          var value = wx.getStorageSync('guide')
+          if(value != '') {
+            console.log('guide')
+            guide = false
+          }
+        } catch(e) {
+
+        }
         
         this.setData({
-            timeShowOrNot: timeShow
+            timeShowOrNot: timeShow,
+            noteButton: !guide,
+            noteFill: true,
+            noteFull: true,
+            hightlg: true,
+            hightnum: true
         });
         this.newGame();
         if(cacheData != undefined) {
@@ -448,9 +466,15 @@ Page({
         this.setData({
             timeText: '00:00'
         })
-
         if(gameID>9868){
             gameID=gameID-869;
+        }
+        try {
+          var value = wx.getStorageSync('guide')
+          if(value == '')
+            gameID = 2
+        } catch(e) {
+
         }
         wx.request({
           url: 'https://www.tianzhipengfei.xin/sudoku',
@@ -1022,6 +1046,68 @@ Page({
         wx.navigateBack({
             delta: 5
         })
+    },
+    noteGuide: function(e) {
+      this.setData({
+        noteButton: true,
+        noteFill: false
+      })
+    },
+    noteFGuide: function(e) {
+      //console.log('abc')
+      this.setData({
+        noteFill: true,
+        noteFull: false
+      })
+    },
+    noteFuGuide: function(e) {
+      this.setData({
+        noteFull: true,
+      })
+      sudoku.setData(1, 3, '237', true)
+      this.freshUI()
+      setTimeout(() => {
+        this.setData({ hightlg: false })}, 1200)
+      /*
+      wx.setStorage({
+        key: 'guide',
+        data: 'value'
+      })
+      */
+    },
+    hightGuide: function(e) {
+      this.setData({
+        hightlg: true,
+        hightnum: false
+      })
+    },
+    hightFill: function(e) {
+      this.setData({
+        hightnum: true
+      })
+      selectNum = 1
+      this.drawTable(selectNum)
+      sudoku.highlightNum(selectNum)
+      this.freshUI()
+      wx.setStorage({
+        key: 'guide',
+        data: 'value',
+      })
+      setTimeout(() => {
+        wx.showModal({
+          title: '提示',
+          content: '更多模式可前往设置页面调整',
+          showCancel: false,
+          success: function (res) {
+            if (res.confirm) {
+              wx.redirectTo({
+                url: '/pages/select_level/select_level'
+              })
+            }
+          }
+        })
+      }, 1200)
+
     }
 })
 
