@@ -170,8 +170,8 @@ App({
   globalData: {
     userInfo: null,
     userInfo2: null,
-    highlightOrNot: false,
-    errorOrNot: false,
+    highlightOrNot: true,
+    errorOrNot: true,
     timeOrNot: true,
     typeOrNot: true
   }

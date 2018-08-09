@@ -59,28 +59,9 @@ Page({
           confirmText: '新建游戏',
           success: function(res) {
             if(res.confirm) {
-              wx.getNetworkType({
-                success: function (res) {
-                  var NetworkType = res.networkType
-                  if (NetworkType == "none") {
-                    wx.showModal({
-                      title: '提示',
-                      content: '网络异常，战绩无法正常记录\n是否确定开始游戏',
-                      success: function (res) {
-                        if (res.confirm) {
-                          wx.navigateTo({
-                            url: '/pages/level_select/level_select',
-                          })
-                        }
-                      }
-                    })
-                  } else {
-                    wx.navigateTo({
-                      url: '/pages/level_select/level_select',
-                    })
-                  }
-                },
-              })
+                wx.navigateTo({
+                    url: '/pages/level_select/level_select',
+                })
             } else if(res.cancel) {
               wx.navigateTo({
                 url: '/pages/sudoku/sudoku?cache=' + data,

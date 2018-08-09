@@ -382,7 +382,7 @@ var NowTime;
 var cacheData = '';
 var restoreData = '';
 var newGameObject, newGameData, newGameAns;
-var guide = true
+
 
 Page({
     data: {
@@ -399,9 +399,9 @@ Page({
         guide: -1
     },
 
-    toNextGuide(){
+    toNextGuide() {
         let temp = this.data.guide + 1
-        if(temp == 5){
+        if (temp == 5) {
             this.changeNote()
         } else if (temp == 6) {
             sudoku.setData(1, 3, '237', true)
@@ -417,9 +417,14 @@ Page({
             this.freshUI()
             console.log(123)
         } else if (temp == 10) {
-            wx.setStorageSync('guide','0')
-            this.newGame(false)
+            wx.setStorageSync('guide', '0')
             sudoku.setGame(newGameData, newGameAns);
+            this.drawBoard()
+            this.drawTable()
+            selectNum = 0
+            this.freshUI()
+            this.timeStart()
+            
         }
         console.log(this.data.guide)
         this.setData({
@@ -447,51 +452,36 @@ Page({
         timeShow = getApp().globalData.timeOrNot;
         filltype = getApp().globalData.typeOrNot;
         let that = this
-        try{
-          var value = wx.getStorageSync('guide')
-          console.log("in Load the storage is :", value)
-          if(value == '') {
-            that.setData({
-                guide: -10
-            })
-            timeStop = true
-          }
-        } catch(e) {
+        try {
+            var value = wx.getStorageSync('guide')
+            console.log("in Load the storage is :", value)
+            if (value == '') {
+                that.setData({
+                    guide: -10
+                })
+                timeStop = true
+            }
+        } catch (e) {
             console.log(e)
         }
-        
         this.setData({
             timeShowOrNot: timeShow,
-            noteButton: !guide,
+            noteButton: false,
             noteFill: true,
             noteFull: true,
             hightlg: true,
             hightnum: true
         });
         this.newGame(timeStop);
-        if(cacheData != undefined) {
-          var nowNote = currentNote
-          for (var i = 4; i < cacheData.length; i += 4) {
-            currentNote = (cacheData[i] == '-' ? false : true)
-            sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
-              parseInt(cacheData[i + 3]), currentNote)
-              sudoku.freshProperty()
-               
-            console.log(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
-              parseInt(cacheData[i + 3]), currentNote)
-          }
-          this.freshUI()
-          currentNote = nowNote
-          if(timeStop)  {
-              this.timeStop()
-              console.log("time Stop")
-          }
-          if(this.data.guide == -10){
-              this.setData({
-                  guide: 0
-              })
-          }
-        } 
+        if (timeStop) {
+            this.timeStop()
+            console.log("time Stop")
+        }
+        if (this.data.guide == -10) {
+            this.setData({
+                guide: 0
+            })
+        }
     },
 
     newGame(timeStop) {
@@ -513,8 +503,9 @@ Page({
         }
         try {
           var value = wx.getStorageSync('guide')
-          if(value == '')
-            gameID = 1
+          if(value == ''){
+              gameID = 1
+          }
         } catch(e) {
             console.log(e)
         }
@@ -671,9 +662,33 @@ Page({
                     })
                     this.drawBoard();
                     this.drawTable();
+                    if (cacheData != undefined) {
+                        var nowNote = currentNote
+                        for (var i = 4; i < cacheData.length; i += 4) {
+                            currentNote = (cacheData[i] == '-' ? false : true)
+                            sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+                                parseInt(cacheData[i + 3]), currentNote)
+                            sudoku.freshProperty()
+
+                            console.log(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+                                parseInt(cacheData[i + 3]), currentNote)
+                        }
+                        this.freshUI()
+                        currentNote = nowNote
+                        if (timeStop) {
+                            this.timeStop()
+                            console.log("time Stop")
+                        }
+                    }
+                    if (errorShow) {
+                        sudoku.judgeError()
+                        if (level >= 5) {
+                            sudoku.freshDiagonal()
+                        }
+                    }
+                    this.freshUI();
                     if (!timeStop)
                         this.timeStart();
-                    this.freshUI();
                 }, 1200);
             }
 
@@ -734,23 +749,47 @@ Page({
                 newGameAns = newGameObject.ans;
                 break;
         }
-        complete: () => {
-            if (cacheData == '')
-                cacheData = gameID.toString()
-            while (cacheData.length < 4)
-                cacheData = '0' + cacheData
-            sudoku.setGame(newGameData, newGameAns);
-            setTimeout(() => {
-                this.setData({
-                    generateOk: true
-                })
-                this.drawBoard();
-                this.drawTable();
-                if (!timeStop)
-                    this.timeStart();
-                this.freshUI();
-            }, 1200);
-        }
+        if (cacheData == '')
+            cacheData = gameID.toString()
+        while (cacheData.length < 4)
+            cacheData = '0' + cacheData
+        sudoku.setGame(newGameData, newGameAns);
+        setTimeout(() => {
+            this.setData({
+                generateOk: true
+            })
+            this.drawBoard();
+            this.drawTable();
+            if (cacheData != undefined) {
+                var nowNote = currentNote
+                for (var i = 4; i < cacheData.length; i += 4) {
+                    currentNote = (cacheData[i] == '-' ? false : true)
+                    sudoku.setData(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+                        parseInt(cacheData[i + 3]), currentNote)
+                    sudoku.freshProperty()
+
+                    console.log(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
+                        parseInt(cacheData[i + 3]), currentNote)
+                }
+                if (errorShow) {
+                    sudoku.judgeError()
+                    if (level >= 5) {
+                        sudoku.freshDiagonal()
+                    }
+                }
+                this.freshUI()
+                currentNote = nowNote
+                if (timeStop) {
+                    this.timeStop()
+                    console.log("time Stop")
+                }
+            }
+            
+            if (!timeStop)
+                this.timeStart();
+            this.freshUI();
+        }, 1200);
+        
     },
     drawTable(num) {
         //Table
@@ -1187,68 +1226,7 @@ Page({
             delta: 5
         })
     },
-    // noteGuide: function(e) {
-    //   this.setData({
-    //     noteButton: true,
-    //     noteFill: false
-    //   })
-    // },
-    // noteFGuide: function(e) {
-    //   //console.log('abc')
-    //   this.setData({
-    //     noteFill: true,
-    //     noteFull: false
-    //   })
-    // },
-    // noteFuGuide: function(e) {
-    //   this.setData({
-    //     noteFull: true,
-    //   })
-    //   sudoku.setData(1, 3, '237', true)
-    //   this.freshUI()
-    //   setTimeout(() => {
-    //     this.setData({ hightlg: false })}, 1200)
-    //   /*
-    //   wx.setStorage({
-    //     key: 'guide',
-    //     data: 'value'
-    //   })
-    //   */
-    // },
-    // hightGuide: function(e) {
-    //   this.setData({
-    //     hightlg: true,
-    //     hightnum: false
-    //   })
-    // },
-    // hightFill: function(e) {
-    //   this.setData({
-    //     hightnum: true
-    //   })
-    //   selectNum = 1
-    //   this.drawTable(selectNum)
-    //   sudoku.highlightNum(selectNum)
-    //   this.freshUI()
-    //   wx.setStorage({
-    //     key: 'guide',
-    //     data: 'value',
-    //   })
-    //   setTimeout(() => {
-    //     wx.showModal({
-    //       title: '提示',
-    //       content: '更多模式可前往设置页面调整',
-    //       showCancel: false,
-    //       success: function (res) {
-    //         if (res.confirm) {
-    //           wx.redirectTo({
-    //             url: '/pages/select_level/select_level'
-    //           })
-    //         }
-    //       }
-    //     })
-    //   }, 1200)
-
-    // }
+    
 })
 
 
