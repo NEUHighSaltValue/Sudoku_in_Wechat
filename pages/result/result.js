@@ -26,7 +26,28 @@ Page({
       resultList: storage
     })
     console.log(this.data.resultList)
-  }
+    },
+    onShareAppMessage: function () {
+        let picNum = Math.floor(Math.random() * 10) + 1
+        let url = 'https://www.tianzhipengfei.xin/static/share' + picNum.toString() + '.jpg'
+        console.log(url)
+        return {
+            title: '来啊造作啊',
+            path: '/pages/index/index',
+            imageUrl: url,
+            success: function (res) {
+                //console.log('success')
+            },
+
+            fail: function (res) {
+                wx.showToast({
+                    title: '分享失败',
+                    icon: 'none',
+                    duration: 1000
+                })
+            }
+        }
+    }
 })
 
 function splitData(data) {
