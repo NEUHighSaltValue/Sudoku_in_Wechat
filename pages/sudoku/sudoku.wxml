@@ -15,47 +15,105 @@
   </view>
 </view>
 
+<!-- 玩法介绍 -->
+<view hidden='{{guide!=0}}'bindtap='toNextGuide' >
+<view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
+</view>
+<view style='position:absolute; font-size: 40rpx; color: #000080;opacity:1; top: 500rpx;z-index:9999;background-color: #70b1ff; margin-left:20rpx; margin-right:20rpx; padding:20rpx;'> 数独游戏要求每行、每列、每3*3格子内要填满1-9九个数字，且不能重复 </view>
+</view>
+
+<!-- 输入模式介绍 -->
+<view hidden='{{guide!=1}}'bindtap='toNextGuide'>
+<view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
+</view>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 300rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 在填写过程中，您可以选择格子，再选择数字，将所选数字填入格子中，也可以先点数字，后点格子，将所选数字填入格子中，我们默认采用第一种方案。但您可根据您的习惯在设置中修改</view>
+<image src='/images/inputOrder.png' style='position:absolute; top:750rpx; left:70rpx; z-index:999;width:600rpx; height:102rpx; transform: rotate(0deg);'/>
+</view>
+
+
+<!--撤销介绍-->
+<view hidden='{{guide!=2}}'bindtap='toNextGuide'>
+<view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
+</view>
+<button class="layer" style='position:absolute; left:50rpx; top:47rpx; height:62rpx; width:222rpx;background-color: #CEF0B9; line-height: 62rpx; font-size:36rpx; z-index: 999; opacity:1;text-align: center;'> 撤销
+</button>
+<image class="arror" src='/images/arrow.png' style='position:absolute; top:130rpx; left:61rpx; z-index:999; width:200rpx; height:150rpx; transform: rotate(-90deg);'>
+</image>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 这里是撤销，可以撤销至上一步，在您不小心点错时，它将会非常有用 </view>
+</view>
+
+
+<!--时间显示-->
+<view hidden='{{guide!=3}}'bindtap='toNextGuide'>
+<view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
+</view>
+<image class="arror" src='/images/arrow.png' style='position:absolute; top:130rpx; left:275rpx; z-index:999; width:200rpx; height:150rpx; transform: rotate(-90deg);'>
+</image>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 这里是时间记录，如果您觉得看到时间有压力，可以去设置中关闭时间显示 </view>
+<image src='/images/timeShow.png' style='position:absolute; top:750rpx; left:70rpx; z-index:999;width:600rpx; height:89rpx; transform: rotate(0deg);'/>
+</view>
+
+
 <!--候选模式按钮引导-->
-<view hidden='{{guide!=0}}'>
+<view hidden='{{guide!=4}}'>
 <view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
 </view>
 <button class="layer" style='position:absolute; left:481rpx; top:47rpx; height:62rpx; width:222rpx;background-color: #CEF0B9; line-height: 62rpx; font-size:36rpx; z-index: 999; opacity:1;text-align: center;' bindtap='toNextGuide'> 候选模式
 </button>
 <image class="arror" src='/images/arrow.png' style='position:absolute; top:130rpx; left:500rpx; z-index:999; width:200rpx; height:150rpx; transform: rotate(-90deg);'>
 </image>
-<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 点击“候选模式”按钮,您将可以在一个格子中填写多个候选数字，方便您的推理，要注意的是，候选模式下填写的数字将不被当做答案记录 </view>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 这里是候选模式,您将可以在一个格子中填写多个候选数字，方便您的推理，要注意的是，候选模式下填写的数字将不被当做答案记录，现在请您点击“候选模式”按钮 </view>
 </view>
 
 
 <!--候选模式填空完后-->
-<view hidden='{{guide!=1}}'>
+<view hidden='{{guide!=5}}'>
 <view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
 </view>
 <view class="layer" style='position:absolute; left:264rpx; top:234rpx; height:73rpx; width:73rpx;background-color: white;z-index: 99999; opacity:1;' bindtap='toNextGuide'> 
 </view>
 <image class="arror" src='/images/arrow.png' style='position:absolute; top:233rpx; left:190rpx; z-index:999;width:80rpx; height:50rpx; transform: rotate(30deg);'>
 </image>
-<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'>例如点击该格子，并依次填入2、3、7</view>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'>请点击该格子，并依次填入2、3、7</view>
 </view>
 
-<view hidden='{{guide!=2}}'bindtap='toNextGuide' >
+<!--恢复正常模式-->
+<view hidden='{{guide!=6}}' >
 <view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
 </view>
-<image src='/images/hightlight.png' style='position:absolute; top:200rpx; left:70rpx; z-index:999;width:600rpx; height:91rpx; transform: rotate(0deg);'>
+<image class="arror" src='/images/arrow.png' style='position:absolute; top:130rpx; left:500rpx; z-index:999; width:200rpx; height:150rpx; transform: rotate(-90deg);'>
 </image>
-<view style='position:absolute;background-color:white; left:220rpx; top:898rpx; color:#3E5DB3; text-align: center; font-size: 74rpx; z-index: 999;padding-left:40rpx;padding-right:40rpx;'>1</view>
-<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 我们已为您模拟点击2、3、7。当在设置页面选择打开”相同数字高亮提醒“后，当您点击下方选择栏中的数字时，将会数字宫格内所与之相同的数字高亮提醒,请点击下方的数字1</view>
+<button class="layer" style='position:absolute; left:481rpx; top:47rpx; height:62rpx; width:222rpx;background-color: #66A271; line-height: 62rpx; font-size:36rpx; z-index: 999; opacity:1;text-align: center;' bindtap='toNextGuide'> 候选模式
+</button>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 我们已为您模拟点击2、3、7。当再次点击候选模式后，就可以继续按正常模式填写，填写的数字将被当做做题答案记录。现在请您再次点击”候选模式“按钮</view>
 </view>
 
-<view hidden='{{guide!=3}}'bindtap='toNextGuide' >
+<!--高亮提醒-->
+<view hidden='{{guide!=7}}' >
 <view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
 </view>
+<image src='/images/hightlight.png' style='position:absolute; top:250rpx; left:70rpx; z-index:999;width:600rpx; height:91rpx; transform: rotate(0deg);'>
+</image>
+<image class="arror" src='/images/arrow.png' style='position:absolute; top:730rpx; left:180rpx; z-index:999; width:200rpx; height:150rpx; transform: rotate(90deg);'>
+</image>
+<view style='position:absolute;background-color:white; left:220rpx; top:898rpx; color:#3E5DB3; text-align: center; font-size: 74rpx; z-index: 999;padding-left:40rpx;padding-right:40rpx;'bindtap='toNextGuide'>1</view>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 当在设置页面选择打开”相同数字高亮提醒“后，当您点击下方选择栏中的数字时，宫格内所与之相同的数字将会高亮提醒,请点击下方的数字1</view>
 </view>
 
-<view hidden='{{guide!=4}}' bindtap='toNextGuide'>
-<view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 99999; opacity:0.2;'>
+<!--错误提醒-->
+<view hidden='{{guide!=8}}' bindtap='toNextGuide'>
+<view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
+</view>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 当在设置页面选择打开”错误提醒“后，当您填写中出现冲突时，我们会将冲突的数字拿红色提醒</view>
+<image src='/images/errorShow.png' style='position:absolute; top:650rpx; left:70rpx; z-index:999;width:600rpx; height:91rpx; transform: rotate(0deg);'>
+</image>
 </view>
 
+<!--结束-->
+<view hidden='{{guide!=9}}' bindtap='toNextGuide'>
+<view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
+</view>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 400rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 太棒了，现在您已经完全掌握了如何玩耍了，我们将为您重置时间，开始您的答题之旅吧~加油哦！</view>
 </view>
     
 

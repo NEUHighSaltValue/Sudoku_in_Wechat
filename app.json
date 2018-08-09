@@ -1,7 +1,7 @@
 {
     "pages": [
-        "pages/sudoku/sudoku",
         "pages/index/index",
+        "pages/sudoku/sudoku",
         "pages/pk_sudoku/pk_sudoku",
         "pages/about/about",
         "pages/waiting/waiting",

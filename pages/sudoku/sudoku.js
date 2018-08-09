@@ -396,24 +396,30 @@ Page({
         noteFull: true,
         hightlg: true,
         hightnum: true,
-        guide: 0
+        guide: -1
     },
 
     toNextGuide(){
         let temp = this.data.guide + 1
-        if(temp == 1){
+        if(temp == 5){
             this.changeNote()
-        } else if (temp == 2) {
+        } else if (temp == 6) {
             sudoku.setData(1, 3, '237', true)
             this.freshUI()
             console.log(123)
-        } else if (temp == 3) {
+        } else if (temp == 7) {
+
+            this.changeNote()
+        } else if (temp == 8) {
             this.selectNum = 2
             this.drawTable
             sudoku.highlightNum(1)
             this.freshUI()
             console.log(123)
-        } else if (temp == 4) {
+        } else if (temp == 10) {
+            wx.setStorageSync('guide','0')
+            this.newGame(false)
+            sudoku.setGame(newGameData, newGameAns);
         }
         console.log(this.data.guide)
         this.setData({
@@ -424,6 +430,7 @@ Page({
     },
 
     onLoad(option) {
+        let timeStop = false
         cacheData = option.cache
         if(cacheData != undefined) {
           gameID = parseInt(cacheData.substring(0, 4))
@@ -439,14 +446,18 @@ Page({
         errorShow = getApp().globalData.errorOrNot;
         timeShow = getApp().globalData.timeOrNot;
         filltype = getApp().globalData.typeOrNot;
+        let that = this
         try{
           var value = wx.getStorageSync('guide')
-          if(value != '') {
-            console.log('guide')
-            guide = false
+          console.log("in Load the storage is :", value)
+          if(value == '') {
+            that.setData({
+                guide: 0
+            })
+            timeStop = true
           }
         } catch(e) {
-
+            console.log(e)
         }
         
         this.setData({
@@ -457,7 +468,7 @@ Page({
             hightlg: true,
             hightnum: true
         });
-        this.newGame();
+        this.newGame(timeStop);
         if(cacheData != undefined) {
           var nowNote = currentNote
           for (var i = 4; i < cacheData.length; i += 4) {
@@ -471,13 +482,14 @@ Page({
           }
           this.freshUI()
           currentNote = nowNote
+          if(timeStop)  {
+              this.timeStop()
+              console.log("time Stop")
+          }
         } 
     },
 
-    newGame() {
-        this.setData({
-            generateOk: false
-        })
+    newGame(timeStop) {
         sudoku.reset();
         this.timeStop();
         timer = '0';
@@ -497,9 +509,9 @@ Page({
         try {
           var value = wx.getStorageSync('guide')
           if(value == '')
-            gameID = 2
+            gameID = 1
         } catch(e) {
-
+            console.log(e)
         }
         wx.request({
           url: 'https://www.tianzhipengfei.xin/sudoku',
@@ -636,7 +648,8 @@ Page({
                     })
                     this.drawBoard();
                     this.drawTable();
-                    this.timeStart();
+                    if(!timeStop)
+                        this.timeStart();
                     this.freshUI();
                 }, 1200);
             }
@@ -667,13 +680,17 @@ Page({
         table.setTextAlign = 'center';
         //Zixuan table 里非选择数字的颜色
         table.setFillStyle("#4169E1")
-        let adjustmentForTable = [1.4, 2.35, 3.35, 4.3, 0.3, 1.3, 2.3, 3.32, 4.4]
-        for (var i = 1; i < 10; i++) {
+        let adjustmentForTable = [0.3, 1.4, 2.35, 3.35, 4.3, 0.3, 1.3, 2.3, 3.32, 4.4]
+        for (var i = 0; i < 10; i++) {
             if (i == num) {
                 //Zixuan，table 选中数字的颜色
                 table.setFillStyle("#64A36F");
             }
-            table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
+            if(i == 0 ){
+                table.fillText("X", tableWidth / ratio * adjustmentForTable[i ] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
+            }else{
+            table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i ] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
+            }
             //Zixuan table 里非选择数字的颜色
             table.setFillStyle("#4169E1");
         }
@@ -1072,68 +1089,68 @@ Page({
             delta: 5
         })
     },
-    noteGuide: function(e) {
-      this.setData({
-        noteButton: true,
-        noteFill: false
-      })
-    },
-    noteFGuide: function(e) {
-      //console.log('abc')
-      this.setData({
-        noteFill: true,
-        noteFull: false
-      })
-    },
-    noteFuGuide: function(e) {
-      this.setData({
-        noteFull: true,
-      })
-      sudoku.setData(1, 3, '237', true)
-      this.freshUI()
-      setTimeout(() => {
-        this.setData({ hightlg: false })}, 1200)
-      /*
-      wx.setStorage({
-        key: 'guide',
-        data: 'value'
-      })
-      */
-    },
-    hightGuide: function(e) {
-      this.setData({
-        hightlg: true,
-        hightnum: false
-      })
-    },
-    hightFill: function(e) {
-      this.setData({
-        hightnum: true
-      })
-      selectNum = 1
-      this.drawTable(selectNum)
-      sudoku.highlightNum(selectNum)
-      this.freshUI()
-      wx.setStorage({
-        key: 'guide',
-        data: 'value',
-      })
-      setTimeout(() => {
-        wx.showModal({
-          title: '提示',
-          content: '更多模式可前往设置页面调整',
-          showCancel: false,
-          success: function (res) {
-            if (res.confirm) {
-              wx.redirectTo({
-                url: '/pages/select_level/select_level'
-              })
-            }
-          }
-        })
-      }, 1200)
+    // noteGuide: function(e) {
+    //   this.setData({
+    //     noteButton: true,
+    //     noteFill: false
+    //   })
+    // },
+    // noteFGuide: function(e) {
+    //   //console.log('abc')
+    //   this.setData({
+    //     noteFill: true,
+    //     noteFull: false
+    //   })
+    // },
+    // noteFuGuide: function(e) {
+    //   this.setData({
+    //     noteFull: true,
+    //   })
+    //   sudoku.setData(1, 3, '237', true)
+    //   this.freshUI()
+    //   setTimeout(() => {
+    //     this.setData({ hightlg: false })}, 1200)
+    //   /*
+    //   wx.setStorage({
+    //     key: 'guide',
+    //     data: 'value'
+    //   })
+    //   */
+    // },
+    // hightGuide: function(e) {
+    //   this.setData({
+    //     hightlg: true,
+    //     hightnum: false
+    //   })
+    // },
+    // hightFill: function(e) {
+    //   this.setData({
+    //     hightnum: true
+    //   })
+    //   selectNum = 1
+    //   this.drawTable(selectNum)
+    //   sudoku.highlightNum(selectNum)
+    //   this.freshUI()
+    //   wx.setStorage({
+    //     key: 'guide',
+    //     data: 'value',
+    //   })
+    //   setTimeout(() => {
+    //     wx.showModal({
+    //       title: '提示',
+    //       content: '更多模式可前往设置页面调整',
+    //       showCancel: false,
+    //       success: function (res) {
+    //         if (res.confirm) {
+    //           wx.redirectTo({
+    //             url: '/pages/select_level/select_level'
+    //           })
+    //         }
+    //       }
+    //     })
+    //   }, 1200)
 
-    }
+    // }
 })
 
 

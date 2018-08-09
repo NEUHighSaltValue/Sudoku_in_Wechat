@@ -529,13 +529,17 @@ Page({
         table.setTextAlign = 'center';
         //Zixuan table 里非选择数字的颜色
         table.setFillStyle("#4169E1")
-        let adjustmentForTable = [1.4, 2.35, 3.35, 4.3, 0.3, 1.3, 2.3, 3.32, 4.4]
-        for (var i = 1; i < 10; i++) {
+        let adjustmentForTable = [0.3, 1.4, 2.35, 3.35, 4.3, 0.3, 1.3, 2.3, 3.32, 4.4]
+        for (var i = 0; i < 10; i++) {
             if (i == num) {
                 //Zixuan，table 选中数字的颜色
                 table.setFillStyle("#64A36F");
             }
-            table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i - 1] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
+            if (i == 0) {
+                table.fillText("X", tableWidth / ratio * adjustmentForTable[i] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
+            } else {
+                table.fillText(i.toString(), tableWidth / ratio * adjustmentForTable[i] + lineWidth1 / ratio * i % 5, tableWidth * (3.2 + parseInt(i / 5) * 3.95) / 4 / ratio);
+            }
             //Zixuan table 里非选择数字的颜色
             table.setFillStyle("#4169E1");
         }
