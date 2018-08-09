@@ -452,7 +452,7 @@ Page({
           console.log("in Load the storage is :", value)
           if(value == '') {
             that.setData({
-                guide: 0
+                guide: -10
             })
             timeStop = true
           }
@@ -486,6 +486,11 @@ Page({
               this.timeStop()
               console.log("time Stop")
           }
+          if(this.data.guide == -10){
+              this.setData({
+                  guide: 0
+              })
+          }
         } 
     },
 
@@ -513,76 +518,94 @@ Page({
         } catch(e) {
             console.log(e)
         }
+        let that = this
+        wx.getNetworkType({
+            success: function (res) {
+                var NetworkType = res.networkType
+                if (NetworkType == "none") {
+                    that.offlineNewGame(timeStop)
+                } else {
+                    that.onlineNewGame(timeStop)
+                }
+            },
+            fail: function(){
+                this.offlineNewGame(timeStop)
+            }
+        })
+        
+    },
+    onlineNewGame(timeStop){
         wx.request({
-          url: 'https://www.tianzhipengfei.xin/sudoku',
+            url: 'https://www.tianzhipengfei.xin/sudoku',
             data: {
                 event: 'getGameData',
                 gameid: gameID
             },
             method: "POST",
             success: res => {
-              newGameObject = res.data;
-              newGameData = newGameObject.data;
-              newGameAns = newGameObject.ans;
-              if(newGameAns == undefined) {
-                this.gameID = Math.floor(Math.random() * 200) + level * 1000;
-                switch (level) {
-                  case 0:
-                    newGameObject = sudokuGameData1.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    //console.log(gameID)
-                    break;
-                  case 1:
-                    newGameObject = sudokuGameData2.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
-                  case 2:
-                    newGameObject = sudokuGameData3.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
-                  case 3:
-                    newGameObject = sudokuGameData4.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
-                  case 4:
-                    newGameObject = sudokuGameData5.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
-                  case 5:
-                    newGameObject = sudokuGameData6.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
-                  case 6:
-                    newGameObject = sudokuGameData7.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
-                  case 7:
-                    newGameObject = sudokuGameData8.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
-                  case 8:
-                    newGameObject = sudokuGameData9.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
-                  case 9:
-                    newGameObject = sudokuGameData10.searchSData(this.gameID);
-                    newGameData = newGameObject.data;
-                    newGameAns = newGameObject.ans;
-                    break;
+                newGameObject = res.data;
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                if (newGameAns == undefined) {
+                    this.gameID = Math.floor(Math.random() * 200) + level * 1000;
+                    switch (level) {
+                        case 0:
+                            newGameObject = sudokuGameData1.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            //console.log(gameID)
+                            break;
+                        case 1:
+                            newGameObject = sudokuGameData2.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                        case 2:
+                            newGameObject = sudokuGameData3.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                        case 3:
+                            newGameObject = sudokuGameData4.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                        case 4:
+                            newGameObject = sudokuGameData5.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                        case 5:
+                            newGameObject = sudokuGameData6.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                        case 6:
+                            newGameObject = sudokuGameData7.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                        case 7:
+                            newGameObject = sudokuGameData8.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                        case 8:
+                            newGameObject = sudokuGameData9.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                        case 9:
+                            newGameObject = sudokuGameData10.searchSData(this.gameID);
+                            newGameData = newGameObject.data;
+                            newGameAns = newGameObject.ans;
+                            break;
+                    }
                 }
-              }
             },
-            fail: () =>{
-                this.gameID = Math.floor(Math.random() * 200) + level * 1000;
+            fail: () => {
+                if (this.gameID != 1)
+                    this.gameID = Math.floor(Math.random() * 200) + level * 1000;
                 switch (level) {
                     case 0:
                         newGameObject = sudokuGameData1.searchSData(this.gameID);
@@ -636,11 +659,11 @@ Page({
                         break;
                 }
             },
-            complete:() => {
-                if(cacheData == '')
-                  cacheData = gameID.toString()
-                while(cacheData.length < 4)
-                  cacheData = '0' + cacheData
+            complete: () => {
+                if (cacheData == '')
+                    cacheData = gameID.toString()
+                while (cacheData.length < 4)
+                    cacheData = '0' + cacheData
                 sudoku.setGame(newGameData, newGameAns);
                 setTimeout(() => {
                     this.setData({
@@ -648,7 +671,7 @@ Page({
                     })
                     this.drawBoard();
                     this.drawTable();
-                    if(!timeStop)
+                    if (!timeStop)
                         this.timeStart();
                     this.freshUI();
                 }, 1200);
@@ -656,7 +679,79 @@ Page({
 
         })
     },
-
+    offlineNewGame(timeStop){
+        if (this.gameID != 1)
+            this.gameID = Math.floor(Math.random() * 200) + level * 1000;
+        switch (level) {
+            case 0:
+                newGameObject = sudokuGameData1.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 1:
+                newGameObject = sudokuGameData2.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 2:
+                newGameObject = sudokuGameData3.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 3:
+                newGameObject = sudokuGameData4.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 4:
+                newGameObject = sudokuGameData5.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 5:
+                newGameObject = sudokuGameData6.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 6:
+                newGameObject = sudokuGameData7.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 7:
+                newGameObject = sudokuGameData8.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 8:
+                newGameObject = sudokuGameData9.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+            case 9:
+                newGameObject = sudokuGameData10.searchSData(this.gameID);
+                newGameData = newGameObject.data;
+                newGameAns = newGameObject.ans;
+                break;
+        }
+        complete: () => {
+            if (cacheData == '')
+                cacheData = gameID.toString()
+            while (cacheData.length < 4)
+                cacheData = '0' + cacheData
+            sudoku.setGame(newGameData, newGameAns);
+            setTimeout(() => {
+                this.setData({
+                    generateOk: true
+                })
+                this.drawBoard();
+                this.drawTable();
+                if (!timeStop)
+                    this.timeStart();
+                this.freshUI();
+            }, 1200);
+        }
+    },
     drawTable(num) {
         //Table
         var startPointX = lineWidth1 / 2 / ratio;
@@ -1023,6 +1118,9 @@ Page({
             
           }
         }
+        this.setData({
+            generateOk: true
+        })
     },
 
     fillColor(board, x, y) {

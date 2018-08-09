@@ -19,7 +19,7 @@
 <view hidden='{{guide!=0}}'bindtap='toNextGuide' >
 <view class="layer" style='position:absolute; left:0; top:0; height:100%; width:750rpx;   background-color: black;  z-index: 999; opacity:0.2;'>
 </view>
-<view style='position:absolute; font-size: 40rpx; color: #000080;opacity:1; top: 500rpx;z-index:9999;background-color: #70b1ff; margin-left:20rpx; margin-right:20rpx; padding:20rpx;'> 数独游戏要求每行、每列、每3*3格子内要填满1-9九个数字，且不能重复 </view>
+<view style='position:absolute; font-size: 40rpx; color: #000080; top: 300rpx;z-index:999;background-color: white; padding-left:40rpx; padding-right:40rpx; padding-top:20rpx; padding-bottom:20rpx;'> 数独游戏要求每行、每列、每3*3格子内要填满1-9九个数字，且不能重复 </view>
 </view>
 
 <!-- 输入模式介绍 -->

@@ -152,6 +152,7 @@ page{
   height: 675rpx;
   position: absolute;
   margin-top: 44rpx;
+  z-index: 9;
 }
 
 .canvasBoard{ 
@@ -162,6 +163,7 @@ page{
   width: 675rpx;
   height: 675rpx;
   position: absolute;
+  z-index: 9;
 }
 
 .boardData{
@@ -169,6 +171,7 @@ page{
   width: 675rpx;
   height: 675rpx;
   position: relative;
+  z-index: 9;
 }
 
 .canvasTable{
@@ -180,6 +183,7 @@ page{
   width: 527rpx;
   height: 213.5rpx;
   position: relative;
+  z-index: 9;
 }
 
 /* shareCard */
