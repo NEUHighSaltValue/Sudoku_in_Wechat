@@ -396,6 +396,31 @@ Page({
         noteFull: true,
         hightlg: true,
         hightnum: true,
+        guide: 0
+    },
+
+    toNextGuide(){
+        let temp = this.data.guide + 1
+        if(temp == 1){
+            this.changeNote()
+        } else if (temp == 2) {
+            sudoku.setData(1, 3, '237', true)
+            this.freshUI()
+            console.log(123)
+        } else if (temp == 3) {
+            this.selectNum = 2
+            this.drawTable
+            sudoku.highlightNum(1)
+            this.freshUI()
+            console.log(123)
+        } else if (temp == 4) {
+        }
+        console.log(this.data.guide)
+        this.setData({
+            guide: temp
+        })
+        console.log(this.data.guide)
+
     },
 
     onLoad(option) {

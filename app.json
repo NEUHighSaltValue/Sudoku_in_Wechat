@@ -1,5 +1,6 @@
 {
     "pages": [
+        "pages/sudoku/sudoku",
         "pages/index/index",
         "pages/pk_sudoku/pk_sudoku",
         "pages/about/about",
@@ -8,7 +9,6 @@
         "pages/setting/setting",
         "pages/fight/fight",
         "pages/result/result",
-        "pages/sudoku/sudoku",
         "pages/fight/create/create"
     ],
     "window": {
