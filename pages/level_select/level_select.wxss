@@ -19,10 +19,11 @@ page{
     height: 180rpx;
     margin-left: 79rpx;
     border: 2rpx solid black;
+    background-color: white;
     margin-bottom: 9rpx;
     margin-top: 9rpx;
     margin-right: 6rpx;
-    border-radius: 12rpx;
+    border-radius: 6rpx;
 }
 
 .level_select_text{

@@ -481,6 +481,27 @@ Page({
             this.setData({
                 guide: 0
             })
+        }  
+    },
+
+    onHide() {
+        console.log("onHide")
+        this.timeStop();
+        try{
+            wx.setStorageSync("lastTime", num)
+        } catch(e){
+            console.log(e)
+        }
+        
+    },
+
+    onUnload(){
+        console.log("onUnload")
+        this.timeStop();
+        try {
+            wx.setStorageSync("lastTime", num)
+        } catch (e) {
+            console.log(e)
         }
     },
 
@@ -673,6 +694,9 @@ Page({
                             console.log(parseInt(cacheData[i + 1]), parseInt(cacheData[i + 2]),
                                 parseInt(cacheData[i + 3]), currentNote)
                         }
+                        let tempTime = wx.getStorageSync("lastTime")
+                        console.log("tempTime: ",tempTime)
+                        num = tempTime ? parseInt(tempTime) : 0;
                         this.freshUI()
                         currentNote = nowNote
                         if (timeStop) {

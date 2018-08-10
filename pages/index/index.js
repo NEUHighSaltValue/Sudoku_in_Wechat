@@ -275,11 +275,11 @@ Page({
           title: '关于我们',
           content: '我们是来自东北大学最高颜值程序组，因为热爱，我们做了这样一个数独小程序，希望能给你带来快乐。任何建议电邮869909541@qq.com',
           cancelText: "自强不息",
-          cancelColor: "black",
+          cancelColor: "#000",
           confirmText: "知行合一",
-          confirmColor: "black"
+          confirmColor: "#000"
       })
-    }, 
+    },
     onShareAppMessage: function () {
         let picNum = Math.floor(Math.random() * 10)+1
         let url = 'https://www.tianzhipengfei.xin/static/share' + picNum.toString() + '.jpg'
