@@ -1,10 +1,11 @@
 <!--index.wxml-->
-<view wx:if="{{userInformation}}">
-  <view id = "userInfo" class="cell">
-
-      <image class = "avatar" src="{{imgurl}}"> </image>
+<view  wx:if="{{userInformation}}"  id = "userInfo" class="cell">
+        <view class="avatar">
+            <open-data mode="cover" type="userAvatarUrl"></open-data>
+        </view>
+      <!-- <image class = "avatar" src="{{imgurl}}"> </image> -->
       <view class = "userInfoText">
-          <view class = "userName">{{nickName}}</view>
+          <open-data class="userName" type="userNickName"></open-data>
           <view class="userLevelWrapper">
             <view class = "userLevel"> {{level_item.name}} </view> 
             <view class="total"> 
@@ -14,11 +15,13 @@
             </view>
           </view>
       </view>
-  </view>
 </view>
+
 <view wx:else>
-  <button id='authorize' open-type='getUserInfo' bindgetuserinfo='toIndex'> 授权 </button>
+  <button id='authorize' open-type='getUserInfo' bindgetuserinfo='bindgetuserinfo'> 授权 </button>
 </view>
+
+
 
 <view id="newGame" class="cell" bindtap='toNewGame'>
     <view class="itemText"> 新建游戏</view>

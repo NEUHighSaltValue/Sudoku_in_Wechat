@@ -20,6 +20,8 @@ page{
     left: 39.5rpx;
     top: 80rpx;
     position: absolute;
+    display: flex;
+    flex-direction: row;
     /* background-image: linear-gradient(135deg, #8BD8ED 0%, #00BBF0 100%); */
     background: white;
 }
@@ -27,19 +29,19 @@ page{
 .avatar{
     height: 150rpx;
     width: 150rpx;
-    position: relative;
-    top: 23.5rpx;
-    left: 80rpx;
+    margin-top: 23.5rpx;
+    margin-left: 80rpx;
     border-radius: 75rpx;
+    overflow:hidden;
     border: 5rpx #DBEDF3 solid;
 }
 
 .userInfoText{
     width: 352rpx;
     height: 200rpx;
-    position: relative;
-    top: -172rpx;
-    left: 280rpx;
+    display: flex;
+    flex-direction: column;
+    margin-left: 40rpx;
 }
 
 .userName{
