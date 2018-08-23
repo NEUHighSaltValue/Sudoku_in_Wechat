@@ -31,6 +31,7 @@ Page({
                       confirmText: '新建游戏',
                       success: function (res) {
                           if (res.confirm) {
+                              wx.setStorageSync("lastTime", 0)
                               wx.navigateTo({
                                   url: '/pages/level_select/level_select',
                               })
@@ -255,25 +256,7 @@ Page({
         console.log(e)
         if (e.detail.userInfo) {
             app.globalData.userInfo = e.detail.userInfo
-            // 发送 res.code 到后台换取 openId, sessionKey, unionId
-            // wx.login({
-            //     success: res => {
-            //         console.log(res)
-            //         wx.request({
-            //             url: 'https://www.tianzhipengfei.xin/sudoku',
-            //             data: {
-            //                 code: res.code,
-            //                 iv: e.detail.iv,
-            //                 encryptedData: e.detail.encryptedData,
-            //             },
-            //             method: 'POST',
-            //             success: function (res) {
-            //                 console.log('请求成功')
-            //             }
-            //         })
-            //     }
-            // })
-            wx.setData({
+            that.setData({
                 userInformation: true
             })
         } else {

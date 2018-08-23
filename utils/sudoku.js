@@ -155,7 +155,6 @@ class Sudoku {
         }
     }
     judgeError() {
-        console.log("in error")
         for (var i = 0; i < 9; i++) {
             for (var j = 0; j < 9; j++) {
                 if (this.row[i][j].size > 1) {

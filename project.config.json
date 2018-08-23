@@ -10,7 +10,7 @@
 	"compileType": "miniprogram",
 	"libVersion": "1.9.91",
 	"appid": "wxc362409c6d373bb0",
-	"projectname": "Sudoku",
+	"projectname": "sudoku_2",
 	"isGameTourist": false,
 	"condition": {
 		"search": {
