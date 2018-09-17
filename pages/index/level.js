@@ -1,4 +1,17 @@
 // level.js
+let level_dict = {
+    "普通数独-入门": 3,
+    "普通数独-初级": 6,
+    "普通数独-中级": 10,
+    "普通数独-高级": 15,
+    "普通数独-骨灰": 20,
+    "对角数独-入门": 6,
+    "对角数独-初级": 10,
+    "对角数独-中级": 15,
+    "对角数独-高级": 20,
+    "对角数独-骨灰": 25
+};
+
 function getLevel() {
     try {
         var expr = wx.getStorageSync('expr')
@@ -55,6 +68,16 @@ function level_exprience(level) {
 }
 
 function level_ratio() {
+    try{
+        var value = wx.getStorageSync('key')
+        if (value) {
+            let storage = splitData(value)
+            wx.setStorageSync('expr', storage)
+        }
+    }
+    catch (e){
+        console.log("Get 战绩 storage issue: ", e)
+    }
     var level = getLevel()
     try {
         let expr = wx.getStorageSync("expr")
@@ -65,19 +88,19 @@ function level_ratio() {
                 str: ""
             }
             exprItem.name = level_name(level)
-            exprItem.ratio = parseInt(res.data) / level_exprience(level)
-            exprItem.str = parseInt(res.data) + "/" + level_exprience(level)
+            exprItem.ratio = parseInt(expr) / level_exprience(level)
+            exprItem.str = parseInt(expr) + "/" + level_exprience(level)
             if (exprItem.ratio == 1.0) {
                 exprItem.name = level_name(level + 1)
-                exprItem.ratio = parseInt(res.data) / level_exprience(level + 1)
-                exprItem.str = parseInt(res.data) + "/" + level_exprience(level + 1)
+                exprItem.ratio = parseInt(expr) / level_exprience(level + 1)
+                exprItem.str = parseInt(expr) + "/" + level_exprience(level + 1)
             }
-            if (parseInt(res.data) >= 2880) {
+            if (parseInt(expr) >= 2880) {
                 exprItem.name = "最强王者"
                 exprItem.ratio = 1.0
                 exprItem.str = "2880/2880"
             }
-            return Item
+            return exprItem
         } else {
             let exprNewItem = {
                 name: "青铜",
@@ -92,5 +115,21 @@ function level_ratio() {
     }
 }
 
+function splitData(data) {
+    var lines = new Array()
+    var words = new Array()
+    var result = new Array()
+    var count = 0
+    var expr = 0
+    lines = data.split("?")
+    for (var i = 0; i < lines.length; i++) {
+        words[i] = new Array()
+        words[i] = lines[lines.length - i - 1].split("|")
+    }
+    for (var i = 0; i < words.length; i++) {
+        expr += level_dict[words[i][1]]
+    }
+    return expr
+}
 
 module.exports.level_ratio = level_ratio

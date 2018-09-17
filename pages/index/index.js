@@ -43,6 +43,7 @@ Page({
                       }
                   })
               } else {
+                  wx.setStorageSync("lastTime", 0)
                   wx.getNetworkType({
                       success: function (res) {
                           wx.navigateTo({
@@ -156,9 +157,14 @@ Page({
         }        
     })
   },
+  onShow: function(){
+      var item = level_js.level_ratio()
+      this.setData({
+          level_item: item
+      })
+  },
   onLoad: function (options) {
     var item = level_js.level_ratio()
-    console.log(item)
     this.setData({
         level_item: item
     })
@@ -167,7 +173,6 @@ Page({
     }
     scene = decodeURIComponent(options.scene)
     var that = this
-    var item = level_js.level_ratio()
     
     if(isPK){
       isPK = false
@@ -225,7 +230,7 @@ Page({
   showInfo: function(){
       wx.showModal({
           title: '关于我们',
-          content: '我们是来自东北大学最高颜值程序组，因为热爱，我们做了这样一个数独小程序，希望能给你带来快乐。任何建议电邮869909541@qq.com',
+          content: '我们是来自东北大学最高颜值程序组，因为热爱，我们做了这样一个数独小程序，希望能给你带来快乐。任何建议电邮869909541@qq.com，也可添加qq群 818090341',
           cancelText: "自强不息",
           cancelColor: "#000",
           confirmText: "知行合一",

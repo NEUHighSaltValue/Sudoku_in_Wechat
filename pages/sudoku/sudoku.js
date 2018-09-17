@@ -790,114 +790,81 @@ Page({
         if (remainNum == 0) {
             if (sudoku.judgeCorrect()) {
                 this.timeStop();
-                sudoku.freeze(); 
+                sudoku.freeze();
                 sc = decodeURIComponent(sc)
+                getQrCodeAndAvatar();
                 usedTime = this.data.timeText;
                 gameLevel = mutiDraw.levelTranslation(level)
                 let that = this;
                 //Shuyuan
                 var storage = ""
                 var exprNow = 0
-                
-                wx.getNetworkType({
+                let oldExpr = wx.getStorageSync('expr')
+                if(oldExpr){
+                    exprNow = oldExpr + mutiDraw.getExperience(level)
+                } else{
+                    exprNow = mutiDraw.getExperience(level)
+                }
+                wx.setStorageSync('expr', exprNow)    
+
+                wx.getStorage({
+                    key: 'key',
                     success: function (res) {
-                        // 返回网络类型, 有效值：
-                        // wifi/2g/3g/4g/unknown(Android下不常见的网络类型)/none(无网络)
-                        // var networkType = res.networkType
-                        if (res.networkType != none){
-                            getQrCodeAndAvatar();
-                            this.setData({
-                                completed: true
-                            })
-                            wx.request({
-                                url: 'https://www.tianzhipengfei.xin/sudoku',
-                                data: {
-                                    event: 'finishGame',
-                                    gameid: gameID,
-                                    userid: getApp().globalData.userInfo2.openid,
-                                    finishTime: num
-                                },
-                                method: "POST",
-                                success: res => {
-                                }
-                            })
-                        } else{
-                            wx.showToast({
-                                title: '做题完成',
-                                icon: 'success',
-                                duration: 2000
-                            })
+                        if (res.data) {
+                            storage = res.data + '?'
+                        } else {
+                            console.log("no key")
                         }
                     },
-                    fail: function(){
-                        wx.showToast({
-                            title: '做题完成',
-                            icon: 'success',
-                            duration: 2000
-                        })
+                    fail: function (res) {
+                        storage = ""
                     },
-                    complete: function(){
-                        wx.getStorage({
-                            key: 'expr',
-                            success: function (res) {
-                                if (res.data) {
-                                    exprNow = parseInt(res.data) + mutiDraw.getExperience(level)
-                                } else {
-                                    console.log("no expr")
-                                }
-                            },
-                            fail: function (res) {
-                                exprNow = mutiDraw.getExperience(level)
-                            },
-                            complete: function () {
-                                wx.setStorage({
-                                    key: 'expr',
-                                    data: exprNow
-                                })
-                                //console.log(exprNow)
-                            }
-                        })
-                        wx.getStorage({
+                    complete: function () {
+                        wx.setStorage({
                             key: 'key',
-                            success: function (res) {
-                                if (res.data) {
-                                    storage = res.data + '?'
-                                } else {
-                                    console.log("no key")
-                                }
-                            },
-                            fail: function (res) {
-                                storage = ""
-                            },
-                            complete: function () {
-                                wx.setStorage({
-                                    key: 'key',
-                                    data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' +
-                                        that.data.timeText + '|' + mutiDraw.getNowFormatDate() + '|0'
-                                })
-                            }
+                            data: storage + mutiDraw.levelImgPath(level) + '|' + mutiDraw.levelTranslation(level) + '|' +
+                                that.data.timeText + '|' + mutiDraw.getNowFormatDate() + '|0'
                         })
                     }
                 })
-               
+                wx.request({
+                    url: 'https://www.tianzhipengfei.xin/sudoku',
+                    data: {
+                        event: 'finishGame',
+                        gameid: gameID,
+                        userid: getApp().globalData.userInfo2.openid,
+                        finishTime: num
+                    },
+                    method: "POST",
+                    success: res => {
+                    }
+                })
 
-                
-              
-                
+                wx.showToast();
+                this.setData({
+                    completed: true
+                })
                 try {
-                  wx.setStorageSync('cache', '')
-                  console.log('finish')
+                    wx.setStorageSync('cache', '')
+                    console.log('finish')
                 } catch (e) {
 
                 }
+            } else{
+                wx.showToast({
+                    title: '有错误，请仔细检查',
+                    icon: 'none',
+                    duration: 1000
+                })
             }
         } else {
-          try {
-            wx.setStorageSync('cache', cacheData)
-            console.log(cacheData)
-          } catch(e) {
-            
-          }
+            try {
+                wx.setStorageSync('cache', cacheData)
+                console.log(cacheData)
+                
+            } catch (e) {
+
+            }
         }
         this.setData({
             generateOk: true

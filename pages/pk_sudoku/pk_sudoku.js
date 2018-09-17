@@ -505,6 +505,12 @@ Page({
                 } catch (e) {
 
                 }
+            } else {
+                wx.showToast({
+                    title: '有错误，请仔细检查',
+                    icon: 'none',
+                    duration: 1000
+                })
             }
         } else {
             try {
