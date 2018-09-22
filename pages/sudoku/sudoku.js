@@ -90,7 +90,8 @@ Page({
         noteFull: true,
         hightlg: true,
         hightnum: true,
-        guide: -1
+        guide: -1,
+        timeStop: true
     },
 
     toNextGuide() {
@@ -129,6 +130,9 @@ Page({
     },
 
     onLoad(option) {
+        this.setData({
+            note: false
+        })
         let timeStop = false
         cacheData = option.cache
         if(cacheData != undefined) {
@@ -177,6 +181,10 @@ Page({
                 guide: 0
             })
         }  
+    },
+
+    onShow() {
+        this.timeStart()
     },
 
     onHide() {
@@ -718,7 +726,9 @@ Page({
     },
 
     timeStart() {
-        timer = setInterval(this.countTime, 1000);
+        if (this.data.timeStop)
+            timer = setInterval(this.countTime, 1000);
+            this.data.timeStop = false
     },
 
     countTime() {
@@ -738,7 +748,9 @@ Page({
     },
 
     timeStop() {
-        clearInterval(timer)
+        if (!this.data.timeStop)
+            clearInterval(timer)
+            this.data.timeStop = true
     },
 
     changeNote() {
