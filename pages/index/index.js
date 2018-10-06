@@ -31,7 +31,6 @@ Page({
                       confirmText: '新建游戏',
                       success: function (res) {
                           if (res.confirm) {
-                              wx.setStorageSync("lastTime", 0)
                               wx.navigateTo({
                                   url: '/pages/level_select/level_select',
                               })
@@ -43,7 +42,6 @@ Page({
                       }
                   })
               } else {
-                  wx.setStorageSync("lastTime", 0)
                   wx.getNetworkType({
                       success: function (res) {
                           wx.navigateTo({

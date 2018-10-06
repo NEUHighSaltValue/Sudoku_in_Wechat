@@ -141,6 +141,7 @@ Page({
           currentNote = false
         }
         else {
+          wx.setStorageSync("lastTime",0)
           cacheData = ''
           sc = option.scence;
           level = parseInt(option.level);
